@@ -1,4 +1,5 @@
 
+
 var fs = require("fs") ; 
 var http = require("http") ;
 var url = require("url") ; 
@@ -7,18 +8,26 @@ var qs = require("querystring") ;
 var server = http.createServer(function (req, res) {
 
     console.log(req.url) ; 
-    if(1)
+    if(req.url==="/")
     {
 
+        console.log("Home page") ;
+        res.writeHead(200 , {"Content-Type" : "text/html"}) ; 
+        var stream = fs.createReadStream(__dirname+'/index.html') ;
 
-    }
-
-    if(req.method=="GET")
-    {
+        stream.on('data' , (data)=>{res.write(data.toString());res.end()} );
+        res.write("<h1>Second line ! </h1>")  ;
+        // var data = fs.readFileSync("./index.html","utf8");
+        // res.write(data+"Hello") ;
         
-        res.writeHead(200 , {"Content-Type" : "text/plain"})
-        res.end("Get request received !") ; 
     }
+
+    // if(req.method=="GET")
+    // {
+        
+    //     res.writeHead(200 , {"Content-Type" : "text/plain"})
+    //     res.end("Get request received !") ; 
+    // }
 
     });
 
