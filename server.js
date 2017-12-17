@@ -1,20 +1,18 @@
 var fs = require("fs") ; 
 var http = require("http") ;
+var url = require("url") ; 
+var qs = require("querystring") ; 
 
-var server = http.createServer(function(req , res){
+var server = http.createServer(function (req, res) {
 
-    res.writeHead(200 , {'Content-Type' : 'text/html'}); 
-    
-    // fs.readFile("../Attention_Please/src/index.html", function(err , data)
-    // {
-    //     res.write(data) ;        
-    // }) ;
+    if(req.method=="GET")
+    {
+        
+        res.writeHead(200 , {"Content-Type" : "text/plain"})
+        res.end("Get request received !") ; 
+    }
 
-    res.write("<h1>Hello this is my resp</h1>") ;
-
-    res.end() ;
-
-})
+    });
 
 
 server.listen(8000 , "127.0.0.1") ;
