@@ -9,6 +9,8 @@
   "author": "Natesh M Bhat",
   "license": "MIT",
   "dependencies": {
+    "@types/express": "^4.0.39",
+    "express": "^4.16.2",
     "react-router": "^4.2.0"
   }
 }
