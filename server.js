@@ -12,16 +12,17 @@ app.use('/views/css' , express.static('views/css' )  ) ;
 
 app.get("/" , (req , res)=>{
     console.log(req.url) ;
-    res.sendfile("./index.html") ; 
+    res.sendFile(__dirname+"/index.html") ; 
 }) ; 
 
-
-app.get("/login" , (req , res)=>{
-    res.sendfile("./views/login.html") ;
+app.get('/home' , (req, res)=>{
+    res.sendFile(__dirname+'/index.html')
 })
 
 
-
+app.get("/login" , (req , res)=>{
+    res.sendFile("./views/login.html") ;
+})
 
 
 app.listen(8000) ;
