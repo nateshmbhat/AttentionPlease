@@ -1,16 +1,14 @@
-
+/// <reference path=".\node_modules\@types\express\index.d.ts" />
 
 var fs = require("fs") ; 
 var http = require("http") ;
 var url = require("url") ; 
 var qs = require("querystring") ; 
-
 var express = require("express") ; 
 
 app = express() ; 
 
 app.get("/" , (req , res)=>{
-
     console.log(req.url) ;
     res.send("Hello , I m here :)") ;
 
@@ -18,6 +16,4 @@ app.get("/" , (req , res)=>{
 
 
 
-
-server.listen(8000 , "127.0.0.1") ;
-console.log("Listening to port 8000") ;
+app.listen(8000) ;
