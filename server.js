@@ -3,6 +3,7 @@
 
 var app = require("express")() ; 
 var express = require("express") ;
+var firebase = require("./firebase_handle") ; 
 
 
 app.use('/views/css' , express.static('views/css' )  ) ;
