@@ -13,8 +13,11 @@ var config = {
 
 var database = firebase.database() ;
 
-var ref = database.ref("/students/Students") ;
+var ref = database.ref("/College") ;
 
-console.log(ref) ;
-
-
+ref.set({
+  name : "College 1" , 
+  ID : "id1" , 
+  city : 'city1' ,
+  state : 'state1'
+}) ;
