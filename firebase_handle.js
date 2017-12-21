@@ -13,3 +13,8 @@ var config = {
 
 var database = firebase.database() ;
 
+var ref = database.ref("/students/Students") ;
+
+console.log(ref) ;
+
+
