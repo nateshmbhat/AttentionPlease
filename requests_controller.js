@@ -1,10 +1,11 @@
-/// <reference path="..\node_modules\@types\express\index.d.ts" />
+/// <reference path=".\node_modules\@types\express\index.d.ts" />
 
 var app = require("express")() ; 
 var express = require("express") ; 
 
 
 module.exports = function HandleRequests(app){
+    console.log("Requests Handler running ! ") ;
     Handle_GET(app) ; 
     Handle_POST(app) ; 
 
@@ -25,7 +26,7 @@ function Handle_POST(app){
 function Handle_GET(app){
 
     app.get('/' , (req ,res)=>{
-        res.sendFile(__dirname + '/index.html') ;
+        res.sendFile(__dirname+'/index.html') ;
     })
 
     app.get('/home' , (req,res)=>{
@@ -34,7 +35,7 @@ function Handle_GET(app){
     
 
     app.get('/register' , (req , res)=>{
-        res.sendFile(__dirname + "/views/register.html") ; 
+        res.sendFile( __dirname+ "/views/register.html") ; 
     })
 
     app.get('/login' , (req , res)=>{
