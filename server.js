@@ -19,9 +19,4 @@ app.use(express.static('./public' )  ) ;
 handle_requests(app) ;
 
 
-app.post('/register', (req , res)=>{
-    console.log(req.body)
-})
-
-
 app.listen(8000) ;
