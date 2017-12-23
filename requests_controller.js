@@ -1,6 +1,10 @@
-/// <reference path=".\node_modules\@types\express\index.d.ts" />
+/// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";
+
+
 
 var app = require("express")() ; 
+var bodyparser = require("body-parser") ; 
+var urlencodedParser = bodyparser.urlencoded({extended:false}) ; 
 
 module.exports = function HandleRequests(app){
     console.log("Requests Handler running ! ") ;
@@ -10,11 +14,11 @@ module.exports = function HandleRequests(app){
 }
 
 
-
 function Handle_POST(app){
 
-    app.post('/register' , (req , res)=>{
+    app.post('/register', urlencodedParser  , (req , res)=>{
         console.log(req.body) ;
+        res.send("Got the POST request ! ") ; 
     })
     
 }
