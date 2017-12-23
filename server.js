@@ -4,6 +4,7 @@
 var app = require("express")() ; 
 var express = require("express") ;
 var firebase = require("./firebase_handle") ; 
+var bodyparser = require("body-parser") ; 
 
 
 app.use(express.static('./public' )  ) ;
@@ -20,6 +21,16 @@ app.get('/home' , (req, res)=>{
 
 app.get("/login" , (req , res)=>{
     res.sendFile(__dirname+"/views/login.html") ;
+})
+
+app.get("/register" , (req , res)=>{
+    res.sendFile(__dirname+"/views/register.html") ;
+})
+
+
+
+app.post('/register', (req , res)=>{
+    console.log(req.body)
 })
 
 
