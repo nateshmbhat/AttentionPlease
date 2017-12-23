@@ -1,8 +1,6 @@
 /// <reference path=".\node_modules\@types\express\index.d.ts" />
 
 var app = require("express")() ; 
-var express = require("express") ; 
-
 
 module.exports = function HandleRequests(app){
     console.log("Requests Handler running ! ") ;
@@ -15,8 +13,10 @@ module.exports = function HandleRequests(app){
 
 function Handle_POST(app){
 
+    app.post('/register' , (req , res)=>{
+        console.log(req.body) ;
+    })
     
-
 }
 
 
