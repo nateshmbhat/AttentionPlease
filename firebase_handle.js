@@ -16,8 +16,15 @@ var database = firebase.database() ;
 var ref = database.ref("/College") ;
 
 ref.set({
-  name : "College 1" , 
+  name : "College 2" , 
   ID : "id1" , 
   city : 'city1' ,
   state : 'state1'
 }) ;
+
+ref_ret = ref.push({
+  Country: "India" 
+}).then(()=>console.log("Done !")) ;
+
+
+console.log("End of File ! ") ;

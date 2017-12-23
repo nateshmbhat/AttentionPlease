@@ -6,7 +6,7 @@ var express = require("express") ;
 var firebase = require("./firebase_handle") ; 
 
 
-app.use('/views/css' , express.static('views/css' )  ) ;
+app.use(express.static('./public' )  ) ;
 
 app.get("/" , (req , res)=>{
     console.log(req.url) ;
