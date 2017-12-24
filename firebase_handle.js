@@ -1,3 +1,5 @@
+
+
 var firebase = require("firebase");
 
 var config = {
@@ -15,16 +17,47 @@ var database = firebase.database() ;
 
 var ref = database.ref("/College") ;
 
-ref.set({
-  name : "College 2" , 
-  ID : "id1" , 
-  city : 'city1' ,
-  state : 'state1'
-}) ;
 
-ref_ret = ref.push({
-  Country: "India" 
-}).then(()=>console.log("Done !")) ;
+function setdata()
+{
+  ref.set({
+    name : "College 2" , 
+    ID : "id1" , 
+    city : 'city1' ,
+    state : 'state1'
+  }) ;
+
+
+}  
+
+function createUserWithEmailAndPassword(email , password , name )
+{
+  create_prom = firebase.auth().createUserWithEmailAndPassword(email , password) 
+
+  create_prom.then((user)=>console.log("User Created successfully !")) ; 
+  create_prom.catch((error)=>console.log(error)) ;
+}
+
+
+
+
+function signInWithEmailAndPassword(email , password)
+{
+  auth_prom = firebase.auth().signInWithEmailAndPassword(email , password).catch(
+    (error)=>{
+      console.log(error.message) ; 
+    }
+  )
+
+
+  auth_prom.then((auth)=>console.log(Object.getOwnPropertyNames(auth))) ; 
+
+}  
+
+signInWithEmailAndPassword('nateshmbhat1@gmail.com' , 'password') ;
+
+
+
 
 
 console.log("End of File ! ") ;
