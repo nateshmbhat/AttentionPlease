@@ -9,8 +9,12 @@ var app = require("express")() ;
 var bodyparser = require("body-parser") ; 
 var urlencodedParser = bodyparser.urlencoded({extended:false}) ; 
 var firebase  =  require("firebase") ; 
+var fiebase_Handler = require("./firebase_handle") ; 
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of IMPORTS 
+
+
+app.set('view engine' , 'ejs') ; 
 
 
 
@@ -32,6 +36,12 @@ function Handle_POST(app){
         register_promise.catch((error)=>console.log("Error occured ! : " + error)) ;
 
     })
+
+
+    app.post('/login' , urlencodedParser, (req , res)=>{
+        
+        ;
+    })
     
 }
 
@@ -51,10 +61,10 @@ function Handle_GET(app){
     
 
     app.get('/register' , (req , res)=>{
-        res.sendFile( __dirname+ "/views/register.html") ; 
+        res.render("register.ejs") ; 
     })
 
     app.get('/login' , (req , res)=>{
-        res.sendFile(__dirname+'/views/login.html') ;
+        res.render('login.ejs') ;
     })
 }

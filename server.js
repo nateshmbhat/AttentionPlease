@@ -13,10 +13,8 @@ var handle_requests = require("./requests_controller") ;
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   END OF IMPORTS 
 
 
-
 app.use(express.static('./public' )  ) ;
 
 handle_requests(app) ;
-
 
 app.listen(8000) ;

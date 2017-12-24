@@ -1,4 +1,9 @@
 
+module.exports={
+  signInWithEmailAndPassword : signInWithEmailAndPassword , 
+  createUserWithEmailAndPassword : createUserWithEmailAndPassword
+}
+
 
 var firebase = require("firebase");
 
@@ -26,9 +31,9 @@ function setdata()
     city : 'city1' ,
     state : 'state1'
   }) ;
-
-
 }  
+
+
 
 function createUserWithEmailAndPassword(email , password , name )
 {
@@ -40,24 +45,32 @@ function createUserWithEmailAndPassword(email , password , name )
 
 
 
-
-function signInWithEmailAndPassword(email , password)
+function signInWithEmailAndPassword(email , password )
 {
-  auth_prom = firebase.auth().signInWithEmailAndPassword(email , password).catch(
-    (error)=>{
-      console.log(error.message) ; 
-    }
-  )
+  firebase.auth().signInWithEmailAndPassword(email , password ).catch((error)=>console.log(error)) ;
+  
+  firebase.auth().onAuthStateChanged(user=>{
+    console.log("User logged in ") ;
+    console.log(`User Logged in with the following details :
+   
+    Name : ${user.displayName}
+    ID   : ${user.uid }
+    Email : ${user.email} 
+    Email verified    : ${user.emailVerified}
+    Phone : ${user.phoneNumber}
+    provider data : ${JSON.stringify(user.providerData)}
+    provider ID : ${user.providerId}
+
+    `)
+
+  })
+
+}
 
 
-  auth_prom.then((auth)=>console.log(Object.getOwnPropertyNames(auth))) ; 
-
-}  
-
-signInWithEmailAndPassword('nateshmbhat1@gmail.com' , 'password') ;
 
 
+// var user = signInWithEmailAndPassword ('nateshmbhat1@gmail.com' ,  'password') ;
 
 
-
-console.log("End of File ! ") ;
+console.log("End of Firebase_handle File ! ") ;
