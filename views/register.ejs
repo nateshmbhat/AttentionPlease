@@ -915,6 +915,7 @@ var state_to_district = {
                 success: function (response) {
                     console.log("Server sent college list : ") ;
                     console.log(response) ;
+                    $("#select_college").html("") ;
                     response.forEach((ele)=>$("#select_college").append(`<option>${ele}</option>`))
                 }
 
@@ -936,8 +937,6 @@ var state_to_district = {
             //Get the form data as a json object
             data = {} ; 
             $("form").serializeArray().forEach((ele)=>data[ele.name] = ele.value)
-            console.log(data) ;
-
 
             console.log("sending post to /register")
                 $.ajax({
