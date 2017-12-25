@@ -1,4 +1,6 @@
-/// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";
+/// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";
+
+
 
 
 
@@ -12,6 +14,7 @@ var bodyparser = require("body-parser") ;
 var urlencodedParser = bodyparser.urlencoded({extended:false}) ; 
 var firebase  =  require("firebase") ; 
 var firebase_Handler = require("./firebase_handle") ; 
+var fs =  require("fs") ; 
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of IMPORTS 
 
@@ -34,9 +37,20 @@ function Handle_POST(app){
 
 
 
-    app.post("/register/colleges" , urlencodedParser , (req,res)=>{
+    app.post("/getcolleges" , urlencodedParser , (req,res)=>{
+
+        try{
+            //TODO : Read from the json file having all colleges of the district and state received from req.body from client.
+            console.log("Get colleges request from client ") ; 
+            res.send(["college1" , "college2" , "college3" , "college4"]) ;
+        }
+        catch(error){
+
+        }
 
     })
+
+
 
 
     app.post('/register', urlencodedParser  , (req , res)=>{
