@@ -15,6 +15,7 @@ var handle_requests = require("./requests_controller") ;
 
 app.use(express.static('./public' )  ) ;
 
+
 handle_requests(app) ;
 
 app.listen(8000) ;
