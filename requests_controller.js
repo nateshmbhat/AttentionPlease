@@ -11,7 +11,7 @@ var app = require("express")() ;
 var bodyparser = require("body-parser") ; 
 var urlencodedParser = bodyparser.urlencoded({extended:false}) ; 
 var firebase  =  require("firebase") ; 
-var fiebase_Handler = require("./firebase_handle") ; 
+var firebase_Handler = require("./firebase_handle") ; 
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of IMPORTS 
 
@@ -40,36 +40,46 @@ function Handle_POST(app){
 
 
     app.post('/register', urlencodedParser  , (req , res)=>{
+        console.log(req.body) ; 
 
         console.log("started registration handler") ;
 
-        register_promise = firebase.auth().createUserWithEmailAndPassword(req.body.email , req.body.password)
+        firebase.auth().createUserWithEmailAndPassword(req.body.email , req.body.password)
+        .then((user)=>{
+            if(!user){
+                console.log("User object is null . Returning from registration "); 
+                return ;
+            }
+            else{
+                console.log("\nUser created with ID : " + user.uid) ; 
+    
+                //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                // Populate the USERINFO object with the user's details contained in firebase.User and the POST request 
+                userinfo = {} ;
+                userinfo.name = req.body.name ; 
+                userinfo.state = req.body.state ; 
+                userinfo.district = req.body.district ; 
+                userinfo.college = req.body.college ;
+                userinfo.email = user.email ; 
+                userinfo.uid = user.uid ;
+                userinfo.emailverified = user.emailverified ; 
+                userinfo.phoneNumber = user.phoneNumber ; 
+                userinfo.photoURL = user.photoURL ; 
+                userinfo.providerId = user.providerId ;
+                //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    
+                ref_user = firebase.database().ref("/users/"+user.uid) ;
+                ref_user.set(userinfo) ;
+
+            }
+            
+
+        })
+        .catch((error)=>{
+            /// TODO : Send the error alert to the client with the error 
+            console.log(error)
         
-        register_promise.then((user)=>{
-            if(!user){console.log("User object is null . Returning from registration "); return ;}
-            console.log("\nUser created with ID : " + user.uid) ; 
-
-            //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-            // Populate the USERINFO object with the user's details contained in firebase.User and the POST request 
-            userinfo = {} ;
-            userinfo.name = req.body.name ; 
-            userinfo.state = req.body.state ; 
-            userinfo.district = req.body.district ; 
-            userinfo.college = req.body.college ;
-            userinfo.email = user.email ; 
-            userinfo.uid = user.uid ;
-            userinfo.emailverified = user.emailverified ; 
-            userinfo.phoneNumber = user.phoneNumber ; 
-            userinfo.photoURL = user.photoURL ; 
-            userinfo.providerId = user.providerId ;
-            //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-            ref_user = firebase.database().ref("/users/"+user.uid) ;
-            ref_user.set(userinfo) ;
-
-        }) ;
-
-        register_promise.catch((error)=>console.log(error)) ; 
+        }) ; 
 
     })
     
@@ -102,5 +112,9 @@ function Handle_GET(app){
 
     app.get('/login' , (req , res)=>{
         res.render('login.ejs') ;
+    })
+
+    app.get("/messenger" , (req, res)=>{
+        res.render("messenger.ejs");
     })
 }

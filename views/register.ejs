@@ -45,7 +45,7 @@
 
     <h1>Register</h1>
    <div class="container text-center">
-       <form id="form_register" autocomplete="on">
+       <form method="post" id="form_register" autocomplete="on">
             <div class="form-group">
                 <label class="col-4">Name : </label>
                 <input type="text" name="name" pattern="[a-zA-Z\s]+" autocomplete="name" class="col-4" placeholder="Full Name : " required autofocus/>
@@ -63,29 +63,29 @@
 
 
             <div class="form-group">
-                    <label class="col-4" name="state" for="inputState">State : </label>
-                    <select required onselect="state_selection_changed()" class="col-4" id="select_state">
+                    <label class="col-4"  for="inputState">State : </label>
+                    <select name="state" onselect="state_selection_changed()" class="col-4" id="select_state" required>
                       <option id="select_state_choose" selected disabled hidden>Choose...</option>
                     </select>
             </div>
 
             <div class="form-group">
-                <label class="col-4" name="district" for="inputState">District : </label>
-                <select  required class="col-4" id="select_district">
+                <label class="col-4" for="inputState">District : </label>
+                <select  class="col-4" id="select_district" name="district" required>
                   <option id="select_state_choose" >Choose...</option>
                 </select>
             </div>
-
+            
             <div class="form-group ">
                 <label class="col-4" for="college">College : </label>
                 <select class="col-7" id="select_college" name="college"  required>
                     <option selected disabled hidden>Choose ...</option>
-
+                    <option>college1</option>
                 </select>
             </div>
 
 
-
+            <br><br>
             <div class="text-center "></div>
                 <input id="btn_submit" type="submit" class=" btn btn-lg btn-outline-success" title="Submit" />
             </div>                
@@ -900,19 +900,41 @@ var state_to_district = {
             $("#select_district").html("") ;
             state_to_district[state].forEach((ele)=>{
                 $("#select_district").html($("#select_district").html()+`<option>${ele}</option>`)
+
+
+            //Request server to send the college list of particular district
+            $.ajax({
+                type: "post",
+                url: "/getcolleges",
+                data: {state : $("#select_state").val() , district:$("#select_district").val()} , 
+                dataType: "json",
+                success: function (response) {
+                    console.log(response) ;
+                }
+                    });
+            }
+            
+
             })
         })
 
 
         //Handle Submit event of Form
         $("#form_register").bind("submit" , function (event){
+            console.log("running form submit handler") ;
         if($("#select_state").val()=="Choose..." || $("#select_college").val()==null)
             {
                 alert("All fields are mandatory. Make sure that all fields in the form are filled ! ");
-             } 
+            } 
 
         else{
-            //Request server to send the college list of particular district
+            //Get the form data as a json object
+            data = {} ; 
+            $("form").serializeArray().forEach((ele)=>data[ele.name] = ele.value)
+            console.log(data) ;
+
+
+            console.log("sending post to /register")
                 $.ajax({
                 type: "post",
                 url: "/register",

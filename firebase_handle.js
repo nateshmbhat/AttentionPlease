@@ -1,7 +1,6 @@
 
 module.exports={
   signInWithEmailAndPassword : signInWithEmailAndPassword , 
-  createUserWithEmailAndPassword : createUserWithEmailAndPassword
 }
 
 
@@ -32,16 +31,6 @@ function setdata()
     state : 'state1'
   }) ;
 }  
-
-
-
-function createUserWithEmailAndPassword(email , password , name )
-{
-  create_prom = firebase.auth().createUserWithEmailAndPassword(email , password) 
-
-  create_prom.then((user)=>console.log("User Created successfully !")) ; 
-  create_prom.catch((error)=>console.log(error)) ;
-}
 
 
 
