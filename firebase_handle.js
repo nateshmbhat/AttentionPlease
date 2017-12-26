@@ -3,7 +3,6 @@ module.exports={
   signInWithEmailAndPassword : signInWithEmailAndPassword , 
 }
 
-
 var firebase = require("firebase");
 
 var config = {

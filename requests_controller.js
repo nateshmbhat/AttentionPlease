@@ -1,7 +1,4 @@
-/// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";
-
-
-
+/// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";import { json } from "body-parser";
 
 
 
@@ -15,12 +12,13 @@ var urlencodedParser = bodyparser.urlencoded({extended:false}) ;
 var firebase  =  require("firebase") ; 
 var firebase_Handler = require("./firebase_handle") ; 
 var fs =  require("fs") ; 
+var state_dist_colleges = require("./data/state_dist_colleges list (without college details).json") ;
+
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of IMPORTS 
 
 
 app.set('view engine' , 'ejs') ; 
-
 
 
 module.exports = function HandleRequests(app){
@@ -41,15 +39,19 @@ function Handle_POST(app){
 
         try{
             //TODO : Read from the json file having all colleges of the district and state received from req.body from client.
+            
             console.log("Get colleges request from client ") ; 
-            res.send(["college1" , "college2" , "college3" , "college4"]) ;
+
+            collegelist = state_dist_colleges[req.body.state][req.body.district] ;
+
+            res.send(collegelist) ;
+
         }
         catch(error){
 
         }
 
     })
-
 
 
 

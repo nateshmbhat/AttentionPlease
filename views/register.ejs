@@ -854,7 +854,7 @@ var state_to_district = {
 
         
         // RUNS WHEN STATE SELECTION IS CHANGED 
-        $("#select_state").on('change' ,  function state_selection_changed()
+        $("#select_state").on('click' ,  function state_selection_changed()
         {
             state = $("#select_state").val() ; 
 
@@ -865,19 +865,23 @@ var state_to_district = {
             })
             
             //Request server to send the college list of particular district of a state 
-            $.ajax({
-                type: "post",
-                url: "/getcolleges",
-                data: {state : $("#select_state").val() , district:$("#select_district").val()} , 
-                dataType: "json",
-                success: function (response) {
-                    console.log("Server sent college list : ") ;
-                    console.log(response) ;
-                    $("#select_college").html("") ;
-                    response.forEach((ele)=>$("#select_college").append(`<option>${ele}</option>`))
-                }
+            $('#select_district').on('change' , function district_selection_changed(){
+                
+                $.ajax({
+                    type: "post",
+                    url: "/getcolleges",
+                    data: {state : $("#select_state").val() , district:$("#select_district").val()} , 
+                    dataType: "json",
+                    success: function (response) {
+                        console.log("Server sent college list : ") ;
+                        $("#select_college").html("") ;
+                        response.forEach((ele)=>$("#select_college").append(`<option>${ele}</option>`))
+                    }
+            })
 
             });
+
+            $("#select_district").trigger('change') ;
 
         })
 
