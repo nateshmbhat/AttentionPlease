@@ -78,14 +78,15 @@ function Handle_POST(app){
                 userinfo.college = req.body.college ;
                 userinfo.email = user.email ; 
                 userinfo.uid = user.uid ;
-                userinfo.emailverified = user.emailverified ; 
+                userinfo.emailverified = user.emailVerified ; 
                 userinfo.phoneNumber = user.phoneNumber ; 
                 userinfo.photoURL = user.photoURL ; 
                 userinfo.providerId = user.providerId ;
                 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    
+                console.log(userinfo) ;
                 ref_user = firebase.database().ref("/users/"+user.uid) ;
                 ref_user.set(userinfo) ;
+                res.send("You have been registered Successfully ! ") ;
 
             }
             

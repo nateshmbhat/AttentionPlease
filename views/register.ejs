@@ -91,8 +91,8 @@
                 </select>
             </div>
 
-            <div class="animated shake rounded  alert-danger" id="erroralert">
-            </div>
+            <div class="animated shake rounded alert alert-danger " style="display:none;" role="alert" id="erroralert"></div>
+            <div class="animated zoomIn rounded alert alert-success " style="display:none;" role="alert" id="successalert"></div>
 
 
             <br><br>
@@ -917,14 +917,20 @@ var stateslist  = Object.getOwnPropertyNames(state_to_district) ;
             url: "/register",
             data: data , 
             dataType: "json",
-            success: function (response) {
+            success: function (response) { 
                 console.log(response) ;
+                $("#erroralert").hide() ;
+                $("#successalert").html("") ;
+                $("#successalert").html(`<h5 class="animated fadeIn p-3">${jqXHR.responseText}</h5>`);
+                $("#successalert").show() 
             },
 
             error: function(jqXHR,error, errorThrown){
                 console.log(jqXHR.responseText) ; 
+                $("#successalert").hide() ;
                 $("#erroralert").replaceWith($("#erroralert").clone());
                 $("#erroralert").html(`<h5 class="animated fadeIn p-3">${jqXHR.responseText}</h5>`) ;
+                $("#erroralert").show() ;
 
             }
                 });
