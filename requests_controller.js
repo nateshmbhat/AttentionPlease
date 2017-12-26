@@ -33,13 +33,10 @@ module.exports = function HandleRequests(app){
 //Handles all POST requests 
 function Handle_POST(app){
 
-
-
     app.post("/getcolleges" , urlencodedParser , (req,res)=>{
 
         try{
             //TODO : Read from the json file having all colleges of the district and state received from req.body from client.
-            
             console.log("Get colleges request from client ") ; 
 
             collegelist = state_dist_colleges[req.body.state][req.body.district] ;
@@ -48,6 +45,9 @@ function Handle_POST(app){
 
         }
         catch(error){
+
+           res.status(400) ;
+           res.send(error) ;  
 
         }
 
@@ -93,6 +93,8 @@ function Handle_POST(app){
         })
         .catch((error)=>{
             /// TODO : Send the error alert to the client with the error 
+            res.status(400) ; 
+            res.send(error.message) ;   
             console.log(error)
         
         }) ; 
