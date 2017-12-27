@@ -1,8 +1,6 @@
 /// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";import { json } from "body-parser";
 
 
-
-
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS 
 
 
@@ -10,16 +8,15 @@ var app = require("express")() ;
 var bodyparser = require("body-parser") ; 
 var urlencodedParser = bodyparser.urlencoded({extended:false}) ; 
 var firebase  =  require("firebase") ; 
-var firebase_Handler = require("./firebase_handle") ; 
+var admin = require("firebase-admin") ;
 var fs =  require("fs") ; 
-var state_dist_colleges = require("./data/state_dist_colleges list (without college details).json") ;
+var state_dist_colleges = require("../data/state_dist_colleges list (without college details).json") ;
 
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of IMPORTS 
 
 
 app.set('view engine' , 'ejs') ; 
-
 
 module.exports = function HandleRequests(app){
     console.log("Requests Handler running ! ") ;
@@ -50,13 +47,11 @@ function Handle_POST(app){
            res.send(error) ;  
 
         }
-
     })
 
 
     app.post('/register', urlencodedParser  , (req , res)=>{
         console.log(req.body) ; 
-
         console.log("started registration handler") ;
 
         firebase.auth().createUserWithEmailAndPassword(req.body.email , req.body.password)
@@ -90,9 +85,8 @@ function Handle_POST(app){
                 res.send("You have been registered Successfully ! ") ;
 
             }
-            
-
         })
+
         .catch((error)=>{
             /// TODO : Send the error alert to the client with the error 
             res.status(400) ; 
@@ -118,14 +112,14 @@ function Handle_POST(app){
 function Handle_GET(app){
 
     app.get('/' , (req ,res)=>{
-        res.sendFile(__dirname+'/index.html') ;
+        res.redirect('/index.html') ;
     })
 
     app.get('/home' , (req,res)=>{
-        res.sendFile(__dirname+'/index.html') ; 
+        console.log("\n\n"+__dirname+"/index.html\n\n" ) ;
+        res.redirect('/index.html') ; 
     })
     
-
     app.get('/register' , (req , res)=>{
         res.render("register.ejs") ; 
     })
@@ -137,4 +131,5 @@ function Handle_GET(app){
     app.get("/messenger" , (req, res)=>{
         res.render("messenger.ejs");
     })
+
 }
