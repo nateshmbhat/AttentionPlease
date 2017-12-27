@@ -97,7 +97,7 @@
 
             <br><br>
             <div class="text-center "></div>
-                <input id="btn_submit" type="submit" class=" btn btn-lg btn-outline-success" title="Submit" />
+                <input id="btn_submit" type="submit" class=" btn btn-lg btn-success" title="Submit" />
             </div>                
        </form>
    </div>
@@ -901,6 +901,7 @@ var stateslist  = Object.getOwnPropertyNames(state_to_district) ;
     //Handle Submit event of Form
     $("#form_register").bind("submit" , function (event){
         console.log("running form submit handler") ;
+        $("#erroralert").hide() ;
     if($("#select_state").val()=="Choose..." || $("#select_college").val()==null)
         {
             alert("All fields are mandatory. Make sure that all fields in the form are filled ! ");
@@ -916,13 +917,13 @@ var stateslist  = Object.getOwnPropertyNames(state_to_district) ;
             type: "post",
             url: "/register",
             data: data , 
-            dataType: "json",
+            dataType: "text",
             success: function (response) { 
-                console.log(response) ;
+                console.log("sucess" + response) ;
                 $("#erroralert").hide() ;
-                $("#successalert").html("") ;
-                $("#successalert").html(`<h5 class="animated fadeIn p-3">${jqXHR.responseText}</h5>`);
+                $("#successalert").html(`<h5 class="animated fadeIn p-3">${response}</h5>`);
                 $("#successalert").show() 
+                $("btn_submit").fadeOut() ;
             },
 
             error: function(jqXHR,error, errorThrown){

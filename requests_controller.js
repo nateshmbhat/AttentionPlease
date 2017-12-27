@@ -86,6 +86,7 @@ function Handle_POST(app){
                 console.log(userinfo) ;
                 ref_user = firebase.database().ref("/users/"+user.uid) ;
                 ref_user.set(userinfo) ;
+                res.status(200) ; 
                 res.send("You have been registered Successfully ! ") ;
 
             }
