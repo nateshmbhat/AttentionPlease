@@ -54,7 +54,6 @@ function Handle_POST(app){
     })
 
 
-
     app.post('/register', urlencodedParser  , (req , res)=>{
         console.log(req.body) ; 
 
@@ -76,13 +75,14 @@ function Handle_POST(app){
                 userinfo.state = req.body.state ; 
                 userinfo.district = req.body.district ; 
                 userinfo.college = req.body.college ;
-                userinfo.email = user.email ; 
+                userinfo.email = user.email ;
                 userinfo.uid = user.uid ;
-                userinfo.emailverified = user.emailVerified ; 
+                userinfo.emailverified = user.emailVerified ;
                 userinfo.phoneNumber = user.phoneNumber ; 
                 userinfo.photoURL = user.photoURL ; 
                 userinfo.providerId = user.providerId ;
                 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
                 console.log(userinfo) ;
                 ref_user = firebase.database().ref("/users/"+user.uid) ;
                 ref_user.set(userinfo) ;
@@ -98,15 +98,15 @@ function Handle_POST(app){
             res.status(400) ; 
             res.send(error.message) ;   
             console.log(error)
-        
+
         }) ; 
 
     })
     
-
     app.post('/login' , urlencodedParser, (req , res)=>{
+        console.log(req.body) ;
+        res.render('login.ejs'  ) ;
         
-        ;
     })
     
 }
