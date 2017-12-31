@@ -61,6 +61,13 @@ ul#navigation-bar:hover{
         background-color: #4CAF50;
 }
 
+
+h1.pageheading{
+        font-size:500% ;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        text-align: center ; 
+        padding:10px 0 ;
+}
 /* body{
     background:linear-gradient(lightblue , blueviolet) no-repeat fixed ;
     background-attachment: fixed;

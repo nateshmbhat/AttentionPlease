@@ -11,6 +11,7 @@
 
 <body>
    <% include partials/navbar_login.ejs %> 
+   <h1 class="pageheading">Create Topic</h1>
 
    <div class="container">
     <form method="post">
@@ -34,9 +35,25 @@
         <input placeholder="Indian Institute of Technology" class="col-12" id= "select_college" type="text" required list="collegenameslist" name="college">
         <datalist id="collegenameslist"> </datalist>
     </div> 
-    
+   
+    <div class="form-group ">
+        <label class="col-4" >Topic Name : </label>
+        <input required name="topic" type="text" maxlength="15" minlength="2" placeholder="CSE"/> 
+    </div>  
+    <br> 
+
+    <div class="form-group text-center"><button type="submit" class="btn btn-primary ">Create</button></div>
+
     </form>
 
    </div>
+
+
+   <script src="/js/StateDistCollege.js"></script>
+
+   <% include partials/footer.ejs %>
+   <script>$("#div_footer").css('position' , 'fixed') ;</script>
+
+
 </body>
 </html>

@@ -178,6 +178,9 @@ function Handle_POST(app){
 
 //Handles all the GET request routes 
 function Handle_GET(app){
+    app.get('/createtopic' , (req , res)=>{
+        isAuthenticated(req , res).then(res.render('createtopic.ejs')).catch(err=>res.render('login.ejs')) ;
+    })
 
     app.get('/' , (req ,res)=>{
         res.redirect('/index.html') ;
