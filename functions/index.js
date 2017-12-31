@@ -22,6 +22,6 @@ app.use(function(req, res, next){
 });
 
 
-// app.listen(8000) ;
+app.listen(8000) ;
 
 exports.app = functions.https.onRequest(app) ;
