@@ -1,0 +1,71 @@
+<html >
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login</title>
+
+    <% include partials/scripts_and_css.ejs %>
+    <script src="/js/dashboard.js"></script>       
+    <style>
+       
+        h1{
+            font-size:500% ;
+            font-family: georgia, 'times new roman', times, serif;
+            text-align: center ; 
+            padding:10px 0 ;
+        }
+    </style>
+
+    <script src="/dashboard.js"></script>
+</head>
+
+
+<body>
+    <% if(locals.login && login){%>
+    <% include partials/navbar.ejs %>
+    <%}else{%>
+    <%include partials/navbar_login.ejs%>
+    <%} %>
+
+    <h1 class="animated flipInX ">Notify Them </h1>
+    <div class="jumbotron container">
+        <h3 id="collegename"></h3>
+        <div id="location-details">
+        </div>
+        
+        <form>
+            <label style="display:block">Choose to the Topic to which the message needs to be sent : </label>
+            <div class="form-group" id="topicslist">
+                
+            </div>
+            <div class="form-group">
+                <div class="form-group-inline">
+                    <label class="col-1">Title : </label>
+                    <input class="col-6" type="text" maxlength="30" minlength="3" required placeholder="keep it precise :)"/>
+                </div>
+                <br>
+                <label style="display:block;" >Description : </label>          
+                <textarea   placeholder="Eg : All students need to register for the semester before 10th of this month ! " cols="100" rows="4" name="message"></textarea>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-lg">Notify</button>
+            </div>
+        </form>
+
+    </div>
+
+    <script>
+
+        $("#nav_logout").click(()=>{
+            console.log("Nav button clicked  ! ") ;
+            firebase.auth().signOut() ;            
+            unsetcookie() ;
+            window.location = "/home" ;
+        }) ; 
+
+    </script>
+    <br><br><br><br><br>
+    <% include partials/footer.ejs %>
+</body>
+</html>

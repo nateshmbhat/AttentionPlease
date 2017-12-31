@@ -7,20 +7,13 @@
 
 <!-- JQUERY AND BOOTSTRAP --> 
 
-    <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/assets/css/animate.css"></script>
-
-
-
+<% include partials/scripts_and_css.ejs %>
 
         <style>
         body{
-            background:linear-gradient(lightblue , blueviolet) ;
-            background-attachment: fixed;
+            background:linear-gradient(lightblue , blueviolet) no-repeat fixed ;
         }
+
         h1{
             font-size:500% ;
             font-family: Georgia, 'Times New Roman', Times, serif;
@@ -37,10 +30,14 @@
 </head>
 
 
+
 <body>
+
+<% include partials/navbar.ejs %>
+
     <h1>Login</h1>
    <div class="container text-center">
-       <form action="/login" method="post" autocomplete="on">
+       <form method="post"  autocomplete="on">
                
                 <div class="form-group">
                     <label class="col-4">Email : </label>
@@ -55,8 +52,13 @@
             <div id="erroralert" style="display:none;" class="animated shake alert alert-danger">
             </div>
 
-            <div class="text-center "></div>
-                <input type="submit"  class=" btn btn-lg btn-success"  title="Login" />
+            <!-- HANDLE POST SUBMIT CLICK RESPONSES -->
+            <div class="animated shake rounded alert alert-danger " style="display:none;" role="alert" id="erroralert"></div>
+            <div class="animated bounceIn rounded alert alert-success " style="display:none;" role="alert" id="successalert"></div>
+
+
+            <div class="text-center ">
+                <input type="submit" id="btn_submit"  class=" btn btn-lg btn-success"   title="Login" />
             </div>
 
             <br><br>
@@ -65,6 +67,7 @@
 
         </form>
 
+
         <div class="text-center">
             <a href="/register" class="font-bold" style="color:black">New User ? Register here</a>
             <br>
@@ -72,6 +75,71 @@
         </div>
 
     </div>
+
+ <% include partials/footer.ejs %>
     
+<script>
+
+$("#div_footer").css('position' , 'absolute') ;
+
+    //Init Firebase
+var config = {
+    apiKey: "AIzaSyDSK-K_Bl_Ss07Be-MUq9IV1TiKyvA9atw",
+    authDomain: "attention-please-21fbf.firebaseapp.com",
+    databaseURL: "https://attention-please-21fbf.firebaseio.com",
+    projectId: "attention-please-21fbf",
+    storageBucket: "attention-please-21fbf.appspot.com",
+    messagingSenderId: "535547474277"
+  };
+
+    firebase.initializeApp(config);
+
+    const setcookie=(callback )=>firebase.auth().currentUser && firebase.auth().currentUser.getIdToken().then(token=>{
+        console.log(token) ; 
+        
+        Cookies.set('firebase-token' , token , {
+            domain : window.location.hostname , 
+            expire : 1/ 24  , 
+            path : '/' , 
+            secure : true  
+        })
+        callback() ;
+    })
+
+
+
+    //SUBMIT HANDLER
+    $("form").bind("submit" , function(event){
+        console.log("running submit handler ! ") ;
+        formdata = {} ; 
+        $("form").serializeArray().forEach(ele=>formdata[ele.name]=ele.value) ; 
+
+        firebase.auth().signInWithEmailAndPassword(formdata.email , formdata.password).catch(error=>{
+            $("#erroralert").replaceWith($("#erroralert").clone());
+            $("#erroralert").html(`<h5 class="animated  p-2">${error.message}</h5>`) ;
+            $("#erroralert").fadeIn() ;
+        })
+
+        firebase.auth().onAuthStateChanged(user=>{
+            console.log("running auth state changed ! ") ;
+
+            if(!user) {
+                console.log("User logged out !") ; 
+                return ; 
+            }   
+
+            //user is logged in 
+            setcookie(()=>{
+                setInterval(setcookie , 3500) ;
+                window.location = "/dashboard"  ;
+            })
+
+            })
+    event.preventDefault() ;
+    })
+
+
+    
+</script>
 </body>
 </html>

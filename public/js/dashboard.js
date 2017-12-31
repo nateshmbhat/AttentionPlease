@@ -1,0 +1,62 @@
+
+/// <reference path="../../functions/node_modules/@types/jquery/index.d.ts"
+
+// var firebase = require("firebase") ; 
+var config = {
+    apiKey: "AIzaSyDSK-K_Bl_Ss07Be-MUq9IV1TiKyvA9atw",
+    authDomain: "attention-please-21fbf.firebaseapp.com",
+    databaseURL: "https://attention-please-21fbf.firebaseio.com",
+    projectId: "attention-please-21fbf",
+    storageBucket: "attention-please-21fbf.appspot.com",
+    messagingSenderId: "535547474277"
+  };
+  firebase.initializeApp(config);
+
+
+  const unsetcookie = ()=>Cookies.remove('firebase-token' , {
+    domain : window.location.hostname , 
+    path : '/'
+})  
+  
+firebase.auth().onAuthStateChanged(function(user){
+
+if(user){
+    var ref = firebase.database().ref("/users/"+user.uid) ;
+    
+    var userinfo = {}  ;
+    ref.once('value').then(snap=>{
+        console.log(snap.val()) ;
+        data = snap.val() 
+        userinfo.college  = data.college ; 
+        userinfo.state    = data.state  ; 
+        userinfo.district = data.district ; 
+        userinfo.ccode = data.ccode ; 
+        
+        $("#collegename").html(`${userinfo.college}`)
+        $("#location-details").html(`
+        <p>State    : ${userinfo.state}</p>
+        <p>District : ${userinfo.district} </p>
+        `)
+        
+        firebase.database().ref('/colleges/'+userinfo.ccode).once('value').then(snap=>{
+            console.log(snap.val()) ;
+            topicslist = snap.val().topics
+            
+            topicslist.forEach(topic=>{
+               $("#topicslist").append( 
+               `    <div class="radio">
+                        <label><input class="m-1" type="radio" name="optradio">${topic}</label>
+                    </div>
+               `);
+            })
+        }).catch(error =>console.log(error)) ; 
+    })
+    
+}
+
+else {
+    console.log("No user is signed in !") ;
+    unsetcookie() ;
+}
+
+})

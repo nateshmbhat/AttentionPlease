@@ -1,13 +1,16 @@
 /// <reference path=".\node_modules\@types\express\index.d.ts" />
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS 
+
 const functions = require('firebase-functions');
 const app = require("express")() ; 
 const  express = require("express") ;
 const handle_requests = require("./requests_controller") ;
+const cookieparser = require("cookie-parser") ; 
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   END OF IMPORTS 
 
+app.use(cookieparser()) ; 
 app.use(express.static('../public' )  ) ;
 
 handle_requests(app) ;
