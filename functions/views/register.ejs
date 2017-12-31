@@ -93,6 +93,15 @@
                 <datalist id="collegenameslist"> </datalist>
             </div>
 
+            <div class="form-group ">
+                <label class="col-4" for="year">Year of Study : </label>
+                <select class="col-1" name="year"  type="text" required >
+                    <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+                </select>
+            </div>
+
+            
+
 
             <% if(locals.error) {%>
                 <div class="animated shake rounded alert alert-danger "  role="alert" id="erroralert"><%=error%></div>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Create topics</title>
+    <% include partials/scripts_and_css.ejs %>
+</head>
+
+
+<body>
+   <% include partials/navbar_login.ejs %> 
+
+   <div class="container">
+    <form method="post">
+
+    <div class="form-group">
+        <label class="col-4" for="inputState">State : </label>
+        <select name="state" onselect="state_selection_changed()" class="col-4" id="select_state" required>
+            <option id="select_state_choose" selected disabled hidden>Choose...</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label class="col-4" for="inputState">District : </label>
+        <select class="col-4" id="select_district" name="district" required>
+            <option id="select_state_choose">Choose...</option>
+        </select>
+    </div>
+
+    <div class="form-group ">
+        <label class="col-4" for="college">College : </label>
+        <input placeholder="Indian Institute of Technology" class="col-12" id= "select_college" type="text" required list="collegenameslist" name="college">
+        <datalist id="collegenameslist"> </datalist>
+    </div> 
+    
+    </form>
+
+   </div>
+</body>
+</html>

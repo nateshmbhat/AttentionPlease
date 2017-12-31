@@ -13,11 +13,11 @@ var firebase_client = require("firebase")  ;
 var fs =  require("fs") ; 
 var state_dist_colleges = require("./data/state_dist_colleges list (without college details).json") ;
 var state_dist_collegewithCODE = require("./data/state_dist_collegeWITHCODE.json") ;
-var serviceAccount = require("C:/Users/Natesh/Documents/Attention Please-42b163f729f1(admin Server key).json");
+var serviceAccount = require("C:/users/Natesh/Documents/SitNotifier-58d428aba57b.json") ; 
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://attention-please-21fbf.firebaseio.com"
+  databaseURL: "https://sitnotifier.firebaseio.com/"
 });
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of IMPORTS 
@@ -131,6 +131,7 @@ function Handle_POST(app){
                     password : req.body.password , 
                     district : req.body.district , 
                     college : req.body.college ,
+                    year : req.body.year
                 } ;
                 //Set the collegeID for the user object corresponding to the selected college name 
 

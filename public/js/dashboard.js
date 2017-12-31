@@ -2,15 +2,6 @@
 /// <reference path="../../functions/node_modules/@types/jquery/index.d.ts"
 
 // var firebase = require("firebase") ; 
-var config = {
-    apiKey: "AIzaSyDSK-K_Bl_Ss07Be-MUq9IV1TiKyvA9atw",
-    authDomain: "attention-please-21fbf.firebaseapp.com",
-    databaseURL: "https://attention-please-21fbf.firebaseio.com",
-    projectId: "attention-please-21fbf",
-    storageBucket: "attention-please-21fbf.appspot.com",
-    messagingSenderId: "535547474277"
-  };
-  firebase.initializeApp(config);
 
 
   const unsetcookie = ()=>Cookies.remove('firebase-token' , {

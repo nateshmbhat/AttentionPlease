@@ -82,18 +82,6 @@
 
 $("#div_footer").css('position' , 'absolute') ;
 
-    //Init Firebase
-var config = {
-    apiKey: "AIzaSyDSK-K_Bl_Ss07Be-MUq9IV1TiKyvA9atw",
-    authDomain: "attention-please-21fbf.firebaseapp.com",
-    databaseURL: "https://attention-please-21fbf.firebaseio.com",
-    projectId: "attention-please-21fbf",
-    storageBucket: "attention-please-21fbf.appspot.com",
-    messagingSenderId: "535547474277"
-  };
-
-    firebase.initializeApp(config);
-
     const setcookie=(callback )=>firebase.auth().currentUser && firebase.auth().currentUser.getIdToken().then(token=>{
         console.log(token) ; 
         
@@ -101,8 +89,9 @@ var config = {
             domain : window.location.hostname , 
             expire : 1/ 24  , 
             path : '/' , 
-            secure : true  
+            secure : false 
         })
+        console.log("cookie set ! ") ;
         callback() ;
     })
 
@@ -114,27 +103,30 @@ var config = {
         formdata = {} ; 
         $("form").serializeArray().forEach(ele=>formdata[ele.name]=ele.value) ; 
 
-        firebase.auth().signInWithEmailAndPassword(formdata.email , formdata.password).catch(error=>{
+        firebase.auth().signInWithEmailAndPassword(formdata.email , formdata.password)
+        .then(user=>{
+            firebase.auth().onAuthStateChanged(user=>{
+                console.log("running auth state changed ! ") ;
+
+                if(!user) {
+                    console.log("User logged out !") ; 
+                    return ; 
+                }   
+
+                //user is logged in 
+                setcookie(()=>{
+                    setInterval(setcookie , 3500) ;
+                    window.location = "/dashboard"  ;
+                })
+
+                })
+        })        
+        .catch(error=>{
             $("#erroralert").replaceWith($("#erroralert").clone());
             $("#erroralert").html(`<h5 class="animated  p-2">${error.message}</h5>`) ;
             $("#erroralert").fadeIn() ;
         })
 
-        firebase.auth().onAuthStateChanged(user=>{
-            console.log("running auth state changed ! ") ;
-
-            if(!user) {
-                console.log("User logged out !") ; 
-                return ; 
-            }   
-
-            //user is logged in 
-            setcookie(()=>{
-                setInterval(setcookie , 3500) ;
-                window.location = "/dashboard"  ;
-            })
-
-            })
     event.preventDefault() ;
     })
 

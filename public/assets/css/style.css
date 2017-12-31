@@ -61,10 +61,10 @@ ul#navigation-bar:hover{
         background-color: #4CAF50;
 }
 
-body{
+/* body{
     background:linear-gradient(lightblue , blueviolet) no-repeat fixed ;
     background-attachment: fixed;
     background-size:cover ;
     -moz-background-cover : cover ; 
     -webkit-background-size : cover ; 
-}
+} */
