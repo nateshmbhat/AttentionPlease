@@ -1,4 +1,10 @@
-/// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";import { json } from "body-parser";import { request } from "https";import { config } from "firebase-functions";import { decode } from "punycode";import { firebase } from "@firebase/app";import { decode } from "punycode";
+/// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";import { json } from "body-parser";import { request } from "https";import { config } from "firebase-functions";import { decode } from "punycode";import { firebase } from "@firebase/app";import { decode } from "punycode";import { urlencoded } from "body-parser";import { isValidFormat } from "@firebase/util";import { firebase } from "@firebase/app";
+
+
+
+
+
+
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS 
@@ -19,6 +25,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://sitnotifier.firebaseio.com/"
 });
+
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of IMPORTS 
 
@@ -64,10 +71,24 @@ function isAuthenticated(req , res)
 }
 
 
+function validatePostBody(req , res , keys ){
+    
+    for(key in keys){ 
+        if(!(key in req.body))
+        {
+            console.log("invalid post request returning ! ") ; 
+            return false ; 
+        }
+    }
+    return true ; 
+}
+
+
 //Handles all POST requests 
 function Handle_POST(app){
 
     app.post("/getcolleges" , urlencodedParser , (req,res)=>{
+       if(!validatePostBody(req , res , ['state' , 'district'])) return ;
 
         try{
             console.log("Got college request !") ;
@@ -85,6 +106,8 @@ function Handle_POST(app){
 
     app.post('/register', urlencodedParser  , (req , res)=>{
         flag_valid = 0 ; 
+        if(!validatePostBody(req , res , ['state' , 'district' , 'college' , 'email' , 'password' , 'name' , 'year' , 'phone'])) return ;
+
         if(Object.getOwnPropertyNames(state_dist_colleges).indexOf(req.body.state)>=0){
             if(Object.getOwnPropertyNames(state_dist_colleges[req.body.state]).indexOf(req.body.district)>=0)
             {
@@ -164,13 +187,30 @@ function Handle_POST(app){
 
 
 
-    app.post('/login' , urlencodedParser, (req , res)=>{
+    app.post('/createtopic' , urlencodedParser , (req, res)=>{
         console.log(req.body) ;
-        console.log(req.cookies) ;
 
-       
+        isAuthenticated(req,res)
+        .then(user=>{
+            if(!validatePostBody(req , res ,['topic'])) return ;            
+
+            admin.database().ref('/users/'+user.uid).once('value',snap=>{
+                userinfo = snap.val() ; 
+                let ref = admin.database().ref('/Colleges/' + userinfo.ccode + '/topics') ;
+                ref.once('value' , snap=>{
+                    console.log(snap.val()) ;
+                    arr = snap.val()  ;
+                    if(!arr) ref.set([req.body.topic]);
+                    else
+                        ref.set(arr.append(request.body.topic)) ;
+                })
+
+            })
+
+        })
+        .catch(err=>{console.log(err) ;res.render('login.ejs')}) ;
     })
-    
+   
 }
 
 
@@ -179,7 +219,7 @@ function Handle_POST(app){
 //Handles all the GET request routes 
 function Handle_GET(app){
     app.get('/createtopic' , (req , res)=>{
-        isAuthenticated(req , res).then(res.render('createtopic.ejs')).catch(err=>res.render('login.ejs')) ;
+        isAuthenticated(req , res).then(uid=>res.render('createtopic.ejs')).catch(err=>res.render('login.ejs')) ;
     })
 
     app.get('/' , (req ,res)=>{
@@ -193,7 +233,6 @@ function Handle_GET(app){
     app.get('/register' , (req , res)=>{
         res.render("register.ejs" ) ; 
     })
-
 
     app.get('/login' , (req , res)=>{
 

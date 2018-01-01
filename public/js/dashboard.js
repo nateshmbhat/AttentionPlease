@@ -29,7 +29,7 @@ if(user){
         <p>District : ${userinfo.district} </p>
         `)
         
-        firebase.database().ref('/colleges/'+userinfo.ccode).once('value').then(snap=>{
+        firebase.database().ref('/Colleges/'+userinfo.ccode).once('value').then(snap=>{
             console.log(snap.val()) ;
             topicslist = snap.val().topics
             
