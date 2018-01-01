@@ -50,8 +50,7 @@ function isAuthenticated(req , res)
     {
         admin.auth().verifyIdToken(req.cookies['firebase-token']).then(decodedtoken=>{
             if(decodedtoken.uid){
-                console.log(decodedtoken.sub) ;
-                console.log("User is signed in :) ")  ;
+                console.log("User is signed in :  " , decodedtoken.uid)  ;
                 resolve(decodedtoken.uid) ;
             }
             // TODO ROUTE User with the required user details on the page 
@@ -72,9 +71,8 @@ function isAuthenticated(req , res)
 
 
 function validatePostBody(req , res , keys ){
-    
-    for(key in keys){ 
-        if(!(key in req.body))
+    for(i in keys){
+        if(!(keys[i] in req.body))
         {
             console.log("invalid post request returning ! ") ; 
             return false ; 
@@ -155,7 +153,7 @@ function Handle_POST(app){
                     district : req.body.district , 
                     college : req.body.college ,
                     year : req.body.year
-                } ;
+                };
                 //Set the collegeID for the user object corresponding to the selected college name 
 
                 let myarr = state_dist_collegewithCODE[userinfo.state][userinfo.district]
@@ -191,18 +189,33 @@ function Handle_POST(app){
         console.log(req.body) ;
 
         isAuthenticated(req,res)
-        .then(user=>{
+        .then(uid=>{
             if(!validatePostBody(req , res ,['topic'])) return ;            
 
-            admin.database().ref('/users/'+user.uid).once('value',snap=>{
+            console.log("user id is " , uid) ;
+            admin.database().ref('/users/'+uid).once('value',snap=>{
+                
                 userinfo = snap.val() ; 
                 let ref = admin.database().ref('/Colleges/' + userinfo.ccode + '/topics') ;
+
                 ref.once('value' , snap=>{
-                    console.log(snap.val()) ;
+                    
                     arr = snap.val()  ;
                     if(!arr) ref.set([req.body.topic]);
                     else
-                        ref.set(arr.append(request.body.topic)) ;
+                    {
+                        if(arr.indexOf(req.body.topic)<0) //Insert only if topic doesnt already exists !
+                        {
+                            arr.push(req.body.topic)
+                            ref.set(arr) ;
+                        }
+                        else{
+                            //Topic already exists
+                            res.render('createtopic.ejs' , {topicexists : true})
+                            return ;
+                        }
+                    }
+                    res.render('createtopic.ejs' , {success : true}) ;
                 })
 
             })
