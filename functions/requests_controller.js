@@ -1,4 +1,12 @@
-/// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";import { json } from "body-parser";import { request } from "https";import { config } from "firebase-functions";import { decode } from "punycode";import { firebase } from "@firebase/app";import { decode } from "punycode";import { urlencoded } from "body-parser";import { isValidFormat } from "@firebase/util";import { firebase } from "@firebase/app";
+/// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";import { json } from "body-parser";import { request } from "https";import { config } from "firebase-functions";import { decode } from "punycode";import { firebase } from "@firebase/app";import { decode } from "punycode";import { urlencoded } from "body-parser";import { isValidFormat } from "@firebase/util";import { firebase } from "@firebase/app";import { database } from "firebase-admin";import { database } from "firebase-admin";import { firebase } from "@firebase/app";import { firebase } from "@firebase/app";
+
+
+
+
+
+
+
+
 
 
 
@@ -80,6 +88,34 @@ function validatePostBody(req , res , keys ){
 //Handles all POST requests 
 function Handle_POST(app){
 
+    app.post("/sendnotification" , urlencodedParser , (req , res)=>{
+        isAuthenticated(req , res)
+        .then(uid=>{
+        if(!validatePostBody(req , res , ['topic' , 'title' ,'description'])) return ;
+
+        admin.database().ref('/users/'+uid).once('value' , userinfo=>{
+            
+            const msg = admin.messaging() ; 
+            payload = {
+                notification : {
+                    title : req.body.title , 
+                    body : req.body.description
+                } , 
+                data : {
+                    college : userinfo.college , 
+                    state : userinfo.state , 
+                    district : userinfo.district
+                }
+            }
+            msg.sendToTopic(req.body.topic , payload) ; 
+            console.log("Notification sent succefully to topic : " , req.body.topic , " with title : " , req.body.title)
+        })
+
+        })
+        .catch(err=>{res.render('login.ejs' , {error : err}); return true; })
+        
+    })
+
     app.post("/getcolleges" , urlencodedParser , (req,res)=>{
        if(!validatePostBody(req , res , ['state' , 'district'])) return ;
 
@@ -98,7 +134,7 @@ function Handle_POST(app){
 
 
     app.post('/register', urlencodedParser  , (req , res)=>{
-        flag_valid = 0 ; 
+        flag_valid = 0 ;
         if(!validatePostBody(req , res , ['state' , 'district' , 'college' , 'email' , 'password' , 'name' , 'year' , 'phone'])) return ;
 
         if(Object.getOwnPropertyNames(state_dist_colleges).indexOf(req.body.state)>=0){

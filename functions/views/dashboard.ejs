@@ -35,7 +35,7 @@
         <div id="location-details">
         </div>
         
-        <form>
+        <form method="post" action="/sendnotification">
             <label style="display:block">Choose to the Topic to which the message needs to be sent : </label>
             <div class="form-group" id="topicslist">
                 
@@ -43,11 +43,11 @@
             <div class="form-group">
                 <div class="form-group-inline">
                     <label class="col-1">Title : </label>
-                    <input class="col-6" type="text" maxlength="30" minlength="3" required placeholder="keep it precise :)"/>
+                    <input class="col-6" type="text" maxlength="30" minlength="3" name="title" required placeholder="keep it precise :)"/>
                 </div>
                 <br>
                 <label style="display:block;" >Description : </label>          
-                <textarea   placeholder="Eg : All students need to register for the semester before 10th of this month ! " cols="100" rows="4" name="message"></textarea>
+                <textarea name="description"  placeholder="Eg : All students need to register for the semester before 10th of this month ! " cols="100" rows="4" name="message"></textarea>
             </div>
 
             <div class="form-group">
