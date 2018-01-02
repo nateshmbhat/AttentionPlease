@@ -1,9 +1,9 @@
 var config = {
-  apiKey: "AIzaSyCAuZxyxzMVqARr89FHT5-At2t8-JHhjf4",
-  authDomain: "sitnotifier.firebaseapp.com",
-  databaseURL: "https://sitnotifier.firebaseio.com",
-  projectId: "sitnotifier",
-  storageBucket: "sitnotifier.appspot.com",
-  messagingSenderId: "697438424634"
+  apiKey: "AIzaSyB_iPXI3CYvi5FKKYm_51_ja9QFjFxwa4Y",
+  authDomain: "attentionplease-24589.firebaseapp.com",
+  databaseURL: "https://attentionplease-24589.firebaseio.com",
+  projectId: "attentionplease-24589",
+  storageBucket: "attentionplease-24589.appspot.com",
+  messagingSenderId: "738569079406"
 };
-  firebase.initializeApp(config);
+firebase.initializeApp(config);
