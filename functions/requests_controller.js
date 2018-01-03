@@ -1,15 +1,6 @@
 /// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";import { json } from "body-parser";import { request } from "https";import { config } from "firebase-functions";import { decode } from "punycode";import { firebase } from "@firebase/app";import { decode } from "punycode";import { urlencoded } from "body-parser";import { isValidFormat } from "@firebase/util";import { firebase } from "@firebase/app";import { database } from "firebase-admin";import { database } from "firebase-admin";import { firebase } from "@firebase/app";import { firebase } from "@firebase/app";
 
 
-
-
-
-
-
-
-
-
-
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS 
 
 
@@ -89,6 +80,7 @@ function validatePostBody(req , res , keys ){
 function Handle_POST(app){
 
     app.post("/sendnotification" , urlencodedParser , (req , res)=>{
+        console.log("req body  : "  ,res.body) ; 
         isAuthenticated(req , res)
         .then(uid=>{
         if(!validatePostBody(req , res , ['topic' , 'title' ,'description'])) return ;

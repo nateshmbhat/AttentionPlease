@@ -34,9 +34,9 @@ if(user){
             topicslist = snap.val().topics
             
             topicslist.forEach(topic=>{
-               $("#topicslist").append( 
+               $("#topicslist").append(
                `    <div class="radio">
-                        <label><input class="m-1" type="radio" name="topic">${topic}</label>
+                        <label><input value=${topic} class="m-1" type="radio" name="topic">${topic}</input></label>
                     </div>
                `);
             })
