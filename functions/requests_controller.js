@@ -80,12 +80,12 @@ function validatePostBody(req , res , keys ){
 function Handle_POST(app){
 
     app.post("/sendnotification" , urlencodedParser , (req , res)=>{
-        console.log("req body  : "  ,res.body) ; 
         isAuthenticated(req , res)
         .then(uid=>{
         if(!validatePostBody(req , res , ['topic' , 'title' ,'description'])) return ;
 
-        admin.database().ref('/users/'+uid).once('value' , userinfo=>{
+        admin.database().ref('/users/'+uid).once('value' , snap=>{
+            userinfo = snap.val() ;
             
             const msg = admin.messaging() ; 
             payload = {
@@ -93,14 +93,17 @@ function Handle_POST(app){
                     title : req.body.title , 
                     body : req.body.description
                 } , 
+
                 data : {
                     college : userinfo.college , 
                     state : userinfo.state , 
                     district : userinfo.district
                 }
             }
-            msg.sendToTopic(req.body.topic , payload) ; 
-            console.log("Notification sent succefully to topic : " , req.body.topic , " with title : " , req.body.title)
+            msg.sendToTopic(req.body.topic , payload) 
+            .then(msg=>console.log(msg))
+            .catch(err=>console.log(err)) ;
+            console.log("Notification sent succefully to topic : " , req.body.topic , " with title : " , req.body.title) ;
         })
 
         })
