@@ -97,9 +97,16 @@ function Handle_POST(app){
                 data : {
                     college : userinfo.college , 
                     state : userinfo.state , 
-                    district : userinfo.district
-                }
+                    district : userinfo.district , 
+                    detail_desc : "",
+                    links : "" , 
+                    one_line_desc : "" ,
+                    title : req.body.title , 
+                    topics : req.body.topic
+                } , 
+                time_to_live : 100
             }
+
             msg.sendToTopic(req.body.topic , payload) 
             .then(msg=>console.log(msg))
             .catch(err=>console.log(err)) ;
@@ -199,6 +206,7 @@ function Handle_POST(app){
                 res.render('register.ejs', {success: 'You have been registered successfully. Please proceed with Login :) '})
 
         })
+
 
         .catch((error)=>{
             /// TODO : Send the error alert to the client with the error 
