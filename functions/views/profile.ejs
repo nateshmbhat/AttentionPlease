@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Profile</title>
+    <% include partials/scripts_and_css.ejs %>
+
+    <style>
+    
+    div #topics_subscribed li{
+        font-size:1.3em;
+        color:black;
+        padding-left:1.5em;
+        text-decoration:bold ;
+    }
+    
+    </style>
+</head>
+<body>
+    <% include partials/navbar_login.ejs %>
+    <div class="container">
+    <form >
+        <dl class="form-group">
+            <dt><label for="user_profile_name">Name</label></dt>
+            <dd><input class="form-control" required  id="name" name="name" size="30" type="text" /></dd>
+        </dl>
+        <dl class="form-group">
+            <dt><label for="user_profile_email">Email</label></dt>
+            <dd>
+                <input class="form-control" id="email" name="email" type="email" required>                   
+            </dd>
+        </dl>
+        <dl class="form-group">
+            <dt><label for="user_profile_bio">Bio</label></dt>
+            <dd class=" ">
+                <textarea class="form-control " cols="40" data-input-max-length="160" data-warning-text="Max length limit approaching" id="biodata" name="biodata" placeholder="Tell us a little bit about yourself" rows="5">
+                </textarea>
+                
+                <div class="suggester-container">
+                    <div class="suggester js-suggester js-navigation-container"
+                    data-url="/autocomplete/user-suggestions">
+                </div>
+            </dd>
+        </dl>
+    
+        <dl>
+            <dt>Topics Subscribed</dt>
+            <dd>
+            <div class="list-group" id="topics_subscribed">
+            </div>
+            </dd>
+        </dl>
+    
+    
+    <dl class="form-group">
+        <dt><label for="user_profile_location">Location</label></dt>
+        <dd>
+            <div class="form-group">
+                <label class="col-4" for="inputState">State : </label>
+                <select name="state" onselect="state_selection_changed()" class="col-4" id="select_state" required>
+                    <option id="select_state_choose" selected disabled hidden>Choose...</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="col-4" for="inputState">District : </label>
+                <select class="col-4" id="select_district" name="district" required>
+                    <option id="select_state_choose">Choose...</option>
+                </select>
+            </div>
+            
+            <div class="form-group ">
+                <label class="col-4" for="college">College : </label>
+                <input placeholder="Indian Institute of Technology" class="col-12" id= "select_college" type="text" required list="collegenameslist" name="college">
+                <datalist id="collegenameslist"> </datalist>
+            </div>
+
+        </dd>
+    </dl>
+        <p><button type="submit" class="btn btn-primary">Update profile</button></p>
+    </div>
+    </form>
+ 
+<script src="/js/StateDistCollege.js"></script>
+<script>
+let user_global ; 
+form = {} ;
+$('form').serializeArray().forEach(ele=>{
+    form[ele.name] = ele.value ;
+})
+$('textarea').html("") ;
+
+
+
+//Set the form element values 
+user_global = firebase.auth().currentUser ; 
+
+if(!user_global)
+{
+    firebase.auth().onAuthStateChanged(user=>{
+        user_global = user ;
+        ref = firebase.database().ref('/users/' + user_global.uid) ; 
+        ref.once('value', snap=>{
+            userinfo = snap.val() ;
+            
+            Object.keys(userinfo).forEach(key => {
+        $(`input[name="${key}"]`).val(userinfo[key]);
+            })
+    
+    
+        if(userinfo.topics)
+        {
+            userinfo.topics.forEach(ele=>{
+                $("#topics_subscribed").append(`<li class="list-group-item col-4">${ele} &nbsp;<i style="color:red;font-size:.7em;" class="removeitem fa fa-times"/></li>`) ;
+            })
+
+            $(document).on('click', '.removeitem', function () {
+                console.log('running') ;
+                $(this).parent().remove();
+            });
+        }
+
+
+    })
+    })
+}
+
+
+
+//Update the user data in the firebase database on submit ! 
+$('form').on('submit' , (event)=>{
+    auth = firebase.auth() ;
+
+    auth.onAuthStateChanged(user=>{
+        if(!user) return ; 
+        else{
+            ref = firebase.database().ref('/users' + user.uid) ;
+            ref.once('value' , snap=>{
+                ref.set(form) ;
+            })
+        } 
+    })
+    event.preventDefault() ; 
+})
+
+
+</script>
+</div>
+<% include partials/footer.ejs %>
+</body>
+</html>

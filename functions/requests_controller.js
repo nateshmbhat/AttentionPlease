@@ -254,11 +254,14 @@ function Handle_POST(app){
 
 
 
-
 //Handles all the GET request routes 
 function Handle_GET(app){
     app.get('/createtopic' , (req , res)=>{
         isAuthenticated(req , res).then(uid=>res.render('createtopic.ejs')).catch(err=>res.render('login.ejs')) ;
+    })
+
+    app.get('/profile' , (req , res)=>{
+        isAuthenticated(req , res).then(uid=>{res.render('profile.ejs') ; }).catch(err=>res.render('login.ejs')) ;
     })
 
     app.get('/' , (req ,res)=>{

@@ -1,5 +1,6 @@
 //THis is a reusable common js module using which we can implement the selection of state , district and college options .
 
+console.log("State Dist college js started ! ") ;
 var state_to_district = {
     "Andaman and Nicobar Islands": [
         "South Andamans",
