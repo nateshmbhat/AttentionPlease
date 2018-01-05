@@ -113,7 +113,7 @@ if(!user_global)
         if(userinfo.topics)
         {
             userinfo.topics.forEach(ele=>{
-                $("#topics_subscribed").append(`<li class="list-group-item col-4">${ele} &nbsp;<i style="color:red;font-size:.7em;" class="removeitem fa fa-times"/></li>`) ;
+                $("#topics_subscribed").append(`<li class="list-group-item col-4">${ele}<i style="margin-left :10px ; color:red;font-size:.7em;" class="removeitem fa fa-times"/></li>`) ;
             })
 
             $(document).on('click', '.removeitem', function () {

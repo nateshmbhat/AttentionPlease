@@ -103,11 +103,14 @@ function Handle_POST(app){
                     one_line_desc : "" ,
                     title : req.body.title , 
                     topics : req.body.topic
-                } , 
-                time_to_live : 100
+                }
+            }
+            options = {
+                priority : 'high' , 
+                timeToLive : 10
             }
 
-            msg.sendToTopic(req.body.topic , payload) 
+            msg.sendToTopic(req.body.topic , payload , options) 
             .then(msg=>console.log(msg))
             .catch(err=>console.log(err)) ;
             console.log("Notification sent succefully to topic : " , req.body.topic , " with title : " , req.body.title) ;
