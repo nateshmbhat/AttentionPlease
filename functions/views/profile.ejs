@@ -21,6 +21,7 @@
 <body>
     <% include partials/navbar_login.ejs %>
     <div class="container">
+    <h1>My Profile</h1>
     <form >
         <dl class="form-group">
             <dt><label for="user_profile_name">Name</label></dt>
@@ -85,64 +86,103 @@
  
 <script src="/js/StateDistCollege.js"></script>
 <script>
+
 let user_global ; 
-form = {} ;
-$('form').serializeArray().forEach(ele=>{
-    form[ele.name] = ele.value ;
-})
-$('textarea').html("") ;
+
+function getformdata(){
+    form = {} ;
+    $('form').serializeArray().forEach(ele=>{
+        form[ele.name] = ele.value ;
+    })
+    $('textarea').html("") ;
+    return form ; 
+}
+
+
+
+function init_user(){
+    return new Promise((resolve , reject)=>{
+        user_global = firebase.auth().currentUser ; 
+        if(!user_global){
+            firebase.auth().onAuthStateChanged(user=>{
+                if(user)
+                    resolve(user_global = user) ; 
+                else
+                    window.location = '/login' ; 
+            });
+        }
+        else resolve(user_global) ; 
+
+    }) ;
+}
 
 
 
 //Set the form element values 
-user_global = firebase.auth().currentUser ; 
+init_user()
+.then(user=>{
 
-if(!user_global)
-{
-    firebase.auth().onAuthStateChanged(user=>{
-        user_global = user ;
-        ref = firebase.database().ref('/users/' + user_global.uid) ; 
-        ref.once('value', snap=>{
-            userinfo = snap.val() ;
-            
-            Object.keys(userinfo).forEach(key => {
-        $(`input[name="${key}"]`).val(userinfo[key]);
-            })
-    
-    
+    ref = firebase.database().ref('/users/' + user_global.uid) ; 
+    ref.once('value', snap=> 
+    {
+        userinfo = snap.val() ;
+        console.log(userinfo) ; 
+        userinfo.name = user_global.displayName  ; 
+        userinfo.email = user_global.email ;         
+        
+        Object.keys(userinfo).forEach(key => {
+            $(`input[name="${key}"]`).val(userinfo[key]);
+        })
+
+
+        $('#select_state').val(userinfo.state);
+        $('#select_state').trigger('change') ;
+        $('#select_district').val(userinfo.district) ;
+
+
         if(userinfo.topics)
         {
             userinfo.topics.forEach(ele=>{
-                $("#topics_subscribed").append(`<li class="list-group-item col-4">${ele}<i style="margin-left :10px ; color:red;font-size:.7em;" class="removeitem fa fa-times"/></li>`) ;
+                $("#topics_subscribed").append(`<li class="list-group-item col-4 list-topics-subbed">${ele}<i style="margin-left :10px ; color:red;font-size:.7em;" class="removeitem fa fa-times"/></li>`) ;
             })
 
             $(document).on('click', '.removeitem', function () {
-                console.log('running') ;
+                console.log('running');
                 $(this).parent().remove();
             });
         }
 
-
-    })
+    }) ;
 })
-}
+
 
 
 
 //Update the user data in the firebase database on submit ! 
 $('form').on('submit' , (event)=>{
-    auth = firebase.auth() ;
 
-    auth.onAuthStateChanged(user=>{
-        if(!user) return ; 
-        else{
-            ref = firebase.database().ref('/users' + user.uid) ;
-            ref.once('value' , snap=>{
-                ref.set(form) ;
-            })
-        } 
+    let auth = firebase.auth() ;
+    let list_topics = $('.list-topics-subbed') ; 
+    let topics = [] ; 
+
+    list_topics.each(index =>{
+        topics.push(list_topics[index].innerText) ;
     })
-    event.preventDefault() ; 
+
+    console.log(topics) ;
+    let form = getformdata() ;
+    console.log(form) ; 
+
+    // auth.onAuthStateChanged(user=>{
+    //     if(!user) return ; 
+    //     else{
+    //         ref = firebase.database().ref('/users' + user.uid) ;
+    //         ref.once('value' , snap=>{
+                
+    //         })
+    //     } 
+    // })
+    event.preventDefault(); 
 })
 
 
