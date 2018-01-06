@@ -1,4 +1,8 @@
-/// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";import { json } from "body-parser";import { request } from "https";import { config } from "firebase-functions";import { decode } from "punycode";import { firebase } from "@firebase/app";import { decode } from "punycode";import { urlencoded } from "body-parser";import { isValidFormat } from "@firebase/util";import { firebase } from "@firebase/app";import { database } from "firebase-admin";import { database } from "firebase-admin";import { firebase } from "@firebase/app";import { firebase } from "@firebase/app";import { urlencoded } from "body-parser";
+/// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";import { json } from "body-parser";import { request } from "https";import { config } from "firebase-functions";import { decode } from "punycode";import { firebase } from "@firebase/app";import { decode } from "punycode";import { urlencoded } from "body-parser";import { isValidFormat } from "@firebase/util";import { firebase } from "@firebase/app";import { database } from "firebase-admin";import { database } from "firebase-admin";import { firebase } from "@firebase/app";import { firebase } from "@firebase/app";import { urlencoded } from "body-parser";import { userInfo } from "os";import { userInfo } from "os";
+
+
+
+
 
 
 
@@ -63,6 +67,18 @@ function isAuthenticated(req , res)
     
     }) ; 
 
+}
+
+function get_college_code(state , dist ,college)
+{
+
+    let myarr = state_dist_collegewithCODE[state][district]
+    for(let i = 0 ; i<myarr.length;  i++)
+    {
+        if(college==myarr[i][1]){
+            return myarr[i][0] ; 
+        }
+    }
 }
 
 
@@ -138,8 +154,38 @@ function Handle_POST(app){
         }
     })
 
+
     app.post('/updateprofile' , urlencodedParser , (req , res)=>{
-        if(!validatePostBody(req , res , ['']))
+        
+        isAuthenticated(req , res)
+        .then(uid=>{
+            if(!validatePostBody(req , res , ['name' , 'email' , 'state' , 'district' , 'college' , 'biodata' , ' topics'])) return ; 
+
+            admin.auth().updateUser(uid , {
+                displayName : req.body.name , 
+                email : req.body.email , 
+            })
+            .then(user=>{
+
+                let ref = admin.database().ref('/users/' + user.uid) ;
+                ref.update({
+                    college : req.body.college , 
+                    district : req.body.district ,
+                    state : req.body.state , 
+                    name : req.body.name , 
+
+                    ccode : get_college_code(req.body.state , req.body.district , req.body.college) ,
+
+                })
+
+            })
+    
+            
+        })
+        .catch(err=>{
+
+        }) ;
+        
     })
 
 
@@ -198,14 +244,7 @@ function Handle_POST(app){
                 };
                 //Set the collegeID for the user object corresponding to the selected college name 
 
-                let myarr = state_dist_collegewithCODE[userinfo.state][userinfo.district]
-                for(let i = 0 ; i<myarr.length;  i++)
-                {
-                    if(userinfo.college==myarr[i][1]){
-                        userinfo.ccode = myarr[i][0] ;
-                        break ; 
-                    }
-                }
+                userinfo.ccode = get_college_code(userinfo.state , userinfo.district , userinfo.college) ;
 
                 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                 console.log(userinfo) ;
