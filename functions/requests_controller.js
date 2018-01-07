@@ -125,7 +125,7 @@ function Handle_POST(app){
             }
             options = {
                 priority : 'high' , 
-                timeToLive : 10
+                timeToLive : 100
             }
 
             msg.sendToTopic(req.body.topic , payload , options) 
@@ -156,10 +156,10 @@ function Handle_POST(app){
 
 
     app.post('/updateprofile' , urlencodedParser , (req , res)=>{
-        
+        console.log(req.body) ;        
         isAuthenticated(req , res)
         .then(uid=>{
-            if(!validatePostBody(req , res , ['name' , 'email' , 'state' , 'district' , 'college' , 'biodata' , ' topics'])) return ; 
+            if(!validatePostBody(req , res , ['name' , 'email' , 'state' , 'district' , 'college' , 'biodata' ])) return ; 
 
             admin.auth().updateUser(uid , {
                 displayName : req.body.name , 
@@ -167,6 +167,7 @@ function Handle_POST(app){
             })
             .then(user=>{
 
+                console.log('request body is ') ; console.log(req.body) ;
                 let ref = admin.database().ref('/users/' + user.uid) ;
                 ref.update({
                     college : req.body.college , 

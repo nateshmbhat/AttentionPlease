@@ -175,11 +175,14 @@ $('form').on('submit' , (event)=>{
     form.topics = topics ; 
 
     $.ajax({
-        type: "post",
         url: "/updateprofile",
+        type: "post",
         data: form ,
         success: function (response) {
-            
+           console.log(response) ; 
+        } , 
+        error: function(err){
+            console.log(err) ;
         }
     });
     
