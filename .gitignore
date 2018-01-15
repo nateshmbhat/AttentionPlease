@@ -1,4 +1,5 @@
 # Logs
+service account key
 logs
 *.log
 .vscode
