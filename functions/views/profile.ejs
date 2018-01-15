@@ -163,21 +163,20 @@ $('form').on('submit' , (event)=>{
 
     let auth = firebase.auth() ;
     let list_topics = $('.list-topics-subbed') ; 
-    let topics = [] ; 
+    let topics = new Array() ; 
 
     list_topics.each(index =>{
         topics.push(list_topics[index].innerText) ;
     })
 
-    console.log(topics) ;
     let form = getformdata() ;
-    console.log(form) ; 
-    form.topics = topics ; 
-
+    form['topics'] = topics ; 
+    console.log(JSON.stringify(form)) ;
+    var msg = JSON.stringify(form) ;
     $.ajax({
         url: "/updateprofile",
         type: "post",
-        data: form ,
+        data: msg,
         success: function (response) {
            console.log(response) ; 
         } , 
