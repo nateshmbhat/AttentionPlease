@@ -13,7 +13,7 @@
 var app = require("express")() ; 
 var bodyparser = require("body-parser") ; 
 var session = require("express-session") ;
-var urlencodedParser = bodyparser.urlencoded({extended:false}) ; 
+var urlencodedParser = bodyparser.urlencoded({extended:true}) ; 
 var admin = require("firebase-admin") ;
 var firebase_client = require("firebase")  ;
 var fs =  require("fs") ; 
@@ -72,7 +72,7 @@ function isAuthenticated(req , res)
 function get_college_code(state , dist ,college)
 {
 
-    let myarr = state_dist_collegewithCODE[state][district]
+    let myarr = state_dist_collegewithCODE[state][dist]
     for(let i = 0 ; i<myarr.length;  i++)
     {
         if(college==myarr[i][1]){
@@ -159,7 +159,7 @@ function Handle_POST(app){
         console.log(req.body) ;        
         isAuthenticated(req , res)
         .then(uid=>{
-            if(!validatePostBody(req , res , ['name' , 'email' , 'state' , 'district' , 'college' , 'biodata' ])) return ; 
+            if(!validatePostBody(req , res , ['name' , 'email' , 'topics' , 'state' , 'district' , 'college' , 'biodata' ])) return ; 
 
             admin.auth().updateUser(uid , {
                 displayName : req.body.name , 
@@ -174,17 +174,19 @@ function Handle_POST(app){
                     district : req.body.district ,
                     state : req.body.state , 
                     name : req.body.name , 
-
+                    biodata : req.body.biodata , 
                     ccode : get_college_code(req.body.state , req.body.district , req.body.college) ,
 
                 })
+                .then(user=>{console.log("Updated successfully !") ; })
+                .catch(err=>{consolge.log("ERROR OCCURED ! ") ; console.log(err)}) ; 
 
             })
-    
+            .catch(err=>console.log("Error Occured !" , err)) ; 
             
         })
         .catch(err=>{
-
+                console.log(err) ; 
         }) ;
         
     })
@@ -313,6 +315,11 @@ function Handle_POST(app){
 
 //Handles all the GET request routes 
 function Handle_GET(app){
+    
+    app.get('/' , (req ,res)=>{
+        res.redirect('index.html') ;
+    })
+
     app.get('/createtopic' , (req , res)=>{
         isAuthenticated(req , res).then(uid=>res.render('createtopic.ejs')).catch(err=>res.render('login.ejs')) ;
     })
@@ -321,12 +328,8 @@ function Handle_GET(app){
         isAuthenticated(req , res).then(uid=>{res.render('profile.ejs') ; }).catch(err=>res.render('login.ejs')) ;
     })
 
-    app.get('/' , (req ,res)=>{
-        res.redirect('/index.html') ;
-    })
-
     app.get('/home' , (req,res)=>{
-        res.redirect('/index.html') ; 
+        res.redirect('index.html') ; 
     })
   
     app.get('/register' , (req , res)=>{
