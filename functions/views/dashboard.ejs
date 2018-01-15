@@ -5,7 +5,7 @@
     <title>Login</title>
 
     <% include partials/scripts_and_css.ejs %>
-    <script src="/js/dashboard.js"></script>       
+    <script src="js/dashboard.js"></script>       
     <style>
         body{
             background:linear-gradient(lightblue , blueviolet) no-repeat fixed ;
@@ -18,7 +18,6 @@
         }
     </style>
 
-    <script src="/dashboard.js"></script>
 </head>
 
 
@@ -67,7 +66,7 @@
             console.log("Nav button clicked  ! ") ;
             firebase.auth().signOut() ;            
             unsetcookie() ;
-            window.location = "/home" ;
+            window.location = "home" ;
         }) ; 
 
     </script>
