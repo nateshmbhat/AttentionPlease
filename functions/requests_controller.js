@@ -136,7 +136,9 @@ function Handle_POST(app){
             }
 
             msg.sendToTopic(req.body.topic , payload , options) 
-            .then(msg=>console.log(msg))
+            .then(msg=>{console.log(msg)
+               res.render('dashboard.ejs' , {messageSent : true}) 
+            })
             .catch(err=>console.log(err)) ;
             console.log("Notification sent succefully to topic : " , req.body.topic , " with title : " , req.body.title) ;
         })

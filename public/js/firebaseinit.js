@@ -7,3 +7,15 @@ var config = {
   messagingSenderId: "738569079406"
 };
 firebase.initializeApp(config);
+  
+window.onload= function()
+{
+  //Handle logout
+  $("#nav_logout").click(()=>{
+    console.log("Nav button clicked  ! ") ;
+    firebase.auth().signOut() ;            
+    unsetcookie() ;
+    window.location = "login" ;
+  }) ; 
+
+}

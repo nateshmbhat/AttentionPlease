@@ -4,7 +4,7 @@
 // var firebase = require("firebase") ; 
 
 
-  const unsetcookie = ()=>Cookies.remove('firebase-token' , {
+  const unsetcookie = ()=>Cookies.remove('__session' , {
     domain : window.location.hostname , 
     path : '/'
 })  

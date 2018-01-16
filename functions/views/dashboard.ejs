@@ -30,10 +30,14 @@
 
     <h1 class="animated flipInX ">Notify Them </h1>
     <div class="jumbotron container">
+        <% if(locals.messageSent && messageSent){ %>
+            <div class="alert alert-success" id="alertMessageSent">
+                <h4 class="animated zoomIn slow">Notification Sent successfully ! </h4>
+            </div>
+        <% } %>
         <h3 id="collegename"></h3>
         <div id="location-details">
         </div>
-        
         <form method="post" action="/sendnotification">
             <label style="display:block">Choose to the Topic to which the message needs to be sent : </label>
             <div class="form-group" id="topicslist">
@@ -60,16 +64,7 @@
 
     </div>
 
-    <script>
-        
-        $("#nav_logout").click(()=>{
-            console.log("Nav button clicked  ! ") ;
-            firebase.auth().signOut() ;            
-            unsetcookie() ;
-            window.location = "home" ;
-        }) ; 
-
-    </script>
+   
     <br><br><br><br><br>
     <% include partials/footer.ejs %>
 </body>
