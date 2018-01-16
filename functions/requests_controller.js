@@ -46,7 +46,7 @@ function isAuthenticated(req , res)
 {
     return new Promise((resolve ,reject)=>{
  
-    if(req.cookies['firebase-token'])
+    if(req.cookies['__session'])
     {
         admin.auth().verifyIdToken(req.cookies['firebase-token']).then(decodedtoken=>{
             if(decodedtoken.uid){

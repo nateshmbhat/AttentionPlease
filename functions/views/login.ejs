@@ -85,7 +85,7 @@ $("#div_footer").css('position' , 'absolute') ;
     const setcookie=(callback )=>firebase.auth().currentUser && firebase.auth().currentUser.getIdToken().then(token=>{
         console.log(token) ; 
         
-        Cookies.set('firebase-token' , token , {
+        Cookies.set('__session' , token , {
             domain : window.location.hostname , 
             expire : 1/ 24  , 
             path : '/' , 
