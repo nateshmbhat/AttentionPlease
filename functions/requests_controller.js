@@ -1,4 +1,6 @@
-/// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";import { json } from "body-parser";import { request } from "https";import { config } from "firebase-functions";import { decode } from "punycode";import { firebase } from "@firebase/app";import { decode } from "punycode";import { urlencoded } from "body-parser";import { isValidFormat } from "@firebase/util";import { firebase } from "@firebase/app";import { database } from "firebase-admin";import { database } from "firebase-admin";import { firebase } from "@firebase/app";import { firebase } from "@firebase/app";import { urlencoded } from "body-parser";import { userInfo } from "os";import { userInfo } from "os";
+/// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";import { json } from "body-parser";import { request } from "https";import { config } from "firebase-functions";import { decode } from "punycode";import { firebase } from "@firebase/app";import { decode } from "punycode";import { urlencoded } from "body-parser";import { isValidFormat } from "@firebase/util";import { firebase } from "@firebase/app";import { database } from "firebase-admin";import { database } from "firebase-admin";import { firebase } from "@firebase/app";import { firebase } from "@firebase/app";import { urlencoded } from "body-parser";import { userInfo } from "os";import { userInfo } from "os";import { contains } from "@firebase/util";
+
+
 
 
 
@@ -45,10 +47,11 @@ module.exports = function HandleRequests(app){
 function isAuthenticated(req , res)
 {
     return new Promise((resolve ,reject)=>{
+        console.log(req.cookies) ;
  
     if(req.cookies['__session'])
     {
-        admin.auth().verifyIdToken(req.cookies['firebase-token']).then(decodedtoken=>{
+        admin.auth().verifyIdToken(req.cookies['__session']).then(decodedtoken=>{
             if(decodedtoken.uid){
                 console.log("User is signed in :  " , decodedtoken.uid)  ;
                 resolve(decodedtoken.uid) ;
@@ -83,6 +86,10 @@ function get_college_code(state , dist ,college)
 
 
 function validatePostBody(req , res , keys ){
+    console.log("\nExecuting PostBody validation : ") ; 
+    console.log("Got Requests : ") ; 
+    console.log(req.body) ; 
+
     for(i in keys){
         if(!(keys[i] in req.body))
         {
