@@ -166,7 +166,9 @@ function Handle_POST(app){
         console.log(req.body) ;        
         isAuthenticated(req , res)
         .then(uid=>{
-            if(!validatePostBody(req , res , ['name' , 'email' , 'topics' , 'state' , 'district' , 'college' , 'biodata' ])) return ; 
+            //TODO : check if "topics" is also present in the request  
+            //Right when use is not subbed to any topic , it results in invalid post request 
+            if(!validatePostBody(req , res , ['name' , 'email'  , 'state' , 'district' , 'college' , 'biodata' ])) return ; 
 
             admin.auth().updateUser(uid , {
                 displayName : req.body.name , 
