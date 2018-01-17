@@ -7,9 +7,32 @@ var config = {
   messagingSenderId: "738569079406"
 };
 firebase.initializeApp(config);
+
   
 window.onload= function()
 {
+
+  const setcookie=(callback )=>firebase.auth().currentUser && firebase.auth().currentUser.getIdToken().then(token=>{
+    console.log(token) ; 
+    
+    Cookies.set('__session' , token , {
+        domain : window.location.hostname , 
+        expire : 1/ 24  , 
+        path : '/' , 
+        secure : false 
+    })
+    console.log("cookie set ! ") ;
+    callback() ;
+  })
+
+  
+
+  const unsetcookie = ()=>Cookies.remove('__session' , {
+    domain : window.location.hostname , 
+    path : '/'
+  })  
+
+
   //Handle logout
   $("#nav_logout").click(()=>{
     console.log("Nav button clicked  ! ") ;

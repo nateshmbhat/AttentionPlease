@@ -3,11 +3,6 @@
 
 // var firebase = require("firebase") ; 
 
-
-  const unsetcookie = ()=>Cookies.remove('__session' , {
-    domain : window.location.hostname , 
-    path : '/'
-})  
   
 firebase.auth().onAuthStateChanged(function(user){
 

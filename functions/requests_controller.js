@@ -2,13 +2,6 @@
 
 
 
-
-
-
-
-
-
-
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS 
 
 
@@ -71,6 +64,7 @@ function isAuthenticated(req , res)
     }) ; 
 
 }
+
 
 function get_college_code(state , dist ,college)
 {
