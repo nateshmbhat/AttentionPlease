@@ -30,7 +30,7 @@ window.onload= function()
   const unsetcookie = ()=>Cookies.remove('__session' , {
     domain : window.location.hostname , 
     path : '/'
-  })  
+  })
 
 
   //Handle logout
