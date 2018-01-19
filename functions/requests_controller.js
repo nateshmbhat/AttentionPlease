@@ -311,7 +311,7 @@ function Handle_POST(app){
             })
 
         })
-        .catch(err=>{console.log(err) ;res.render('login.ejs')}) ;
+        .catch(err=>{console.log(err) ;res.render('index.ejs')}) ;
     })
    
 }
