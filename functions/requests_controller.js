@@ -210,7 +210,7 @@ function Handle_POST(app){
                     flag_valid = 1 ; 
                 }
                 else{
-                    res.render('register.ejs' , {error : "Invalid College Entry . Please make sure that you have selected one of the colleges in the provided list itself."}) ; 
+                    res.render('index.ejs' , {error : "Invalid College Entry . Please make sure that you have selected one of the colleges in the provided list itself."}) ; 
                     return ; 
                 }
 
@@ -220,7 +220,7 @@ function Handle_POST(app){
         if(!flag_valid)
             {
                 //CANCEL registration by sending the error ! 
-                res.render('register.ejs' , {error : "Invalid Location Details ! "})
+                res.render('index.ejs' , {error : "Invalid Location Details ! "})
                 return ; 
             }
 
@@ -259,7 +259,7 @@ function Handle_POST(app){
                 ref_user = admin.database().ref("/users/"+user.uid) ;
                 ref_user.set(userinfo) ;
                 
-                res.render('register.ejs', {success: 'You have been registered successfully. Please proceed with Login :) '})
+                res.render('index.ejs' , {success : "You have been registered successfully. Please proceed with Login :) "});
 
         })
 
@@ -267,7 +267,7 @@ function Handle_POST(app){
         .catch((error)=>{
             /// TODO : Send the error alert to the client with the error 
             res.status(400) ; 
-            res.render( "register.ejs" , {error : error.message}) ;   
+            res.render( "index.ejs" , {error : error.message}) ;   
             console.log(error)
 
         }) ; 
@@ -337,9 +337,6 @@ function Handle_GET(app){
         res.redirect('index.html') ; 
     })
   
-    app.get('/register' , (req , res)=>{
-        res.render("register.ejs" ) ; 
-    })
 
     app.get('/login' , (req , res)=>{
 

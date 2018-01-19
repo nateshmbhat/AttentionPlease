@@ -30,7 +30,7 @@
 	<link href='https://fonts.googleapis.com/css?family=Raleway:400,300,600,400italic,700' rel='stylesheet' type='text/css'>
 
 	<!-- Animate.css -->
-	<link rel="stylesheet" href="/assets//assets/css/animate.css">
+	<link rel="stylesheet" href="/assets/css/animate.css">
 	<!-- Icomoon Icon Fonts-->
 	<link rel="stylesheet" href="/assets/css/icomoon.css">
 	<!-- Bootstrap  -->
@@ -93,7 +93,7 @@
 			</div>
 		</nav>
 
-		<header id="gtco-header" class="gtco-cover" role="banner" style="background-image:url(images/img_bg_1.jpg);">
+		<header id="gtco-header" class="gtco-cover" role="banner" style="background-image:url(/assets/images/img_bg_1.jpg);">
 			<div class="overlay"></div>
 			<div class="gtco-container">
 				<div class="row">
@@ -101,6 +101,13 @@
 						<div class="display-t">
 							<div class="display-tc animate-box" data-animate-effect="fadeIn">
 								<h1>Welcome to NammaSIT</h1>
+									<% if(locals.error) {%>
+									<div class="animated shake rounded alert alert-danger"   role="alert" id="erroralert"><h2 style="color:black;">Error : <%=error%></h2></div>
+									<%}%>
+
+									<% if(locals.success){%> 
+									<div class="animated zoomIn rounded alert alert-success green" role="alert" id="successalert"><h2 style="color:black"><%=success%></h2></div>
+									<%}%>
 								<h2>now notifications at your fingertip</h2>
 								<p>
 									<a href="#" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#login">Login</a>
@@ -372,7 +379,7 @@
 				<div class="row row-pb-md">
 					<div class="col-md-4 animate-box" data-animate-effect="fadeIn">
 						<div class="gtco-staff">
-							<img src="images/person_1.jpg" alt="Free HTML5 Templates by gettemplates.co">
+							<img src="/assets/images/person_1.jpg" alt="Free HTML5 Templates by gettemplates.co">
 							<h3>Natesh </h3>
 							<strong class="role">Team Lead</strong>
 							<p>Quos quia provident consequuntur culpa facere ratione maxime commodi voluptates id repellat velit eaque aspernatur
@@ -403,7 +410,7 @@
 					</div>
 					<div class="col-md-4 animate-box" data-animate-effect="fadeIn">
 						<div class="gtco-staff">
-							<img src="images/person_2.jpg" alt="Free HTML5 Templates by gettemplates.co">
+							<img src="/assets/images/person_2.jpg" alt="Free HTML5 Templates by gettemplates.co">
 							<h3>Gangadhar</h3>
 							<strong class="role">Android Developer</strong>
 							<p>Quos quia provident consequuntur culpa facere ratione maxime commodi voluptates id repellat velit eaque aspernatur
@@ -434,7 +441,7 @@
 					</div>
 					<div class="col-md-4 animate-box" data-animate-effect="fadeIn">
 						<div class="gtco-staff">
-							<img src="images/person_3.jpg" alt="Free HTML5 Templates by gettemplates.co">
+							<img src="/assets/images/person_3.jpg" alt="Free HTML5 Templates by gettemplates.co">
 							<h3>Aditya</h3>
 							<strong class="role">Front-end Developer</strong>
 							<p>Quos quia provident consequuntur culpa facere ratione maxime commodi voluptates id repellat velit eaque aspernatur
@@ -468,7 +475,7 @@
 				<div class="row">
 					<div class="col-md-4 animate-box" data-animate-effect="fadeIn">
 						<div class="gtco-staff">
-							<img src="images/person_1.jpg" alt="Free HTML5 Templates by gettemplates.co">
+							<img src="/assets/images/person_1.jpg" alt="Free HTML5 Templates by gettemplates.co">
 							<h3>Nikith</h3>
 							<strong class="role">UI Designer</strong>
 							<p>Quos quia provident consequuntur culpa facere ratione maxime commodi voluptates id repellat velit eaque aspernatur
@@ -499,7 +506,7 @@
 					</div>
 					<div class="col-md-4 animate-box" data-animate-effect="fadeIn">
 						<div class="gtco-staff">
-							<img src="images/person_2.jpg" alt="Free HTML5 Templates by gettemplates.co">
+							<img src="/assets/images/person_2.jpg" alt="Free HTML5 Templates by gettemplates.co">
 							<h3>Shreya</h3>
 							<strong class="role">Android Developer</strong>
 							<p>Quos quia provident consequuntur culpa facere ratione maxime commodi voluptates id repellat velit eaque aspernatur
@@ -530,7 +537,7 @@
 					</div>
 					<div class="col-md-4 animate-box" data-animate-effect="fadeIn">
 						<div class="gtco-staff">
-							<img src="images/person_3.jpg" alt="Free HTML5 Templates by gettemplates.co">
+							<img src="/assets/images/person_3.jpg" alt="Free HTML5 Templates by gettemplates.co">
 							<h3>Karan</h3>
 							<strong class="role">Back-end Developer</strong>
 							<p>Quos quia provident consequuntur culpa facere ratione maxime commodi voluptates id repellat velit eaque aspernatur
