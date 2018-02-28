@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Timetable</title>
+
+    <style>
+        th.days{
+            font-weight: bold ; 
+            font-family: raleway , caladea , lora ;
+            font-size:120% ; 
+        }
+    
+    </style>
+</head>
+
+
+<body>
+    
+        <% include partials/scripts_and_css.ejs %>
+        <script src="assets/js/footable.js"></script>
+
+        <% if(locals.login && login){%>
+        <% include partials/navbar.ejs %>
+        <%}else{%>
+        <%include partials/navbar_login.ejs%>
+        <%} %>
+
+<div class="container">
+
+    <h1 class="animated zoomIn text-center">Time Table</h1>
+    <div class="text-center">
+        <button class="btn btn-primary" data-toggle="modal" id="btn_addTimeTable" data-target="#modaltimetable" >Add Time Table </button>
+    </div>
+    
+    <div hidden id="addNewTimeTable" class="mt-5">
+    
+            <table class="table table-striped table-bordered">
+                <thead class="table table-primary">
+                    <th class="days">Time/Day</th>
+                    <th class="days">Monday</th>
+                    <th class="days">Tuesday</th>
+                    <th class="days">Wednesday</th>
+                    <th class="days">Thursday</th>
+                    <th class="days">Friday</th>
+                    <th class="days">Saturday</th>
+                    <th class="days">Sunday</th>
+                </thead>
+
+                <tbody>
+                  
+                </tbody>
+            </table>
+
+            <button class="btn btn-warning btn-sm "><i class="fa fa-plus"></i></button>
+                    
+        </div>
+            
+
+</div>
+  
+
+
+<script>
+    function initialize()
+    {
+    }
+
+
+    initialize() ; 
+    
+    $("#btn_addTimeTable").on('click' , event=>{
+        $("#addNewTimeTable").fadeIn().removeAttr("hidden").fadeIn() ; 
+    })
+
+
+    $("#btn_addTimeTable").trigger('click') ; 
+</script>
+
+
+</body>
+</html>

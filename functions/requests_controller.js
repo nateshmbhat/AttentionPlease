@@ -336,6 +336,10 @@ function Handle_GET(app){
     app.get('/home' , (req,res)=>{
         res.redirect('index.html') ; 
     })
+
+    app.get('/timetable' , (req , res)=>{
+        isAuthenticated(req , res).then(uid=>{res.render('timetable.ejs') ; }).catch(err=>{res.render('login.ejs') ; }) ; 
+    })
   
 
     app.get('/login' , (req , res)=>{
