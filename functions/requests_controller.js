@@ -26,7 +26,6 @@ admin.initializeApp({
 
 
 app.set('view engine' , 'ejs') ; 
-        
 
 module.exports = function HandleRequests(app){
     console.log("Requests Handler running ! ") ;
@@ -46,7 +45,7 @@ function isAuthenticated(req , res)
     {
         admin.auth().verifyIdToken(req.cookies['__session']).then(decodedtoken=>{
             if(decodedtoken.uid){
-                console.log("User is signed in :  " , decodedtoken.uid)  ;
+                console.log("User is signed in : " , decodedtoken.uid)  ;
                 resolve(decodedtoken.uid) ;
             }
             // TODO ROUTE User with the required user details on the page 
@@ -97,6 +96,31 @@ function validatePostBody(req , res , keys ){
 
 //Handles all POST requests 
 function Handle_POST(app){
+    app.post("/createtimetable" , urlencodedParser ,  (req , res)=>{
+        console.log(req.body) ; 
+        isAuthenticated(req , res)
+        .then(uid =>{
+            if(!validatePostBody(req , res , ['dataArray'])) throw Error("Invalid Post request !") ; 
+
+            //check if each 1d array in data array has 9 elements : first 2 being the time
+            postdata = req.body.dataArray ; 
+            for(let i =0 ; i<postdata.length ; i++)
+            {
+                time_regex = /^\d{1,2}\:\d{1,2}(AM|PM)$/ ; 
+                if(!(time_regex.test(postdata[i][0]) && time_regex.test(postdata[i][1])))
+                        throw Error("Invalid Post request !") ; 
+                if(postdata[i].length!=9)  throw Error("Invalid Post request ! ") ;  
+            }
+
+            //All checked . Now safe to add to the database 
+            ref = admin.database().ref(`/Colleges/C-1297/timetables/4/CSE/B/`) ;
+            ref.set(postdata) ; 
+        })
+
+        .catch(error=>{console.log(error.message ) ; res.redirect("/") ; })
+    })
+
+
 
     app.post("/sendnotification" , urlencodedParser , (req , res)=>{
         isAuthenticated(req , res)
@@ -158,7 +182,7 @@ function Handle_POST(app){
     })
 
 
-    app.post('/updateprofile' , urlencodedParser , (req , res)=>{
+    app.post('/updateprofile', urlencodedParser ,(req , res)=>{
         console.log(req.body) ;        
         isAuthenticated(req , res)
         .then(uid=>{
@@ -198,7 +222,7 @@ function Handle_POST(app){
 
 
 
-    app.post('/register', urlencodedParser  , (req , res)=>{
+    app.post('/register' , urlencodedParser ,  (req , res)=>{
         flag_valid = 0 ;
         if(!validatePostBody(req , res , ['state' , 'district' , 'college' , 'email' , 'password' , 'name' , 'year' , 'phone'])) return ;
 
@@ -275,7 +299,7 @@ function Handle_POST(app){
 
 
 
-    app.post('/createtopic' , urlencodedParser , (req, res)=>{
+    app.post('/createtopic'   , urlencodedParser , (req, res)=>{
         console.log(req.body) ;
 
         isAuthenticated(req,res)
