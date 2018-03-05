@@ -6,7 +6,7 @@
 
     <style>
          body{
-            /* background:linear-gradient(lightblue , blueviolet) no-repeat fixed ; */
+            background:linear-gradient(lightblue , blueviolet) no-repeat fixed ;
         } 
         h1{
             font-size:500% !important ;
@@ -29,6 +29,7 @@
     <%include partials/navbar_login.ejs%>
     <%} %>
 
+
     <h1 class="animated flipInX ">Notify Them </h1>
     <div class="jumbotron container z-depth-5">
         <% if(locals.messageSent && messageSent){ %>
@@ -36,12 +37,11 @@
                 <h4 class="animated zoomIn slow">Notification Sent successfully ! </h4>
             </div>
         <% } %>
-        <h3 id="collegename"></h3>
+        <h3 id="collegename" class="text-center" style="font-family: raleway"></h3>
         <div id="location-details">
         </div>
                      
         <form method="post" action="/sendnotification">
-            <label style="display:block">Choose to the Topic to which the message needs to be sent : </label>
             <div class="form-group" id="topicslist">
                 
             </div>

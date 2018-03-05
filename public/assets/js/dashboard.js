@@ -18,20 +18,24 @@ if(user){
         userinfo.district = data.district ; 
         userinfo.ccode = data.ccode ; 
         
+
+        
         $("#collegename").html(`${userinfo.college}`)
         $("#location-details").html(`
-        <p>State    : ${userinfo.state}</p>
-        <p>District : ${userinfo.district} </p>
+        <h4 style="font-family:raleway , caladea">State    : ${userinfo.state}</p>
+        <h4 style="font-family:raleway , caladea">District : ${userinfo.district} </p>
         `)
         
         firebase.database().ref('/Colleges/'+userinfo.ccode).once('value').then(snap=>{
             console.log(snap.val()) ;
             topicslist = snap.val().topics
+
+            $("#topicslist").append(`<h4 style="display:block" class="mt-5 animated fadeIn">Choose the Topic to which the message needs to be sent : </h4>`) 
             
             topicslist.forEach(topic=>{
                $("#topicslist").append(
-               `    <div class="radio">
-                        <label><input value=${topic} class="m-1" type="radio" name="topic">${topic}</input></label>
+               `    <div class="font-bold animated fadeIn">
+                        <h5 style="font-family:raleway, caladea, lora ; "><input value=${topic} class="m-1" type="radio" name="topic">${topic}</input></h5>
                     </div>
                `);
             })
