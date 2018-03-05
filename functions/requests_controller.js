@@ -346,7 +346,7 @@ function Handle_POST(app){
 function Handle_GET(app){
     
     app.get('/' , (req ,res)=>{
-        res.redirect('index.html') ;
+        res.render('index.ejs') ;
     })
 
     app.get('/createtopic' , (req , res)=>{
@@ -358,7 +358,11 @@ function Handle_GET(app){
     })
 
     app.get('/home' , (req,res)=>{
-        res.redirect('index.html') ; 
+        res.redirect('/') ; 
+    })
+
+    app.get('/index.html' , (req,res)=>{
+        res.redirect('/') ; 
     })
 
     app.get('/timetable' , (req , res)=>{
