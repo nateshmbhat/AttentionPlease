@@ -23,9 +23,11 @@ $("#form_login").bind("submit" , function(event){
             })
     })        
     .catch(error=>{
-        $("#erroralert").replaceWith($("#erroralert").clone());
-        $("#erroralert").html(`<h5 class="animated  p-2">${error.message}</h5>`) ;
-        $("#erroralert").fadeIn() ;
+        console.log("\nRunning error part !" , error.message) ; 
+        $(".erroralert").removeClass('hidden') ;  
+        $(".erroralert").replaceWith($(".erroralert").clone());
+        $(".erroralert").html(`<h4 class="animated  p-2">${error.message}</h5>`) ;
+        $(".erroralert").fadeIn() ;
     })
 
 event.preventDefault() ;
