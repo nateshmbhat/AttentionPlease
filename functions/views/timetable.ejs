@@ -104,7 +104,7 @@
         }
 
 
-        function addRow()
+        function addRow(n = 1)
         {
             let row = `<tr>
             <td>
@@ -126,14 +126,19 @@
 
             row+=`</tr>` ; 
 
-            $("#timetable_body tr:last").after(row) ; 
-
-            if(typeof($("#timetable_body tr:last").html())=='undefined')
+            for(let i =0 ; i<n ; i++)
             {
-                $("#timetable_body").html(row) ;
+
+                $("#timetable_body tr:last").after(row) ; 
+
+                if(typeof($("#timetable_body tr:last").html())=='undefined')
+                {
+                    $("#timetable_body").html(row) ;
+                }
+
+                $(".timepicker").pickatime({'twelvehour' : true})
             }
 
-            $(".timepicker").pickatime({'twelvehour' : true})
 
         }
 
@@ -141,6 +146,7 @@
 
             function initialize() {
                 $(".days").addClass("text-center").addClass("hoverable") ; 
+                addRow(3) ; 
             }
 
             initialize();
@@ -154,14 +160,6 @@
             $("#btn_addRow").on('click' , e=>{
                 addRow() ; 
             }) ; 
-
-
-    // REVOME THESE LINES LATER 
-            //Todo : remove this trigger . DEBUGGING 
-            $("#btn_addTimeTable").trigger('click');
-            addRow() ; 
-
-
 
         </script>
 

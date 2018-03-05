@@ -6,7 +6,7 @@
 
     <style>
          body{
-            background:linear-gradient(lightblue , blueviolet) no-repeat fixed ;
+            /* background:linear-gradient(lightblue , blueviolet) no-repeat fixed ; */
         } 
         h1{
             font-size:500% !important ;
@@ -30,7 +30,7 @@
     <%} %>
 
     <h1 class="animated flipInX ">Notify Them </h1>
-    <div class="jumbotron container">
+    <div class="jumbotron container z-depth-5">
         <% if(locals.messageSent && messageSent){ %>
             <div class="alert alert-success text-center" id="alertMessageSent">
                 <h4 class="animated zoomIn slow">Notification Sent successfully ! </h4>
@@ -65,8 +65,8 @@
                 
             </div>
 
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-lg">Notify</button>
+            <div class="form-group text-center">
+                <button type="submit" class="btn rounded btn-dark-green waves-effect waves-light">Notify</button>
             </div>
         </form>
 
