@@ -100,7 +100,7 @@ function Handle_POST(app){
         console.log(req.body) ; 
         isAuthenticated(req , res)
         .then(uid =>{
-            if(!validatePostBody(req , res , ['dataArray'])) throw Error("Invalid Post request !") ; 
+            if(!validatePostBody(req , res , ['dataArray' , 'branch' , 'year' , 'section'])) throw Error("Invalid Request ! Make sure that the time fields are not empty !") ; 
 
             //check if each 1d array in data array has 9 elements : first 2 being the time
             postdata = req.body.dataArray ; 
@@ -108,16 +108,16 @@ function Handle_POST(app){
             {
                 time_regex = /^\d{1,2}\:\d{1,2}(AM|PM)$/ ; 
                 if(!(time_regex.test(postdata[i][0]) && time_regex.test(postdata[i][1])))
-                        throw Error("Invalid Post request !") ; 
+                        throw Error("Invalid Time format . Please choose the time from the clock.") ; 
                 if(postdata[i].length!=9)  throw Error("Invalid Post request ! ") ;  
             }
 
             //All checked . Now safe to add to the database 
-            ref = admin.database().ref(`/Colleges/C-1297/timetables/4/CSE/B/`) ;
+            ref = admin.database().ref(`/Colleges/C-1297/timetables/${req.body.year}/${req.body.branch}/${req.body.section}/`) ;
             ref.set(postdata) ; 
         })
 
-        .catch(error=>{console.log(error.message ) ; res.redirect("/") ; })
+        .catch(error=>{console.log(error.message ) ; res.render('timetable.ejs' , {error: error.message }) ; })
     })
 
 
@@ -188,7 +188,7 @@ function Handle_POST(app){
         .then(uid=>{
             //TODO : check if "topics" is also present in the request  
             //Right when use is not subbed to any topic , it results in invalid post request 
-            if(!validatePostBody(req , res , ['name' , 'email'  , 'state' , 'district' , 'college' , 'biodata' ])) return ; 
+            if(!validatePostBody(req , res , ['name' , 'email'  , 'state' , 'district' , 'college' ])) return ; 
 
             admin.auth().updateUser(uid , {
                 displayName : req.body.name , 
@@ -203,7 +203,6 @@ function Handle_POST(app){
                     district : req.body.district ,
                     state : req.body.state , 
                     name : req.body.name , 
-                    biodata : req.body.biodata , 
                     ccode : get_college_code(req.body.state , req.body.district , req.body.college) ,
 
                 })

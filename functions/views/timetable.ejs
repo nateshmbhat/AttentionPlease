@@ -17,6 +17,7 @@
         th.days:hover{
             
         }
+
     </style>
 </head>
 
@@ -46,7 +47,40 @@
             </div>
 
 
+            
             <div hidden id="addNewTimeTable" class="mt-5">
+                
+                <div class="input-field col s2">
+                    <div class="row">
+                        <h5 >Select Year and Branch : </h5>
+                        <select class="ml-5 text-center"  id="select_year" >
+                            <option  value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                        <select class="ml-5 text-center font-bold"  id="select_branch" >
+                            <option value="CSE">CSE</option>
+                            <option value="ISE">ISE</option>
+                            <option value="EC">EC</option>
+                            <option value="TE">TE</option>
+                            <option value="MECH">MECH</option>
+                            <option value="BIOTECH">BIOTECH</option>
+                            <option value="CHEMICAL">CHEMICAL</option>
+                        </select>
+
+                    </div>    
+                </div>
+
+                <div class="input-field col s2">
+                        <div class="row">
+                            <h5 >Section : </h5>
+                            <select class="ml-5"  id="select_section" >
+                            </select>
+                        </div>    
+                </div>
+
+
                 <table class="table table-bordered table-responsive">
                     <thead class="blue-grey lighten-4">
                         <th class="days ">Time \ Day</th>
@@ -61,10 +95,10 @@
 
                     <tbody id="timetable_body">
                    </tbody>
-
-
                 </table>
 
+                <div class="alert animated shake alert-danger hidden erroralert"></div>
+                
                 <button type="button" title="Add Row" class="hoverable btn btn-warning waves-effect waves-light" id="btn_addRow">
                     <i class="fa fa-plus"></i>
                 </button>
@@ -104,7 +138,14 @@
                     rowsArray.push(columnArray) ; 
                 }
             console.log(rowsArray) ; 
-            $.post('/createtimetable' , {dataArray : rowsArray}  , data=>{console.log('server sent : ' , data) ; $("addNewTimeTable").attr('hidden') ; } )
+
+            $.post('/createtimetable' , {
+                dataArray : rowsArray , 
+                branch:$('#select_branch').val() ,
+                year : $('#select_year').val() , 
+                section : $('#select_section').val()
+            }  , data=>{console.log('server sent : ' , data) ; $("addNewTimeTable").attr('hidden') ; } )
+
         }
 
 
@@ -165,6 +206,27 @@
                     $("#timetable_body tr:last").remove() ;  
                 }) ; 
 
+
+                s = "ABCDEFGHIJ" ; 
+                $('#select_section').html(`<option value="A">A</option>`) ; 
+                for(let i =1 ; i<s.length ; i++)
+                {
+                    $('#select_section option:last').after(`<option value="${s[i]}">${s[i]}</option>`) ; 
+                }
+                
+                $('select').material_select() ; 
+                //setup dropdown
+                // $('.dropdown-button').dropdown({
+                //     inDuration: 300,
+                //     outDuration: 225,
+                //     constrainWidth: false, // Does not change width of dropdown to that of the activator
+                //     hover: true, // Activate on hover
+                //     gutter: 0, // Spacing from edge
+                //     belowOrigin: false, // Displays dropdown below the button
+                //     alignment: 'left', // Displays dropdown with edge aligned to the left of button
+                //     stopPropagation: false // Stops event propagation
+                //     }
+                // ); 
             }                
 
             initialize();
