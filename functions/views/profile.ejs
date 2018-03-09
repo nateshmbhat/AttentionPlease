@@ -115,7 +115,7 @@ function init_user(){
 init_user()
 .then(user=>{
 
-    ref = firebase.database().ref('/users/' + user_global.uid) ; 
+    ref = firebase.database().ref('/adminusers/' + user_global.uid) ; 
     ref.once('value', snap=> 
     {
         userinfo = snap.val() ;

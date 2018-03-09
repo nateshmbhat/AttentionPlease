@@ -7,7 +7,7 @@
 firebase.auth().onAuthStateChanged(function(user){
 
 if(user){
-    var ref = firebase.database().ref("/users/"+user.uid) ;
+    var ref = firebase.database().ref("/adminusers/"+user.uid) ;
     
     var userinfo = {}  ;
     ref.once('value').then(snap=>{

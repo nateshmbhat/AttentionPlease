@@ -18,13 +18,11 @@
             
         }
     </style>
-
-   
 </head>
 
 
 <body>
-    <% include partials/scripts_and_css.ejs %>
+        <% include partials/scripts_and_css.ejs %>
         <script src="assets/js/footable.js"></script>
         <!-- Compiled and minified CSS -->
 
@@ -32,6 +30,7 @@
 
         <!-- Compiled and minified JavaScript -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
 
         <% if(locals.login && login){%>
         <% include partials/navbar.ejs %>
@@ -81,7 +80,7 @@
 
         </div>
 
-        <script>
+<script>
 
 
         function saveTimeTable()
@@ -115,10 +114,10 @@
             <td>
                 <div class="row">
                     <div class="col">
-                        <input type="text" placeholder="Start time" class="timepicker inline startTime">
+                        <input required type="text" placeholder="Start time" class="timepicker inline startTime">
                     </div>
                     <div class="col">
-                        <input type="text" placeholder="End time" class="timepicker inline endTime">
+                        <input required type="text" placeholder="End time" class="timepicker inline endTime">
                     </div>
                 </div>
             </td>
@@ -143,11 +142,7 @@
 
                 $(".timepicker").pickatime({'twelvehour' : true})
             }
-
-
         }
-
-
 
             function initialize() {
                 jQuery('[data-toggle="tooltip"]').tooltip()

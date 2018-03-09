@@ -127,7 +127,7 @@ function Handle_POST(app){
         .then(uid=>{
         if(!validatePostBody(req , res , ['topic' , 'title' ,'description'])) return ;
 
-        admin.database().ref('/users/'+uid).once('value' , snap=>{
+        admin.database().ref('/adminusers/'+uid).once('value' , snap=>{
             userinfo = snap.val() ;
             
             const msg = admin.messaging() ; 
@@ -197,7 +197,7 @@ function Handle_POST(app){
             .then(user=>{
 
                 console.log('request body is ') ; console.log(req.body) ;
-                let ref = admin.database().ref('/users/' + user.uid) ;
+                let ref = admin.database().ref('/adminusers/' + user.uid) ;
                 ref.update({
                     college : req.body.college , 
                     district : req.body.district ,
@@ -224,7 +224,7 @@ function Handle_POST(app){
 
     app.post('/register' , urlencodedParser ,  (req , res)=>{
         flag_valid = 0 ;
-        if(!validatePostBody(req , res , ['state' , 'district' , 'college' , 'email' , 'password' , 'name' , 'year' , 'phone'])) return ;
+        if(!validatePostBody(req , res , ['state' , 'district' , 'college' , 'email' , 'password' , 'name'  , 'phone'])) return ;
 
         if(Object.getOwnPropertyNames(state_dist_colleges).indexOf(req.body.state)>=0){
             if(Object.getOwnPropertyNames(state_dist_colleges[req.body.state]).indexOf(req.body.district)>=0)
@@ -253,7 +253,6 @@ function Handle_POST(app){
        
 
         admin.auth().createUser({
-
             email: req.body.email,
             emailVerified: false,
             phoneNumber : "+91"+req.body.phone , 
@@ -272,7 +271,6 @@ function Handle_POST(app){
                     password : req.body.password , 
                     district : req.body.district , 
                     college : req.body.college ,
-                    year : req.body.year
                 };
                 //Set the collegeID for the user object corresponding to the selected college name 
 
@@ -280,7 +278,7 @@ function Handle_POST(app){
 
                 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                 console.log(userinfo) ;
-                ref_user = admin.database().ref("/users/"+user.uid) ;
+                ref_user = admin.database().ref("/adminusers/"+user.uid) ;
                 ref_user.set(userinfo) ;
                 
                 res.render('index.ejs' , {success : "You have been registered successfully. Please proceed with Login :) "});
@@ -307,7 +305,7 @@ function Handle_POST(app){
             if(!validatePostBody(req , res ,['topic'])) return ;            
 
             console.log("user id is " , uid) ;
-            admin.database().ref('/users/'+uid).once('value',snap=>{
+            admin.database().ref('/adminusers/'+uid).once('value',snap=>{
                 
                 userinfo = snap.val() ; 
                 let ref = admin.database().ref('/Colleges/' + userinfo.ccode + '/topics') ;
