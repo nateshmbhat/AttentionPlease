@@ -113,11 +113,14 @@ function Handle_POST(app){
             }
 
             //All checked . Now safe to add to the database 
-            ref = admin.database().ref(`/Colleges/C-1297/timetables/${req.body.year}/${req.body.branch}/${req.body.section}/`) ;
+            path = `/Colleges/C-1297/timetables/${req.body.year}/${req.body.branch}/${req.body.section}/` ; 
+            console.log(path) ;
+            ref = admin.database().ref(path) ;
             ref.set(postdata) ; 
         })
 
-        .catch(error=>{console.log(error.message ) ; res.render('timetable.ejs' , {error: error.message }) ; })
+        .catch(error=>{console.log(error.message ) ; 
+            res.render('timetable.ejs' , {error: error.message }) ; })
     })
 
 
