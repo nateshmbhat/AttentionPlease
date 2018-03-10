@@ -116,12 +116,17 @@ function Handle_POST(app){
             path = `/Colleges/C-1297/timetables/${req.body.year}/${req.body.branch}/${req.body.section}/` ; 
             console.log(path) ;
             ref = admin.database().ref(path) ;
-            ref.set(postdata) ; 
+            ref.update(postdata) ; 
+
+            res.status(200) ; 
+            res.send('Time Table successfully Updated ! ') ; 
         })
 
         .catch(error=>{console.log(error.message ) ; 
-            res.render('timetable.ejs' , {error: error.message }) ; })
-    })
+            res.status(400) ; 
+            res.send(error.message) ; 
+    }) ; 
+});
 
 
 

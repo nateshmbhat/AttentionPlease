@@ -32,13 +32,11 @@
         <!-- Compiled and minified JavaScript -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 
-
         <% if(locals.login && login){%>
         <% include partials/navbar.ejs %>
         <%}else{%>
         <%include partials/navbar_login.ejs%>
         <%} %>
-        
 
         <div class="container">
             <h1 class="animated zoomIn text-center">Time Table</h1>
@@ -97,7 +95,8 @@
                    </tbody>
                 </table>
 
-                <div class="alert animated shake alert-danger hidden erroralert"></div>
+                <div class="alert text-center animated shake alert-danger erroralert" hidden> </div>
+                <div class="alert text-center animated zoomIn alert-success successalert" hidden> </div>
                 
                 <button type="button" title="Add Row" class="hoverable btn btn-warning waves-effect waves-light" id="btn_addRow">
                     <i class="fa fa-plus"></i>
@@ -113,9 +112,7 @@
                 <button class="btn btn-info hoverable waves-effect waves-light"  id="btn_tester">TEST</button>
 
             </div>
-
         </div>
-
 <script>
 
 
@@ -128,15 +125,17 @@
                 dataArray = snap.val() ; 
                 console.log(dataArray) ; 
 
+                $("#timetable_body").html("") ; 
+
                 if(dataArray==null || typeof(dataArray)=='undefined')
                 {
-                    $("#timetable_body").html("") ; 
                     addRow(3) ; 
+                    $("#btn_saveTimeTable").text("Save TimeTable")
                     return ;
                 }
                 
+                $("#btn_saveTimeTable").text("Update TimeTable")
                 //Clear table and start populating
-                $("#timetable_body").html("") ; 
                 
                 dataArray.forEach(Arr => {
                     addRow(1) ;  
@@ -176,12 +175,36 @@
 
             console.log(rowsArray) ; 
 
-            $.post('/createtimetable' , {
+            let jqXHR = $.post('/createtimetable' , {
                 dataArray : rowsArray , 
                 branch:$('#select_branch').val() ,
                 year : $('#select_year').val() , 
                 section : $('#select_section').val()
-            }  , data=>{console.log('server sent : ' , data) ; $("addNewTimeTable").attr('hidden') ; } )
+                } , function success(data , textStatus , jqXHR){
+                    console.log(data) ; 
+                    console.log(jqXHR.status) ; 
+                
+                
+                $("div.successalert").html(data) ; 
+                $("div.successalert").replaceWith($("div.successalert").clone()) ; 
+                $("div.successalert").removeAttr('hidden') ; 
+                $("div.successalert").fadeIn() ; 
+
+                setTimeout( ()=>{$("div.successalert").fadeOut() ;} , 3000)
+                
+             })
+
+             .fail(data=>{
+                 console.log(data.responseText) ; 
+                 $("div.erroralert").html(data.responseText) ; 
+                 $("div.erroralert").replaceWith($('div.erroralert').clone()) ; 
+                 $("div.erroralert").removeAttr('hidden') ; 
+                 $("div.erroralert").fadeIn() ; 
+
+                 setTimeout( ()=>{$("div.erroralert").fadeOut() ;} , 5000)
+                  
+
+             })
 
         }
 
@@ -243,8 +266,12 @@
                 $("#btn_delRow").on('click' , e=>{
                     $("#timetable_body tr:last").remove() ;  
                 }) ; 
+                $("#select_section").on('change' , getTimeTable ); 
+                $("#select_year").on('change' , getTimeTable );
+                $("#select_branch").on('change' , getTimeTable )
 
 
+                //set the SEction list
                 s = "ABCDEFGHIJ" ; 
                 $('#select_section').html(`<option value="A">A</option>`) ; 
                 for(let i =1 ; i<s.length ; i++)
@@ -253,12 +280,11 @@
                 }
                 
                 $('select').material_select() ; 
+                addRow(3) ; 
             }                
-
 
             initialize();
             getTimeTable() ; 
-
 
             //DEBUG 
             $('#btn_addTimeTable').click() ; 
