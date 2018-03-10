@@ -109,12 +109,49 @@
 
                 <button class="btn btn-success hoverable waves-effect waves-light" type="submit" id="btn_saveTimeTable">Save Timetable</button>
 
-            </div>
 
+                <button class="btn btn-info hoverable waves-effect waves-light"  id="btn_tester">TEST</button>
+
+            </div>
 
         </div>
 
 <script>
+
+
+        function getTimeTable()
+        {
+            ref = firebase.database().ref(`/Colleges/C-1297/timetables/${$('#select_year').val()}/${$('#select_branch').val()}/${$('#select_section').val()}`)
+
+            ref.once('value' , snap=>
+            {
+                dataArray = snap.val() ; 
+                console.log(dataArray) ; 
+
+                if(dataArray==null || typeof(dataArray)=='undefined')
+                {
+                    $("#timetable_body").html("") ; 
+                    addRow(3) ; 
+                    return ;
+                }
+                
+                //Clear table and start populating
+                $("#timetable_body").html("") ; 
+                
+                dataArray.forEach(Arr => {
+                    addRow(1) ;  
+                    $("#timetable_body tr:last input.startTime").val(Arr[0]) ; 
+                    $("#timetable_body tr:last input.endTime").val(Arr[1]) ; 
+
+                    input_elements = $("#timetable_body tr:last input.courseName") ; 
+                    for(j =0  , len = input_elements.length ; j<len ; j++)
+                    {
+                        input_elements[j].value = Arr[j+2] ; 
+                    }
+ 
+                  });
+            });
+        }
 
 
         function saveTimeTable()
@@ -185,10 +222,11 @@
             }
         }
 
+
             function initialize() {
                 jQuery('[data-toggle="tooltip"]').tooltip()
                 $(".days").addClass("text-center").addClass("hoverable") ; 
-                addRow(3) ; 
+                // addRow(3) ; 
     
                 //Event handlers 
 
@@ -215,21 +253,17 @@
                 }
                 
                 $('select').material_select() ; 
-                //setup dropdown
-                // $('.dropdown-button').dropdown({
-                //     inDuration: 300,
-                //     outDuration: 225,
-                //     constrainWidth: false, // Does not change width of dropdown to that of the activator
-                //     hover: true, // Activate on hover
-                //     gutter: 0, // Spacing from edge
-                //     belowOrigin: false, // Displays dropdown below the button
-                //     alignment: 'left', // Displays dropdown with edge aligned to the left of button
-                //     stopPropagation: false // Stops event propagation
-                //     }
-                // ); 
             }                
 
+
             initialize();
+            getTimeTable() ; 
+
+
+            //DEBUG 
+            $('#btn_addTimeTable').click() ; 
+            $('#btn_tester').on('click' , getTimeTable) ; 
+
         </script>
 
 </body>
