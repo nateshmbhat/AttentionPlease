@@ -7,14 +7,14 @@
     <title>Profile</title>
 
     <style>
-    
+
     div #topics_subscribed li{
         font-size:1.3em;
         color:black;
         padding-left:1.5em;
         text-decoration:bold ;
     }
-    
+
     </style>
 </head>
 <body>
@@ -30,10 +30,10 @@
         <dl class="form-group">
             <dt><label for="user_profile_email">Email</label></dt>
             <dd>
-                <input class="form-control" id="email" name="email" type="email" required>                   
+                <input class="form-control" id="email" name="email" type="email" required>
             </dd>
         </dl>
-    
+
         <dl>
             <dt>Topics Subscribed</dt>
             <dd>
@@ -41,8 +41,8 @@
             </div>
             </dd>
         </dl>
-    
-    
+
+
     <dl class="form-group">
         <dt><label for="user_profile_location">Location</label></dt>
         <dd>
@@ -52,14 +52,14 @@
                     <option id="select_state_choose" selected disabled hidden>Choose...</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label class="col-4" for="inputState">District : </label>
                 <select class="col-4" id="select_district" name="district" required>
                     <option id="select_state_choose">Choose...</option>
                 </select>
             </div>
-            
+
             <div class="form-group ">
                 <label class="col-4" for="college">College : </label>
                 <input placeholder="Indian Institute of Technology" class="col-12" id= "select_college" type="text" required list="collegenameslist" name="college">
@@ -71,53 +71,53 @@
         <p><button type="submit" class="btn btn-primary">Update profile</button></p>
     </div>
     </form>
- 
+
 <script src="/assets/js/StateDistCollege.js"></script>
 <script>
 
-let user_global ; 
+let user_global ;
 
 function getformdata(){
     form = {} ;
     $('form').serializeArray().forEach(ele=>{
         form[ele.name] = ele.value ;
     })
-    return form ; 
+    return form ;
 }
 
 
 
 function init_user(){
     return new Promise((resolve , reject)=>{
-        user_global = firebase.auth().currentUser ; 
+        user_global = firebase.auth().currentUser ;
         if(!user_global){
             firebase.auth().onAuthStateChanged(user=>{
                 if(user)
-                    resolve(user_global = user) ; 
+                    resolve(user_global = user) ;
                 else
-                    window.location = 'login' ; 
+                    window.location = 'login' ;
             });
         }
-        else resolve(user_global) ; 
+        else resolve(user_global) ;
 
     }) ;
 }
 
 
 
-//Set the form element values 
+//Set the form element values
 init_user()
 .then(user=>{
 
-    ref = firebase.database().ref('/adminusers/' + user_global.uid) ; 
-    ref.once('value', snap=> 
+    ref = firebase.database().ref('/adminusers/' + user_global.uid) ;
+    ref.once('value', snap=>
     {
         userinfo = snap.val() ;
-        console.log(userinfo) ; 
-        userinfo.name = user_global.displayName  ; 
-        userinfo.email = user_global.email ;         
         console.log(userinfo) ;
-         
+        userinfo.name = user_global.displayName  ;
+        userinfo.email = user_global.email ;
+        console.log(userinfo) ;
+
         Object.keys(userinfo).forEach(key => {
             $(`input[name="${key}"]`).val(userinfo[key]);
         })
@@ -147,12 +147,12 @@ init_user()
 
 
 
-//Update the user data in the firebase database on submit ! 
+//Update the user data in the firebase database on submit !
 $('form').on('submit' , (event)=>{
 
     let auth = firebase.auth() ;
-    let list_topics = $('.list-topics-subbed') ; 
-    let topics = new Array() ; 
+    let list_topics = $('.list-topics-subbed') ;
+    let topics = new Array() ;
 
     list_topics.each(index =>{
         topics.push(list_topics[index].innerText) ;
@@ -168,14 +168,14 @@ $('form').on('submit' , (event)=>{
         type: "post",
         data: form,
         success: function (response) {
-           console.log(response) ; 
-        } , 
+           console.log(response) ;
+        } ,
         error: function(err){
             console.log(err) ;
         }
     });
-    
-    event.preventDefault(); 
+
+    event.preventDefault();
 })
 
 
