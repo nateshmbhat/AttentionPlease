@@ -16,12 +16,44 @@
     }
 
     </style>
+    <scrippt lang="javascript" src="xlsx.full.min.js"></script>
 </head>
 <body>
+
     <% include partials/scripts_and_css.ejs %>
     <% include partials/navbar_login.ejs %>
     <div class="container">
     <br>
-    <h1>Excel Sheets Reader</h1>
+    <h1>Seat Allotment</h1>
+    <br>Add a spreadsheet file containing the seat allotment details...example format will soon follow
     <br><br>
-    <input type=file accept=".xml,.xls,.ods">
+    <input type=file accept=".xml,.xlsx,.ods">
+    <br><br>
+    <script>
+    var url = "test.xlsx";
+
+    /* set up async GET request */
+    var req = new XMLHttpRequest();
+    req.open("GET", url, true);
+    req.responseType = "arraybuffer";
+
+    req.onload = function(e) {
+      var arraybuffer=req.response;
+      var data = new Uint8Array(arraybuffer);
+      var arr=new Array();
+      for(var i=0;i!=data.length;i++) arr[i]=String.fromCharCode(data[i]);
+      var batr=arr.join("");
+
+      var workbook = XLSX.read(batr, {type:"binary"});
+
+      /* DO SOMETHING WITH workbook HERE */
+      var first_sheet_name = workbook.SheetNames[0];
+      var address_of_cell = 'A1';
+
+      /* Get worksheet */
+      var worksheet = workbook.Sheets[first_sheet_name];
+      console.log(XLSX.utils.sheet_to_json(worksheet));
+    }
+
+    req.send();
+    </script>
