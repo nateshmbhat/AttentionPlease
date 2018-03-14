@@ -24,6 +24,6 @@
     "firebase-tools": "^3.17.4",
     "nodemon": "^1.13.3",
     "react-router": "^4.2.0",
-    "xlsx": "^0.12.4"
+    "xlsx": "^0.12.5"
   }
 }
