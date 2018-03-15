@@ -1,19 +1,25 @@
 /// <reference path=".\node_modules\@types\express\index.d.ts" />
 
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS 
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS
 
 const functions = require('firebase-functions');
 const app = require("express")() ; 
 const express_file_upload = require("express-fileupload") ; 
 const  express = require("express") ;
 const handle_requests = require("./requests_controller") ;
-const cookieparser = require("cookie-parser") ; 
+const cookieparser = require("cookie-parser") ;
+var xlsx=require('xlsx');
 
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   END OF IMPORTS 
 
-app.use(cookieparser()) ; 
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   END OF IMPORTS
+
+app.use(cookieparser()) ;
 app.use(express.static('../public' )  ) ;
 app.use(express_file_upload()) ; 
+var obj=xlsx.readFile('views/test.xlsx');
+var sh=obj.SheetNames;
+var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
+console.log(dat);
 
 handle_requests(app) ;
 

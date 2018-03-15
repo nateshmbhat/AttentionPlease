@@ -27,14 +27,16 @@ admin.initializeApp({
 });
 
 
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of IMPORTS 
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of IMPORTS
 
-app.set('view engine' , 'ejs') ; 
+
+app.set('view engine' , 'ejs') ;
 
 module.exports = function HandleRequests(app){
     console.log("Requests Handler running ! ") ;
-    Handle_GET(app) ; 
-    Handle_POST(app) ; 
+    Handle_GET(app) ;
+    Handle_POST(app) ;
+
 }
 
 
@@ -43,7 +45,7 @@ function isAuthenticated(req , res)
 {
     return new Promise((resolve ,reject)=>{
         console.log(req.cookies) ;
- 
+
     if(req.cookies['__session'])
     {
         admin.auth().verifyIdToken(req.cookies['__session']).then(decodedtoken=>{
@@ -51,7 +53,7 @@ function isAuthenticated(req , res)
                 console.log("User is signed in : " , decodedtoken.uid)  ;
                 resolve(decodedtoken.uid) ;
             }
-            // TODO ROUTE User with the required user details on the page 
+            // TODO ROUTE User with the required user details on the page
         })
         .catch(error=>{
             console.log("User not signed in yet ! ")
@@ -73,61 +75,60 @@ function get_college_code(state , dist ,college)
     for(let i = 0 ; i<myarr.length;  i++)
     {
         if(college==myarr[i][1]){
-            return myarr[i][0] ; 
+            return myarr[i][0] ;
         }
     }
 }
 
 
 function validatePostBody(req , res , keys ){
-    console.log("\nExecuting PostBody validation : ") ; 
-    console.log("Got Requests : ") ; 
-    console.log(req.body) ; 
+    console.log("\nExecuting PostBody validation : ") ;
+    console.log("Got Requests : ") ;
+    console.log(req.body) ;
 
     for(i in keys){
         if(!(keys[i] in req.body))
         {
-            console.log("invalid post request returning ! ") ; 
-            return false ; 
+            console.log("invalid post request returning ! ") ;
+            return false ;
         }
     }
-    return true ; 
+    return true ;
 }
 
 
-
-//Handles all POST requests 
+//Handles all POST requests
 function Handle_POST(app){
     app.post("/createtimetable" , urlencodedParser ,  (req , res)=>{
-        console.log(req.body) ; 
+        console.log(req.body) ;
         isAuthenticated(req , res)
         .then(uid =>{
-            if(!validatePostBody(req , res , ['dataArray' , 'branch' , 'year' , 'section'])) throw Error("Invalid Request ! Make sure that the time fields are not empty !") ; 
+            if(!validatePostBody(req , res , ['dataArray' , 'branch' , 'year' , 'section'])) throw Error("Invalid Request ! Make sure that the time fields are not empty !") ;
 
             //check if each 1d array in data array has 9 elements : first 2 being the time
-            postdata = req.body.dataArray ; 
+            postdata = req.body.dataArray ;
             for(let i =0 ; i<postdata.length ; i++)
             {
-                time_regex = /^\d{1,2}\:\d{1,2}(AM|PM)$/ ; 
+                time_regex = /^\d{1,2}\:\d{1,2}(AM|PM)$/ ;
                 if(!(time_regex.test(postdata[i][0]) && time_regex.test(postdata[i][1])))
-                        throw Error("Invalid Time format . Please choose the time from the clock.") ; 
-                if(postdata[i].length!=9)  throw Error("Invalid Post request ! ") ;  
+                        throw Error("Invalid Time format . Please choose the time from the clock.") ;
+                if(postdata[i].length!=9)  throw Error("Invalid Post request ! ") ;
             }
 
-            //All checked . Now safe to add to the database 
-            path = `/Colleges/C-1297/timetables/${req.body.year}/${req.body.branch}/${req.body.section}/` ; 
+            //All checked . Now safe to add to the database
+            path = `/Colleges/C-1297/timetables/${req.body.year}/${req.body.branch}/${req.body.section}/` ;
             console.log(path) ;
             ref = admin.database().ref(path) ;
-            ref.update(postdata) ; 
+            ref.update(postdata) ;
 
-            res.status(200) ; 
-            res.send('Time Table successfully Updated ! ') ; 
+            res.status(200) ;
+            res.send('Time Table successfully Updated ! ') ;
         })
 
-        .catch(error=>{console.log(error.message ) ; 
-            res.status(400) ; 
-            res.send(error.message) ; 
-    }) ; 
+        .catch(error=>{console.log(error.message ) ;
+            res.status(400) ;
+            res.send(error.message) ;
+    }) ;
 });
 
 
@@ -139,28 +140,28 @@ function Handle_POST(app){
 
         admin.database().ref('/adminusers/'+uid).once('value' , snap=>{
             userinfo = snap.val() ;
-            
-            const msg = admin.messaging() ; 
+
+            const msg = admin.messaging() ;
             payload = {
                 notification : {
-                    title : req.body.title , 
+                    title : req.body.title ,
                     body : req.body.description
-                } , 
+                } ,
 
                 data : {
-                    college : userinfo.college , 
-                    state : userinfo.state , 
-                    district : userinfo.district , 
+                    college : userinfo.college ,
+                    state : userinfo.state ,
+                    district : userinfo.district ,
                     detail_desc : "",
-                    links : "" , 
+                    links : "" ,
                     one_line_desc : "" ,
-                    title : req.body.title , 
+                    title : req.body.title ,
                     topics : req.body.topic
                 }
             }
 
             options = {
-                priority : 'high' , 
+                priority : 'high' ,
                 timeToLive : 100
             }
 
@@ -180,7 +181,7 @@ function Handle_POST(app){
 
         })
         .catch(err=>{res.render('login.ejs' , {error : err}); return true; })
-        
+
     })
 
     app.post("/getcolleges" , urlencodedParser , (req,res)=>{
@@ -193,47 +194,47 @@ function Handle_POST(app){
         catch(error){
 
            res.status(400) ;
-           res.send(error) ;  
+           res.send(error) ;
 
         }
     })
 
 
     app.post('/updateprofile', urlencodedParser ,(req , res)=>{
-        console.log(req.body) ;        
+        console.log(req.body) ;
         isAuthenticated(req , res)
         .then(uid=>{
-            //TODO : check if "topics" is also present in the request  
-            //Right when use is not subbed to any topic , it results in invalid post request 
-            if(!validatePostBody(req , res , ['name' , 'email'  , 'state' , 'district' , 'college' ])) return ; 
+            //TODO : check if "topics" is also present in the request
+            //Right when use is not subbed to any topic , it results in invalid post request
+            if(!validatePostBody(req , res , ['name' , 'email'  , 'state' , 'district' , 'college' ])) return ;
 
             admin.auth().updateUser(uid , {
-                displayName : req.body.name , 
-                email : req.body.email , 
+                displayName : req.body.name ,
+                email : req.body.email ,
             })
             .then(user=>{
 
                 console.log('request body is ') ; console.log(req.body) ;
                 let ref = admin.database().ref('/adminusers/' + user.uid) ;
                 ref.update({
-                    college : req.body.college , 
+                    college : req.body.college ,
                     district : req.body.district ,
-                    state : req.body.state , 
-                    name : req.body.name , 
+                    state : req.body.state ,
+                    name : req.body.name ,
                     ccode : get_college_code(req.body.state , req.body.district , req.body.college) ,
 
                 })
                 .then(user=>{console.log("Updated successfully !") ; })
-                .catch(err=>{consolge.log("ERROR OCCURED ! ") ; console.log(err)}) ; 
+                .catch(err=>{consolge.log("ERROR OCCURED ! ") ; console.log(err)}) ;
 
             })
-            .catch(err=>console.log("Error Occured !" , err)) ; 
-            
+            .catch(err=>console.log("Error Occured !" , err)) ;
+
         })
         .catch(err=>{
-                console.log(err) ; 
+                console.log(err) ;
         }) ;
-        
+
     })
 
 
@@ -270,11 +271,11 @@ function Handle_POST(app){
             {
                 if(state_dist_colleges[req.body.state][req.body.district].indexOf(req.body.college)>=0)
                 {
-                    flag_valid = 1 ; 
+                    flag_valid = 1 ;
                 }
                 else{
-                    res.render('index.ejs' , {error : "Invalid College Entry . Please make sure that you have selected one of the colleges in the provided list itself."}) ; 
-                    return ; 
+                    res.render('index.ejs' , {error : "Invalid College Entry . Please make sure that you have selected one of the colleges in the provided list itself."}) ;
+                    return ;
                 }
 
             }
@@ -282,36 +283,36 @@ function Handle_POST(app){
 
         if(!flag_valid)
             {
-                //CANCEL registration by sending the error ! 
+                //CANCEL registration by sending the error !
                 res.render('index.ejs' , {error : "Invalid Location Details ! "})
-                return ; 
+                return ;
             }
 
-        console.log(req.body) ; 
+        console.log(req.body) ;
         console.log("started registration handler") ;
-       
+
 
         admin.auth().createUser({
             email: req.body.email,
             emailVerified: false,
-            phoneNumber : "+91"+req.body.phone , 
+            phoneNumber : "+91"+req.body.phone ,
             password: req.body.password,
             displayName: req.body.name,
             disabled: false
         })
         .then((user)=>{
-                console.log("\nUser created with ID : " + user.uid) ; 
-    
+                console.log("\nUser created with ID : " + user.uid) ;
+
                 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-                // Populate the USERINFO object with the user's details contained in admin.auth.User and the POST request 
+                // Populate the USERINFO object with the user's details contained in admin.auth.User and the POST request
                 userinfo = {
-                    name : req.body.name , 
-                    state : req.body.state , 
-                    password : req.body.password , 
-                    district : req.body.district , 
+                    name : req.body.name ,
+                    state : req.body.state ,
+                    password : req.body.password ,
+                    district : req.body.district ,
                     college : req.body.college ,
                 };
-                //Set the collegeID for the user object corresponding to the selected college name 
+                //Set the collegeID for the user object corresponding to the selected college name
 
                 userinfo.ccode = get_college_code(userinfo.state , userinfo.district , userinfo.college) ;
 
@@ -319,19 +320,19 @@ function Handle_POST(app){
                 console.log(userinfo) ;
                 ref_user = admin.database().ref("/adminusers/"+user.uid) ;
                 ref_user.set(userinfo) ;
-                
+
                 res.render('index.ejs' , {success : "You have been registered successfully. Please proceed with Login :) "});
 
         })
 
 
         .catch((error)=>{
-            /// TODO : Send the error alert to the client with the error 
-            res.status(400) ; 
-            res.render( "index.ejs" , {error : error.message}) ;   
+            /// TODO : Send the error alert to the client with the error
+            res.status(400) ;
+            res.render( "index.ejs" , {error : error.message}) ;
             console.log(error)
 
-        }) ; 
+        }) ;
     })
 
 
@@ -341,16 +342,16 @@ function Handle_POST(app){
 
         isAuthenticated(req,res)
         .then(uid=>{
-            if(!validatePostBody(req , res ,['topic'])) return ;            
+            if(!validatePostBody(req , res ,['topic'])) return ;
 
             console.log("user id is " , uid) ;
             admin.database().ref('/adminusers/'+uid).once('value',snap=>{
-                
-                userinfo = snap.val() ; 
+
+                userinfo = snap.val() ;
                 let ref = admin.database().ref('/Colleges/' + userinfo.ccode + '/topics') ;
 
                 ref.once('value' , snap=>{
-                    
+
                     arr = snap.val()  ;
                     if(!arr) ref.set([req.body.topic]);
                     else
@@ -374,12 +375,12 @@ function Handle_POST(app){
         })
         .catch(err=>{console.log(err) ;res.render('index.ejs')}) ;
     })
-   
+
 }
 
 
 
-//Handles all the GET request routes 
+//Handles all the GET request routes
 function Handle_GET(app){
 
     app.get('/testfileupload' , (req ,res)=>{res.render('fileuploadtesting.ejs') ; }) ; 
@@ -387,6 +388,13 @@ function Handle_GET(app){
     app.get('/' , (req ,res)=>{
         res.render('index.ejs') ;
     })
+
+    //this code is experimental by KPS
+    app.get('/expr',(req,res)=>{
+        res.render('expr.ejs');
+    })
+    //end of experimental code
+
 
     app.get('/createtopic' , (req , res)=>{
         isAuthenticated(req , res).then(uid=>res.render('createtopic.ejs')).catch(err=>res.render('login.ejs')) ;
@@ -397,17 +405,17 @@ function Handle_GET(app){
     })
 
     app.get('/home' , (req,res)=>{
-        res.redirect('/') ; 
+        res.redirect('/') ;
     })
 
     app.get('/index.html' , (req,res)=>{
-        res.redirect('/') ; 
+        res.redirect('/') ;
     })
 
     app.get('/timetable' , (req , res)=>{
-        isAuthenticated(req , res).then(uid=>{res.render('timetable.ejs') ; }).catch(err=>{res.render('login.ejs') ; }) ; 
+        isAuthenticated(req , res).then(uid=>{res.render('timetable.ejs') ; }).catch(err=>{res.render('login.ejs') ; }) ;
     })
-  
+
 
     app.get('/login' , (req , res)=>{
 
@@ -418,8 +426,8 @@ function Handle_GET(app){
 
     app.get("/dashboard" , (req, res)=>{
         isAuthenticated(req, res)
-        .then(uid=>res.render('dashboard.ejs') )  
-        .catch(error=>res.render('login.ejs'))  ; 
+        .then(uid=>res.render('dashboard.ejs') )
+        .catch(error=>res.render('login.ejs'))  ;
     })
 
 }
