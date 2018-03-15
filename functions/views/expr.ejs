@@ -16,7 +16,10 @@
     }
 
     </style>
-    <scrippt lang="javascript" src="xlsx.full.min.js"></script>
+
+    <script type="text/javascript" src="//unpkg.com/xlsx/dist/shim.min.js"></script>
+    <script type="text/javascript" src="//unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+
 </head>
 <body>
 
@@ -29,9 +32,16 @@
     <br><br>
     <input type=file accept=".xml,.xlsx,.ods">
     <br><br>
-    <script>
-    var xlsx=require('node-xlsx');
-    var obj=xlsx.parse(__dirname+'test.xlsx');
-    var obj=xlsx.parse(fs.readFileSync(__dirname+'test.xlsx'));
+    <script type="text/javascript">
+    var xlsx=require('xlsx');
+          if(typeof require !== 'undefined') XLSX=require('xlsx');
+          var workbook=XLSX.readFile('./test.xlsx');
 
+          var first_sheet_name=workbook.SheetNames[0];
+          var address_of_cell='A1';
+          var worksheet=workbook.Sheets[first_sheet_name];
+          var desired_cell=worksheet[address_of_cell];
+          var desired_value=(desired_cell ? desired_cell.v : undefined);
+          console.log("hello");
+          console.log(desired_value);
     </script>
