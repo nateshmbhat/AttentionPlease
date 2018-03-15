@@ -2,28 +2,32 @@
 
 
 
+
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS 
 
 
-var app = require("express")() ; 
-var bodyparser = require("body-parser") ; 
-var session = require("express-session") ;
-var urlencodedParser = bodyparser.urlencoded({extended:true}) ; 
-var admin = require("firebase-admin") ;
-var firebase_client = require("firebase")  ;
-var fs =  require("fs") ; 
-var state_dist_colleges = require("./data/state_dist_colleges list (without college details).json") ;
-var state_dist_collegewithCODE = require("./data/state_dist_collegeWITHCODE.json") ;
-var serviceAccount = require("./service account key/AttentionPlease-d86a646ccc28(working notification).json") ;
+const app = require("express")() ; 
+const bodyparser = require("body-parser") ; 
+const session = require("express-session") ;
+const urlencodedParser = bodyparser.urlencoded({extended:true}) ; 
+const admin = require("firebase-admin") ;
+const firebase_client = require("firebase")  ;
+const fs =  require("fs") ; 
+const state_dist_colleges = require("./data/state_dist_colleges list (without college details).json") ;
+const state_dist_collegewithCODE = require("./data/state_dist_collegeWITHCODE.json") ;
+const serviceAccount = require("./service account key/AttentionPlease-d86a646ccc28(working notification).json") ;
+const express_fileupload = require("express-fileupload") ; 
+const gcs = require("@google-cloud/storage")() ;
+
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://attentionplease-24589.firebaseio.com/"
+  databaseURL: "https://attentionplease-24589.firebaseio.com/" , 
+  storageBucket : "attentionplease-24589.appspot.com/"
 });
 
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of IMPORTS 
-
 
 app.set('view engine' , 'ejs') ; 
 
@@ -31,7 +35,6 @@ module.exports = function HandleRequests(app){
     console.log("Requests Handler running ! ") ;
     Handle_GET(app) ; 
     Handle_POST(app) ; 
-
 }
 
 
@@ -61,13 +64,11 @@ function isAuthenticated(req , res)
         reject('not signed in ') ;
     
     }) ; 
-
 }
 
 
 function get_college_code(state , dist ,college)
 {
-
     let myarr = state_dist_collegewithCODE[state][dist]
     for(let i = 0 ; i<myarr.length;  i++)
     {
@@ -92,6 +93,7 @@ function validatePostBody(req , res , keys ){
     }
     return true ; 
 }
+
 
 
 //Handles all POST requests 
@@ -156,17 +158,24 @@ function Handle_POST(app){
                     topics : req.body.topic
                 }
             }
+
             options = {
                 priority : 'high' , 
                 timeToLive : 100
             }
 
             msg.sendToTopic(req.body.topic , payload , options) 
-            .then(msg=>{console.log(msg)
-               res.render('dashboard.ejs' , {messageSent : true}) 
+            .then(msg=>{console.log(msg) ; 
+                console.log("Notification sent succefully to topic : " , req.body.topic , " with title : " , req.body.title) ;
+                res.render('dashboard.ejs' , {messageSent : true})  ; 
+
+                admin.database().ref(`/Notifications/${msg.messageId}`).update({
+                   title : req.body.title , body : req.body.description , college : userinfo.college ,state : userinfo.state , district:userinfo.district , topics : req.body.topic , ccode : get_college_code(userinfo.state , userinfo.district , userinfo.college)
+               }) ; 
             })
-            .catch(err=>console.log(err)) ;
-            console.log("Notification sent succefully to topic : " , req.body.topic , " with title : " , req.body.title) ;
+            .catch(err=>{console.log(err)
+                res.render('dashboard.ejs' , {messageSent : false} ) ;
+            }) ;
         })
 
         })
@@ -226,6 +235,29 @@ function Handle_POST(app){
         }) ;
         
     })
+
+
+    app.post('/testfileupload' ,urlencodedParser , (req , res)=>{
+        console.log("\nGOT FILE POST REQUEST !!!\n\n") ; 
+        console.log(req.files) ; 
+        let sampleFile = req.files.sampleFile ;
+        
+        sampleFile.mv('./../data/mytestfile.jpg' , err=>{
+            if(!err){
+                console.log("Successfully got the file ! ") ; 
+                let bucket = admin.storage().bucket() ;
+
+                bucket.upload('./../data/mytestfile.jpg' , (err, file , response)=>{
+                    console.log(err , file, response) ; 
+                }) ;
+            }
+            else{
+                console.log(err) ; 
+                res.status(500).send(err) ; 
+            }
+        }) ; 
+
+    }) ; 
 
 
 
@@ -349,6 +381,8 @@ function Handle_POST(app){
 
 //Handles all the GET request routes 
 function Handle_GET(app){
+
+    app.get('/testfileupload' , (req ,res)=>{res.render('fileuploadtesting.ejs') ; }) ; 
     
     app.get('/' , (req ,res)=>{
         res.render('index.ejs') ;

@@ -4,6 +4,7 @@
 
 const functions = require('firebase-functions');
 const app = require("express")() ; 
+const express_file_upload = require("express-fileupload") ; 
 const  express = require("express") ;
 const handle_requests = require("./requests_controller") ;
 const cookieparser = require("cookie-parser") ; 
@@ -12,6 +13,7 @@ const cookieparser = require("cookie-parser") ;
 
 app.use(cookieparser()) ; 
 app.use(express.static('../public' )  ) ;
+app.use(express_file_upload()) ; 
 
 handle_requests(app) ;
 
