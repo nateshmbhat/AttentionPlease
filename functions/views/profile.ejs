@@ -99,7 +99,6 @@ function init_user(){
             });
         }
         else resolve(user_global) ;
-
     }) ;
 }
 
@@ -108,7 +107,6 @@ function init_user(){
 //Set the form element values
 init_user()
 .then(user=>{
-
     ref = firebase.database().ref('/adminusers/' + user_global.uid) ;
     ref.once('value', snap=>
     {
@@ -123,25 +121,10 @@ init_user()
         })
         $('#biodata').html(userinfo.biodata) ;
 
-
         $('#select_state').val(userinfo.state);
         $('#select_state').trigger('change') ;
         $('#select_district').val(userinfo.district) ;
-
-
-        if(userinfo.topics)
-        {
-            userinfo.topics.forEach(ele=>{
-                $("#topics_subscribed").append(`<li class="list-group-item col-4 list-topics-subbed">${ele}<i style="margin-left :10px ; color:red;font-size:.7em;" class="removeitem fa fa-times"/></li>`) ;
-            })
-
-            $(document).on('click', '.removeitem', function () {
-                console.log('running');
-                $(this).parent().remove();
-            });
-        }
-
-    }) ;
+        }) ;
 })
 
 
