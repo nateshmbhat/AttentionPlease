@@ -136,7 +136,11 @@ function Handle_POST(app){
     app.post("/sendnotification" , urlencodedParser , (req , res)=>{
         isAuthenticated(req , res)
         .then(uid=>{
-        if(!validatePostBody(req , res , ['topic' , 'title' ,'description'])) return ;
+        if(!validatePostBody(req , res , ['topic' , 'title' ,'description'])) 
+        {
+            res.status('200').json({error : 'Make sure you have specified all the required details below ! '}) ; 
+            return ; 
+        }
 
         admin.database().ref('/adminusers/'+uid).once('value' , snap=>{
             userinfo = snap.val() ;
@@ -156,7 +160,7 @@ function Handle_POST(app){
                     links : "" ,
                     one_line_desc : "" ,
                     title : req.body.title ,
-                    topics : req.body.topic
+                    topics : JSON.stringify(req.body.topic)
                 }
             }
 
@@ -164,15 +168,17 @@ function Handle_POST(app){
                 priority : 'high' ,
             }
 
+
             msg.sendToTopic(req.body.topic[0] , payload , options) 
             .then(msg=>{console.log(msg) ; 
                 console.log("notification sent " , req.body.topic , " with title : " , req.body.title) ;
-                res.render('dashboard.ejs' , {success : "Notification sent succefully sent !"})  ; 
-
+                
                 admin.database().ref(`/Notifications/${msg.messageId}`).update({
-                   title : req.body.title , body : req.body.description , college : userinfo.college ,state : userinfo.state , district:userinfo.district , topics : req.body.topic , ccode : get_college_code(userinfo.state , userinfo.district , userinfo.college)}) ; 
+                    title : req.body.title , body : req.body.description , college : userinfo.college ,state : userinfo.state , district:userinfo.district , topics : req.body.topic , ccode : get_college_code(userinfo.state , userinfo.district , userinfo.college)}) ; 
 
-                for(let i =1 ; i<req.body.topic.length() ;i++)
+                res.status(200).json({success : "Notification sent successfully ! " })
+                    
+                for(let i =1 ; i<req.body.topic.length ;i++)
                 {
                     msg.sendToTopic(req.body.topic[i] , payload , options)
                     .catch(err=>console.log(err)) ; 

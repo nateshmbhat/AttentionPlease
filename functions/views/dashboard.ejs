@@ -14,13 +14,20 @@
             text-align: center ; 
             padding:10px 0 ;
         } 
+        h3{
+            color:black !important;
+            font-family:raleway , caladea , lora  , cambria  !important; 
+        }
+        p{
+            font-size:120%;
+        }
     </style>
 </head>
 
 <body>
     
     <% include partials/scripts_and_css.ejs %>
-    
+   
     <script src="/assets/js/dashboard.js"></script>       
     
     <% if(locals.login && login){%>
@@ -32,22 +39,18 @@
             
     <h1 class="animated flipInX ">Notify Them </h1>
     <div class="jumbotron container z-depth-5">
-    <% if(locals.error) {%>
-    <div class="animated shake rounded alert alert-danger"   role="alert" id="erroralert"><h2 style="color:black;">Error : <%=error%></h2></div>
-    <%}%>
 
-    <% if(locals.success){%> 
-    <div class="animated zoomIn rounded alert alert-success green" role="alert" id="successalert"><h2 style="color:black"><%=success%></h2></div>
-    <%}%>
+    <div class="animated shake hoverable rounded alert alert-danger"  hidden role="alert" id="erroralert"><h2 style="color:black;"></h2></div>
+
+    <div class="animated zoomIn hoverable rounded alert alert-success green" hidden role="alert" id="successalert"><h2 style="color:black"></h2></div>
 
         <h3 id="collegename" class="text-center" style="font-family: raleway"></h3>
         <div id="location-details">
         </div>
                      
         <form method="post" action="/sendnotification">
-            <div class="form-group" id="topicslist">
-                
-            </div>
+            
+            <div id="dynamic"> </div>
             <div class="form-group">
                 <div class="md-form">
                     <i class="fa fa-envelope prefix"></i>
@@ -68,9 +71,16 @@
                 
             </div>
 
+
+            <!-- circle icon  -->
+            <div class="text-center text-align-center">
+                <div id="loader_circle" class="preloader-wrapper big active" hidden> <div class="spinner-layer spinner-blue"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-red"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-yellow"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-green"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> </div>
+            </div>    
+
             <div class="form-group text-center">
                 <button type="submit" class="btn rounded btn-dark-green waves-effect waves-light">Notify</button>
             </div>
+
         </form>
 
     </div>
@@ -82,8 +92,18 @@
 
 
 <script>
+
+    function fadeElementAfter(querystring , time=3000 ){
+       setTimeout(()=>{
+           $(querystring).fadeOut(1000) ; 
+       } , time ) ;
+    }
+
 $("form").on('submit' , e=>{
     e.preventDefault() ;
+    $('button[type=submit]').hide() ;
+    $("#loader_circle").removeAttr("hidden") ; 
+
     postdata = {} ;
 
     $('form').serializeArray().map(ele=> { if(ele.name!='topic') postdata[ele.name] = ele.value} ) ; 
@@ -94,8 +114,28 @@ $("form").on('submit' , e=>{
     });
     postdata['topic'] = topicslist ; 
 
+    console.log(postdata) ; 
+
     $.post('/sendnotification' , postdata , (data , status , jqxhr_obj)=>{
-        console.log(data) ; 
+        
+        if(data.success)
+        {
+            console.log('success') ; 
+            $('#successalert').html(`<h3 class="text-center">${data.success}</h3>`)
+            $('#successalert').replaceWith($("#successalert").clone().removeAttr('hidden')) ; 
+            document.querySelector("form").reset() ; 
+            fadeElementAfter("#successalert" , 5000) ; 
+        }
+        else{
+            console.log('error') ; 
+            $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
+            $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden')) ; 
+            fadeElementAfter("#erroralert" , 3000) ; 
+        }
+
+        $('button[type=submit]').show() ; 
+
+        $("#loader_circle").attr('hidden' , true) ; 
     })
 
 })
