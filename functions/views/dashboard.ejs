@@ -15,9 +15,7 @@
             padding:10px 0 ;
         } 
     </style>
-
 </head>
-
 
 <body>
     
@@ -28,16 +26,20 @@
     <% if(locals.login && login){%>
         <% include partials/navbar.ejs %>
         <%}else{%>
-            <%include partials/navbar_login.ejs%>
-            <%} %>
+        <%include partials/navbar_login.ejs%>
+    <%} %>
+
             
     <h1 class="animated flipInX ">Notify Them </h1>
     <div class="jumbotron container z-depth-5">
-        <% if(locals.messageSent && messageSent){ %>
-            <div class="alert alert-success text-center" id="alertMessageSent">
-                <h4 class="animated zoomIn slow">Notification Sent successfully ! </h4>
-            </div>
-        <% } %>
+    <% if(locals.error) {%>
+    <div class="animated shake rounded alert alert-danger"   role="alert" id="erroralert"><h2 style="color:black;">Error : <%=error%></h2></div>
+    <%}%>
+
+    <% if(locals.success){%> 
+    <div class="animated zoomIn rounded alert alert-success green" role="alert" id="successalert"><h2 style="color:black"><%=success%></h2></div>
+    <%}%>
+
         <h3 id="collegename" class="text-center" style="font-family: raleway"></h3>
         <div id="location-details">
         </div>
@@ -77,4 +79,27 @@
     <br><br><br><br><br>
     <% include partials/footer.ejs %>
 </body>
+
+
+<script>
+$("form").on('submit' , e=>{
+    e.preventDefault() ;
+    postdata = {} ;
+
+    $('form').serializeArray().map(ele=> { if(ele.name!='topic') postdata[ele.name] = ele.value} ) ; 
+    
+    topicslist = [] ; 
+    $("input:checkbox[name=topic]:checked").each(function(){
+        topicslist.push($(this).val());
+    });
+    postdata['topic'] = topicslist ; 
+
+    $.post('/sendnotification' , postdata , (data , status , jqxhr_obj)=>{
+        console.log(data) ; 
+    })
+
+})
+
+
+</script>
 </html>

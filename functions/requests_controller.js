@@ -162,27 +162,33 @@ function Handle_POST(app){
 
             options = {
                 priority : 'high' ,
-                timeToLive : 100
             }
 
-            msg.sendToTopic(req.body.topic , payload , options) 
+            msg.sendToTopic(req.body.topic[0] , payload , options) 
             .then(msg=>{console.log(msg) ; 
-                console.log("Notification sent succefully to topic : " , req.body.topic , " with title : " , req.body.title) ;
-                res.render('dashboard.ejs' , {messageSent : true})  ; 
+                console.log("notification sent " , req.body.topic , " with title : " , req.body.title) ;
+                res.render('dashboard.ejs' , {success : "Notification sent succefully sent !"})  ; 
 
                 admin.database().ref(`/Notifications/${msg.messageId}`).update({
-                   title : req.body.title , body : req.body.description , college : userinfo.college ,state : userinfo.state , district:userinfo.district , topics : req.body.topic , ccode : get_college_code(userinfo.state , userinfo.district , userinfo.college)
-               }) ; 
-            })
+                   title : req.body.title , body : req.body.description , college : userinfo.college ,state : userinfo.state , district:userinfo.district , topics : req.body.topic , ccode : get_college_code(userinfo.state , userinfo.district , userinfo.college)}) ; 
+
+                for(let i =1 ; i<req.body.topic.length() ;i++)
+                {
+                    msg.sendToTopic(req.body.topic[i] , payload , options)
+                    .catch(err=>console.log(err)) ; 
+                }
+
+                })
+
             .catch(err=>{console.log(err)
-                res.render('dashboard.ejs' , {messageSent : false} ) ;
+                res.render('dashboard.ejs' , {error : err.message}  ) ;
             }) ;
         })
 
         })
         .catch(err=>{res.render('login.ejs' , {error : err}); return true; })
-
     })
+
 
     app.post("/getcolleges" , urlencodedParser , (req,res)=>{
        if(!validatePostBody(req , res , ['state' , 'district'])) return ;

@@ -7,14 +7,12 @@
     <title>Create topics</title>
 </head>
 
-
 <body>
-
     <% include partials/scripts_and_css.ejs %>
-   <% include partials/navbar_login.ejs %> 
-   <h1 class="pageheading">Create Topic</h1>
+    <% include partials/navbar_login.ejs %> 
+    <h1 class="pageheading">Create Topic</h1>
 
-   <div class="container">
+    <div class="container">
     <form method="post">
 
     <% if(locals.topicexists && locals.topicexists) {%>
@@ -51,12 +49,12 @@
     </div>  
 
     <div class="form-group">
-        <label for="desc" class="col-4" >Topic Description : </label>
+        <label for="desc" class="col-4"> Topic Description : </label>
         <textarea required name="desc" type="text" maxlength="200" minlength="2" id="desc" > </textarea>
     </div> 
 
-    <br> 
 
+    <br> 
     <div class="form-group text-center"><button type="submit" class="btn btn-primary ">Create</button></div>
 
     </form>

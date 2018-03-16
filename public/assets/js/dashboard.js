@@ -1,8 +1,3 @@
-
-/// <reference path="../../functions/node_modules/@types/jquery/index.d.ts"
-
-// var firebase = require("firebase") ; 
-
   
 firebase.auth().onAuthStateChanged(function(user){
 
@@ -37,11 +32,15 @@ if(user){
             
             topicslist.forEach(topic=>{
                $("#topicslist").append(
-               `    <div class="font-bold animated fadeIn">
-                        <h5 style="font-family:raleway, caladea, lora ; "><input value=${topic} class="m-1" type="radio" name="topic">${topic}</input></h5>
+               `    <div class="font-bold animated fadeIn form-check">
+                        <input name="topic" value="${topic}" type="checkbox" data-topic="${topic}" class="mb-3 form-check-input filled-in" id="${"in_topic"+topic}">
+                        <label class="form-check-label" style="font-family:raleway , caladea,lora , cambria; font-size:120%;" for="${"in_topic"+topic}">${topic}</label>
                     </div>
                `);
+               
+
             })
+            
         }).catch(error =>console.log(error)) ; 
     })
     
@@ -51,5 +50,6 @@ else {
     console.log("No user is signed in !") ;
     unsetcookie() ;
 }
+
 
 })
