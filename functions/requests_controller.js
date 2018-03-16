@@ -342,34 +342,31 @@ function Handle_POST(app){
 
         isAuthenticated(req,res)
         .then(uid=>{
-            if(!validatePostBody(req , res ,['topic'])) return ;
+            if(!validatePostBody(req , res ,['topic' , 'desc'])) return ;
 
             console.log("user id is " , uid) ;
             admin.database().ref('/adminusers/'+uid).once('value',snap=>{
 
                 userinfo = snap.val() ;
                 let ref = admin.database().ref('/Colleges/' + userinfo.ccode + '/topics') ;
+                topicobject = {title : req.body.topic , desc : req.body.desc} ; 
 
                 ref.once('value' , snap=>{
+                    topicids = snap.val()  ;
+                    arr = [] ; 
+                    // fill the present topic names in arr 
+                    Object.getOwnPropertyNames(topicids).forEach(id=>arr.push(topicids[id].title))
 
-                    arr = snap.val()  ;
-                    if(!arr) ref.set([req.body.topic]);
-                    else
+                    if(arr.indexOf(req.body.topic)<0) //Insert only if topic doesnt already exists !
                     {
-                        if(arr.indexOf(req.body.topic)<0) //Insert only if topic doesnt already exists !
-                        {
-                            arr.push(req.body.topic)
-                            ref.set(arr) ;
-                        }
-                        else{
-                            //Topic already exists
-                            res.render('createtopic.ejs' , {topicexists : true})
-                            return ;
-                        }
+                        ref.push(topicobject) ;
+                        res.render('createtopic.ejs' , {success : true}) ;
                     }
-                    res.render('createtopic.ejs' , {success : true}) ;
+                    else{
+                        //Topic already exists
+                        res.render('createtopic.ejs' , {topicexists : true}) ; 
+                    } 
                 })
-
             })
 
         })
