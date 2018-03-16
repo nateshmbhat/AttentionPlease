@@ -28,7 +28,10 @@ if(user){
         
         firebase.database().ref('/Colleges/'+userinfo.ccode).once('value').then(snap=>{
             console.log(snap.val()) ;
-            topicslist = snap.val().topics
+            topicsids= snap.val().topics //gives the pushed id
+            topicslist = new Array() ; 
+
+            Object.getOwnPropertyNames(topicsids).forEach(ele=> topicslist.push(topicsids[ele].title)) ;
 
             $("#topicslist").append(`<h4 style="display:block" class="mt-5 animated fadeIn">Choose the Topic to which the message needs to be sent : </h4>`) 
             
