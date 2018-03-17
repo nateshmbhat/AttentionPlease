@@ -29,9 +29,9 @@ if(user){
             Object.getOwnPropertyNames(topicsids).forEach(ele=> topicslist.push(topicsids[ele].title)) ;
 
             // $("#topicslist").append(`<h4 style="display:block" class="mt-5 animated fadeIn">Choose the Topic to which the message needs to be sent : </h4>`) 
-            $("#dynamic").append(`<div class="align-center"><div class="card card-body" style="width:50%;">
+            $("#dynamic").append(`<div class="justify-content-center "><div class="m-auto card card-body hoverable" style="width:50%;">
                 <h4 class="card-title">Topic Selection</h4>
-                <p class="card-text">Choose the required topics which sends the notifications for all those who have subscribed to the selected topics</p>
+                <p class="lead card-text">Choose the required topics which sends the notifications for all those who have subscribed to the selected topics</p>
                 <div class="flex-row">
                 <div class="form-group" id="topicslist"> </div>
                 </div>

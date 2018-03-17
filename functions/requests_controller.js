@@ -18,6 +18,7 @@ const state_dist_collegewithCODE = require("./data/state_dist_collegeWITHCODE.js
 const serviceAccount = require("./service account key/AttentionPlease-d86a646ccc28(working notification).json") ;
 const express_fileupload = require("express-fileupload") ; 
 const gcs = require("@google-cloud/storage")() ;
+const shortid = require("shortid") ; 
 
 
 admin.initializeApp({
@@ -143,16 +144,19 @@ function Handle_POST(app){
         }
 
         admin.database().ref('/adminusers/'+uid).once('value' , snap=>{
-            userinfo = snap.val() ;
+            let userinfo = snap.val() ;
+            let customid_var =  shortid.generate() , 
 
             const msg = admin.messaging() ;
+
             payload = {
                 notification : {
                     title : req.body.title ,
                     body : req.body.description
-                } ,
+                } , 
 
                 data : {
+                    customid : customid_var , 
                     college : userinfo.college ,
                     state : userinfo.state ,
                     district : userinfo.district ,
@@ -170,17 +174,21 @@ function Handle_POST(app){
 
 
             msg.sendToTopic(req.body.topic[0] , payload , options) 
-            .then(msg=>{console.log(msg) ; 
+            .then(msgid=>{console.log(msgid) ; 
                 console.log("notification sent " , req.body.topic , " with title : " , req.body.title) ;
                 
-                admin.database().ref(`/Notifications/${msg.messageId}`).update({
+                admin.database().ref(`/Notifications/${msgid.messageId}`).update({
                     title : req.body.title , body : req.body.description , college : userinfo.college ,state : userinfo.state , district:userinfo.district , topics : req.body.topic , ccode : get_college_code(userinfo.state , userinfo.district , userinfo.college)}) ; 
 
+                //Save the topic array before responding to client  : important
+                topics = req.body.topic ; 
                 res.status(200).json({success : "Notification sent successfully ! " })
+
                     
-                for(let i =1 ; i<req.body.topic.length ;i++)
+                for(let i =1 ; i<topics.length ;i++)
                 {
-                    msg.sendToTopic(req.body.topic[i] , payload , options)
+                    msg.sendToTopic(topics[i] , payload , options)
+                    .then(msgid=>console.log(msgid , topics[i])) 
                     .catch(err=>console.log(err)) ; 
                 }
 
