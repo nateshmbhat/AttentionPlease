@@ -18,7 +18,7 @@ const state_dist_collegewithCODE = require("./data/state_dist_collegeWITHCODE.js
 const serviceAccount = require("./service account key/AttentionPlease-d86a646ccc28(working notification).json") ;
 const express_fileupload = require("express-fileupload") ; 
 const gcs = require("@google-cloud/storage")() ;
-const shortid = require("shortid") ; 
+const randomid = require("random-id") ; 
 
 
 admin.initializeApp({
@@ -146,7 +146,7 @@ function Handle_POST(app){
 
         admin.database().ref('/adminusers/'+uid).once('value' , snap=>{
             let userinfo = snap.val() ;
-            let customid_var =  shortid.generate()  ; 
+            let customid_var =  randomid(8 , "0") ; 
 
             const msg = admin.messaging() ;
 
