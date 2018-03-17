@@ -178,7 +178,7 @@ function Handle_POST(app){
             .then(msgid=>{console.log(msgid) ; 
                 console.log("notification sent " , req.body.topic , " with title : " , req.body.title) ;
                 
-                admin.database().ref(`/Notifications/${msgid.messageId}`).update({
+                admin.database().ref(`/Colleges/${userinfo.ccode}/notifications/${msgid.messageId}`).update({
                     title : req.body.title , body : req.body.description , college : userinfo.college ,state : userinfo.state , district:userinfo.district , topics : req.body.topic , ccode : get_college_code(userinfo.state , userinfo.district , userinfo.college)}) ; 
 
                 //Save the topic array before responding to client  : important
