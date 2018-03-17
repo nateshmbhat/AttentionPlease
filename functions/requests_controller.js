@@ -101,6 +101,7 @@ function validatePostBody(req , res , keys ){
 //Handles all POST requests
 function Handle_POST(app){
     app.post("/createtimetable" , urlencodedParser ,  (req , res)=>{
+
         console.log(req.body) ;
         isAuthenticated(req , res)
         .then(uid =>{
@@ -145,7 +146,7 @@ function Handle_POST(app){
 
         admin.database().ref('/adminusers/'+uid).once('value' , snap=>{
             let userinfo = snap.val() ;
-            let customid_var =  shortid.generate() , 
+            let customid_var =  shortid.generate()  ; 
 
             const msg = admin.messaging() ;
 
