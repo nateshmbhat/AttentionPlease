@@ -33,15 +33,14 @@
     <input type=file accept=".xml,.xlsx,.ods">
     <br><br>
     <script type="text/javascript">
-    var xlsx=require('xlsx');
-          if(typeof require !== 'undefined') XLSX=require('xlsx');
-          var workbook=XLSX.readFile('./test.xlsx');
-
-          var first_sheet_name=workbook.SheetNames[0];
-          var address_of_cell='A1';
-          var worksheet=workbook.Sheets[first_sheet_name];
-          var desired_cell=worksheet[address_of_cell];
-          var desired_value=(desired_cell ? desired_cell.v : undefined);
-          console.log("hello");
-          console.log(desired_value);
+    // var xlsx=require('xlsx');
+    //       if(typeof require !== 'undefined') XLSX=require('xlsx');
+    //       var workbook=XLSX.readFile('./test.xlsx');
+    //       var first_sheet_name=workbook.SheetNames[0];
+    //       var address_of_cell='A1';
+    //       var worksheet=workbook.Sheets[first_sheet_name];
+    //       var desired_cell=worksheet[address_of_cell];
+    //       var desired_value=(desired_cell ? desired_cell.v : undefined);
+    //       console.log("hello");
+    //       console.log(desired_value);
     </script>
