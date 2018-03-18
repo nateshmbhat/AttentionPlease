@@ -1,4 +1,7 @@
 $("#form_login").bind("submit" , function(event){
+    $("#loader_circle").removeAttr('hidden') ; 
+    $("#div_submit").fadeOut() ; 
+
     console.log("running submit handler ! ") ;
     formdata = {} ; 
     $("#form_login").serializeArray().forEach(ele=>formdata[ele.name]=ele.value) ; 
@@ -21,8 +24,12 @@ $("#form_login").bind("submit" , function(event){
             })
 
             })
+        $("#loader_circle").attr("hidden" , true) ; 
+        $("#div_submit").fadeIn() ; 
     })        
     .catch(error=>{
+        $("#loader_circle").attr("hidden" , true) ; 
+        $("#div_submit").fadeIn() ; 
         console.log("\nRunning error part !" , error.message) ; 
         $(".erroralert").removeClass('hidden') ;  
         $(".erroralert").replaceWith($(".erroralert").clone());
