@@ -84,6 +84,7 @@
    
     <br><br><br><br><br>
     <% include partials/footer.ejs %>
+    
 </body>
 
 
@@ -91,15 +92,18 @@
 
     function fadeElementAfter(querystring , time=3000 ){
        setTimeout(()=>{
-           $(querystring).fadeOut(1000 , ()=>{
+           $("button[type=submit]").attr("disabled" , true) ; 
+           $(querystring).fadeOut(()=>{
                 $(querystring).attr("hidden" , true) ; 
                 $(querystring).show() ; 
+           $("button[type=submit]").removeAttr("disabled") ; 
            }) ; 
        } , time ) ;
     }
 
 
 $("form").on('submit' , e=>{
+
     e.preventDefault() ;
     $('button[type=submit]').hide() ;
     $("#loader_circle").removeAttr("hidden") ; 

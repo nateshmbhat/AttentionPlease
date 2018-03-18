@@ -166,15 +166,18 @@ function Handle_POST(app){
                     one_line_desc : "" ,
                     title : req.body.title ,
                     topics : JSON.stringify(req.body.topic)
-                }
+                } , 
+
             }
 
             options = {
                 priority : 'high' ,
             }
 
+            conditionString = `'${req.body.topic[0]}' in topics && '${userinfo.ccode}' in topics`
+            console.log(conditionString) ; 
 
-            msg.sendToTopic(req.body.topic[0] , payload , options) 
+            msg.sendToCondition( conditionString , payload , options)
             .then(msgid=>{console.log(msgid) ; 
                 console.log("notification sent " , req.body.topic , " with title : " , req.body.title) ;
                 
@@ -188,7 +191,9 @@ function Handle_POST(app){
                     
                 for(let i =1 ; i<topics.length ;i++)
                 {
-                    msg.sendToTopic(topics[i] , payload , options)
+                    
+                    conditionString = `'${topics[i]}' in topics && '${userinfo.ccode}' in topics` ; 
+                    msg.sendToCondition(conditionString , payload , options)
                     .then(msgid=>console.log(msgid , topics[i])) 
                     .catch(err=>console.log(err)) ; 
                 }
@@ -203,6 +208,9 @@ function Handle_POST(app){
         })
         .catch(err=>{res.render('login.ejs' , {error : err}); return true; })
     })
+
+
+
 
 
     app.post("/getcolleges" , urlencodedParser , (req,res)=>{
@@ -312,7 +320,6 @@ function Handle_POST(app){
         console.log(req.body) ;
         console.log("started registration handler") ;
 
-
         admin.auth().createUser({
             email: req.body.email,
             emailVerified: false,
@@ -402,7 +409,7 @@ function Handle_GET(app){
 
     app.get('/testfileupload' , (req ,res)=>{res.render('fileuploadtesting.ejs') ; }) ; 
     
-    app.get('/' , (req ,res)=>{
+    app.get('/' , (req , res)=>{
         res.render('index.ejs') ;
     })
 
@@ -430,7 +437,9 @@ function Handle_GET(app){
     })
 
     app.get('/timetable' , (req , res)=>{
-        isAuthenticated(req , res).then(uid=>{res.render('timetable.ejs') ; }).catch(err=>{res.render('login.ejs') ; }) ;
+        isAuthenticated(req , res)
+        .then(uid=>{res.render('timetable.ejs') ; })
+        .catch(err=>{res.render('login.ejs') ; }) ;
     })
 
 
