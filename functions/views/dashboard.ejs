@@ -80,7 +80,6 @@
         </form>
 
     </div>
-
    
     <br><br><br><br><br>
     <% include partials/footer.ejs %>
@@ -103,7 +102,6 @@
 
 
 $("form").on('submit' , e=>{
-
     e.preventDefault() ;
     $('button[type=submit]').hide() ;
     $("#loader_circle").removeAttr("hidden") ; 

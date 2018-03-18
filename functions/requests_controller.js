@@ -158,16 +158,14 @@ function Handle_POST(app){
 
                 data : {
                     customid : customid_var , 
-                    college : userinfo.college ,
-                    state : userinfo.state ,
-                    district : userinfo.district ,
+                    ccode : userinfo.ccode , 
                     detail_desc : "",
+                    image : "" ,
                     links : "" ,
-                    one_line_desc : "" ,
+                    one_line_desc : req.body.description,
                     title : req.body.title ,
                     topics : JSON.stringify(req.body.topic)
                 } , 
-
             }
 
             options = {
