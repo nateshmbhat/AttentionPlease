@@ -40,9 +40,6 @@ for(i=0;dat[i]!=undefined;i++){
 
 console.log(final);
 
-var ref=admin.database().ref('/Colleges/C-1297/Seat/');
-ref.update(final);
-
 handle_requests(app) ;
 
 
