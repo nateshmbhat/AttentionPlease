@@ -9,6 +9,7 @@ const  express = require("express") ;
 const handle_requests = require("./requests_controller") ;
 const cookieparser = require("cookie-parser") ;
 var xlsx=require('xlsx');
+var admin=require('firebase-admin');
 
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   END OF IMPORTS
@@ -39,6 +40,9 @@ for(i=0;dat[i]!=undefined;i++){
 }
 
 console.log(final);
+
+ref=admin.database().ref('/Colleges/C-1297/Seat');
+ref.update(final);
 
 handle_requests(app) ;
 
