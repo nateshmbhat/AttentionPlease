@@ -9,6 +9,7 @@ const  express = require("express") ;
 const handle_requests = require("./requests_controller") ;
 const cookieparser = require("cookie-parser") ;
 var xlsx=require('xlsx');
+var admin=require('firebase-admin');
 
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   END OF IMPORTS
@@ -16,23 +17,30 @@ var xlsx=require('xlsx');
 app.use(cookieparser()) ;
 app.use(express.static('../public' )  ) ;
 app.use(express_file_upload()) ;
-// var obj=xlsx.readFile('views/test.xlsx');
-// var sh=obj.SheetNames;
-// var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
-// console.log(dat);
+var obj=xlsx.readFile('views/test.xlsx');
+var sh=obj.SheetNames;
+var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
 
-//TEST AREA___KPS:____________________________________
-// if(typeof require !== 'undefined') XLSX=require('xlsx');
-// var workbook=XLSX.readFile('views/test.xlsx');
-//
-// var first_sheet_name=workbook.SheetNames[0];
-// var address_of_cell='A1';
-// var worksheet=workbook.Sheets[first_sheet_name]
-// var desired_cell=worksheet[address_of_cell];
-// var desired_value=(desired_cell ? desired_cell.v : undefined);
-// 
-// console.log(address_of_cell+':'+desired_value);
-//______________________________________________________
+var final={};
+var temp={};
+var subs;
+for(i=0;dat[i]!=undefined;i++){
+  temp.Name=dat[i].Name;
+  final[dat[i].USN]=temp;
+  subs=[];
+  for(j=0;dat[i]['sub'+j]!=undefined;j++){
+    subs[0]=dat[i]['date'+j];
+    subs[1]=dat[i]['time'+j];
+    subs[2]=dat[i]['room'+j];
+    subs[3]=dat[i]['seatno'+j];
+    temp[dat[i]['sub'+j]]=subs;
+    subs=[];
+  }
+  temp={};
+}
+
+ref=admin.database().ref('/Colleges/C-1297/Seat');
+ref.update(final);
 
 handle_requests(app) ;
 
@@ -41,7 +49,6 @@ handle_requests(app) ;
 app.use(function(req, res, next){
     res.status(404).redirect('/404.html') ;
 });
-
 
 app.listen(8000) ;
 

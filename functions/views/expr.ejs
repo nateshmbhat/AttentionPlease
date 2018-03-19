@@ -1,47 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Seat Allotment</title>
-
-    <style>
-
-    div #topics_subscribed li{
-        font-size:1.3em;
-        color:black;
-        padding-left:1.5em;
-        text-decoration:bold;
-    }
-
-    </style>
-
-    <script type="text/javascript" src="//unpkg.com/xlsx/dist/shim.min.js"></script>
-    <script type="text/javascript" src="//unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
-
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
 
     <% include partials/scripts_and_css.ejs %>
     <% include partials/navbar_login.ejs %>
+
+
+ 
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+
     <div class="container">
     <br>
-    <h1>Seat Allotment</h1>
+    <h1 class="text-decoration">Seat Allotment</h1>
     <br>Add a spreadsheet file containing the seat allotment details...example format will soon follow
     <br><br>
-    <input type=file accept=".xml,.xlsx,.ods">
+    <input type=file accept=".xml,.xlsx,.ods" class="btn btn-info">
     <br><br>
     <script type="text/javascript">
-    var xlsx=require('xlsx');
-          if(typeof require !== 'undefined') XLSX=require('xlsx');
-          var workbook=XLSX.readFile('./test.xlsx');
-
-          var first_sheet_name=workbook.SheetNames[0];
-          var address_of_cell='A1';
-          var worksheet=workbook.Sheets[first_sheet_name];
-          var desired_cell=worksheet[address_of_cell];
-          var desired_value=(desired_cell ? desired_cell.v : undefined);
-          console.log("hello");
-          console.log(desired_value);
+    // var xlsx=require('xlsx');
+    //       if(typeof require !== 'undefined') XLSX=require('xlsx');
+    //       var workbook=XLSX.readFile('./test.xlsx');
+    //       var first_sheet_name=workbook.SheetNames[0];
+    //       var address_of_cell='A1';
+    //       var worksheet=workbook.Sheets[first_sheet_name];
+    //       var desired_cell=worksheet[address_of_cell];
+    //       var desired_value=(desired_cell ? desired_cell.v : undefined);
+    //       console.log("hello");
+    //       console.log(desired_value);
     </script>
