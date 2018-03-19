@@ -3,27 +3,27 @@
 
 
 
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS 
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS
 
 
-const app = require("express")() ; 
-const bodyparser = require("body-parser") ; 
+const app = require("express")() ;
+const bodyparser = require("body-parser") ;
 const session = require("express-session") ;
-const urlencodedParser = bodyparser.urlencoded({extended:true}) ; 
+const urlencodedParser = bodyparser.urlencoded({extended:true}) ;
 const admin = require("firebase-admin") ;
 const firebase_client = require("firebase")  ;
-const fs =  require("fs") ; 
+const fs =  require("fs") ;
 const state_dist_colleges = require("./data/state_dist_colleges list (without college details).json") ;
 const state_dist_collegewithCODE = require("./data/state_dist_collegeWITHCODE.json") ;
 const serviceAccount = require("./service account key/AttentionPlease-d86a646ccc28(working notification).json") ;
-const express_fileupload = require("express-fileupload") ; 
+const express_fileupload = require("express-fileupload") ;
 const gcs = require("@google-cloud/storage")() ;
-const randomid = require("random-id") ; 
+const randomid = require("random-id") ;
 
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://attentionplease-24589.firebaseio.com/" , 
+  databaseURL: "https://attentionplease-24589.firebaseio.com/" ,
   storageBucket : "attentionplease-24589.appspot.com/"
 });
 
@@ -65,8 +65,8 @@ function isAuthenticated(req , res)
     }
     else
         reject('not signed in ') ;
-    
-    }) ; 
+
+    }) ;
 }
 
 
@@ -138,15 +138,15 @@ function Handle_POST(app){
     app.post("/sendnotification" , urlencodedParser , (req , res)=>{
         isAuthenticated(req , res)
         .then(uid=>{
-        if(!validatePostBody(req , res , ['topic' , 'title' ,'description'])) 
+        if(!validatePostBody(req , res , ['topic' , 'title' ,'description']))
         {
-            res.status('200').json({error : 'Make sure you have specified all the required details below ! '}) ; 
-            return ; 
+            res.status('200').json({error : 'Make sure you have specified all the required details below ! '}) ;
+            return ;
         }
 
         admin.database().ref('/adminusers/'+uid).once('value' , snap=>{
             let userinfo = snap.val() ;
-            let customid_var =  randomid(8 , "0") ; 
+            let customid_var =  randomid(8 , "0") ;
 
             const msg = admin.messaging() ;
 
@@ -154,10 +154,10 @@ function Handle_POST(app){
                 notification : {
                     title : req.body.title ,
                     body : req.body.description
-                } , 
+                } ,
 
                 data : {
-                    customid : customid_var , 
+                    customid : customid_var ,
                     college : userinfo.college ,
                     state : userinfo.state ,
                     district : userinfo.district ,
@@ -174,23 +174,23 @@ function Handle_POST(app){
             }
 
 
-            msg.sendToTopic(req.body.topic[0] , payload , options) 
-            .then(msgid=>{console.log(msgid) ; 
+            msg.sendToTopic(req.body.topic[0] , payload , options)
+            .then(msgid=>{console.log(msgid) ;
                 console.log("notification sent " , req.body.topic , " with title : " , req.body.title) ;
-                
+
                 admin.database().ref(`/Colleges/${userinfo.ccode}/notifications/${msgid.messageId}`).update({
-                    title : req.body.title , body : req.body.description , college : userinfo.college ,state : userinfo.state , district:userinfo.district , topics : req.body.topic , ccode : get_college_code(userinfo.state , userinfo.district , userinfo.college)}) ; 
+                    title : req.body.title , body : req.body.description , college : userinfo.college ,state : userinfo.state , district:userinfo.district , topics : req.body.topic , ccode : get_college_code(userinfo.state , userinfo.district , userinfo.college)}) ;
 
                 //Save the topic array before responding to client  : important
-                topics = req.body.topic ; 
+                topics = req.body.topic ;
                 res.status(200).json({success : "Notification sent successfully ! " })
 
-                    
+
                 for(let i =1 ; i<topics.length ;i++)
                 {
                     msg.sendToTopic(topics[i] , payload , options)
-                    .then(msgid=>console.log(msgid , topics[i])) 
-                    .catch(err=>console.log(err)) ; 
+                    .then(msgid=>console.log(msgid , topics[i]))
+                    .catch(err=>console.log(err)) ;
                 }
 
                 })
@@ -260,26 +260,26 @@ function Handle_POST(app){
 
 
     app.post('/testfileupload' ,urlencodedParser , (req , res)=>{
-        console.log("\nGOT FILE POST REQUEST !!!\n\n") ; 
-        console.log(req.files) ; 
+        console.log("\nGOT FILE POST REQUEST !!!\n\n") ;
+        console.log(req.files) ;
         let sampleFile = req.files.sampleFile ;
-        
+
         sampleFile.mv('./../data/mytestfile.jpg' , err=>{
             if(!err){
-                console.log("Successfully got the file ! ") ; 
+                console.log("Successfully got the file ! ") ;
                 let bucket = admin.storage().bucket() ;
 
                 bucket.upload('./../data/mytestfile.jpg' , (err, file , response)=>{
-                    console.log(err , file, response) ; 
+                    console.log(err , file, response) ;
                 }) ;
             }
             else{
-                console.log(err) ; 
-                res.status(500).send(err) ; 
+                console.log(err) ;
+                res.status(500).send(err) ;
             }
-        }) ; 
+        }) ;
 
-    }) ; 
+    }) ;
 
 
 
@@ -369,12 +369,12 @@ function Handle_POST(app){
 
                 userinfo = snap.val() ;
                 let ref = admin.database().ref('/Colleges/' + userinfo.ccode + '/topics') ;
-                topicobject = {title : req.body.topic , desc : req.body.desc} ; 
+                topicobject = {title : req.body.topic , desc : req.body.desc} ;
 
                 ref.once('value' , snap=>{
                     topicids = snap.val()  ;
-                    arr = [] ; 
-                    // fill the present topic names in arr 
+                    arr = [] ;
+                    // fill the present topic names in arr
                     Object.getOwnPropertyNames(topicids).forEach(id=>arr.push(topicids[id].title))
 
                     if(arr.indexOf(req.body.topic)<0) //Insert only if topic doesnt already exists !
@@ -384,8 +384,8 @@ function Handle_POST(app){
                     }
                     else{
                         //Topic already exists
-                        res.render('createtopic.ejs' , {topicexists : true}) ; 
-                    } 
+                        res.render('createtopic.ejs' , {topicexists : true}) ;
+                    }
                 })
             })
 
@@ -400,8 +400,8 @@ function Handle_POST(app){
 //Handles all the GET request routes
 function Handle_GET(app){
 
-    app.get('/testfileupload' , (req ,res)=>{res.render('fileuploadtesting.ejs') ; }) ; 
-    
+    app.get('/testfileupload' , (req ,res)=>{res.render('fileuploadtesting.ejs') ; }) ;
+
     app.get('/' , (req ,res)=>{
         res.render('index.ejs') ;
     })

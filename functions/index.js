@@ -39,8 +39,6 @@ for(i=0;dat[i]!=undefined;i++){
   temp={};
 }
 
-console.log(final);
-
 ref=admin.database().ref('/Colleges/C-1297/Seat');
 ref.update(final);
 
