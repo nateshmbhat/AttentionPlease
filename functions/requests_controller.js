@@ -442,7 +442,6 @@ function Handle_GET(app){
 
 
     app.get('/login' , (req , res)=>{
-
         isAuthenticated(req , res)
         .then(uid=>{console.log("UID logged in : " + uid) ; res.render('dashboard.ejs' );})
         .catch(error=>{console.log(error) ; res.render('login.ejs' ) ; })
