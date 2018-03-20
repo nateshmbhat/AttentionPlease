@@ -23,6 +23,7 @@
 </head>
 
 <body>
+    <div class="gtco-loader"></div>
     
     <% include partials/scripts_and_css.ejs %>
    
@@ -53,7 +54,7 @@
                 <div class="md-form">
                     <i class="fa fa-envelope prefix"></i>
                     <input class="col-6" id="title" type="text" maxlength="30" minlength="3" name="title" required/>
-                    <label for="title">Title : </label>
+                    <label for="title" >Title : </label>
                 </div>
                 <br>
 
@@ -80,10 +81,10 @@
         </form>
 
     </div>
-
    
     <br><br><br><br><br>
     <% include partials/footer.ejs %>
+    
 </body>
 
 
@@ -91,9 +92,11 @@
 
     function fadeElementAfter(querystring , time=3000 ){
        setTimeout(()=>{
-           $(querystring).fadeOut(1000 , ()=>{
+           $("button[type=submit]").attr("disabled" , true) ; 
+           $(querystring).fadeOut(()=>{
                 $(querystring).attr("hidden" , true) ; 
                 $(querystring).show() ; 
+           $("button[type=submit]").removeAttr("disabled") ; 
            }) ; 
        } , time ) ;
     }

@@ -16,6 +16,7 @@
 	/>
 	<meta name="author" content="gettemplates.co" />
 
+
 	<!-- Facebook and Twitter integration -->
 	<meta property="og:title" content="" />
 	<meta property="og:image" content="" />
@@ -55,6 +56,13 @@
 	<!--[if lt IE 9]>
 	<script src="js/respond.min.js"></script>
 	<![endif]-->
+
+	<style>
+		.btn_custom:active{
+			background: linear-gradient(to bottom right, darkorange ,darkviolet) !important; 
+			border-color: black !important; 
+		}
+	</style>
 
 </head>
 
@@ -109,7 +117,7 @@
 									<div class="animated zoomIn rounded alert alert-success green" role="alert" id="successalert"><h2 style="color:black"><%=success%></h2></div>
 									<%}%>
 								<h2></h2>
-								<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+								<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 								<p>
 									<a href="#" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#login">Login</a>
 									<a href="#" class="btn btn-white btn-outline btn-lg c_btn" data-toggle="modal" data-target="#register">Register</a>
@@ -175,8 +183,12 @@
 
 							<div class="alert animated shake alert-danger hidden erroralert"></div>
 
+							<div class="text-center text-align-center">
+								<div id="loader_circle" class="preloader-wrapper big active" hidden> <div class="spinner-layer spinner-blue"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-red"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-yellow"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-green"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> </div>
+							</div>
+
 							<div id="div_submit">
-								<button class="btn btn-primary btn-lg " type="submit">Submit </button>
+								<button class="btn_custom btn btn-primary btn-lg " type="submit">Submit </button>
 							</div>
 						</form>
 					</div>
@@ -606,8 +618,7 @@
 	<script src="/assets/js/firebaseinit.js"></script>
 	<script src="/assets/js/main.js"></script>
     <script src="/assets/js/homepage.js"></script>
-    <script src="/assets/js/StateDistCollege.js"></script>
-    
+	<script src="/assets/js/StateDistCollege.js"></script>
 
 </body>
 

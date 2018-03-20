@@ -157,25 +157,26 @@ function Handle_POST(app){
                 } ,
 
                 data : {
-                    customid : customid_var ,
-                    college : userinfo.college ,
-                    state : userinfo.state ,
-                    district : userinfo.district ,
+                    customid : customid_var , 
+                    ccode : userinfo.ccode , 
                     detail_desc : "",
+                    image : "" ,
                     links : "" ,
-                    one_line_desc : "" ,
+                    one_line_desc : req.body.description,
                     title : req.body.title ,
                     topics : JSON.stringify(req.body.topic)
-                }
+                } , 
             }
 
             options = {
                 priority : 'high' ,
             }
 
+            conditionString = `'${req.body.topic[0]}' in topics && '${userinfo.ccode}' in topics`
+            console.log(conditionString) ; 
 
-            msg.sendToTopic(req.body.topic[0] , payload , options)
-            .then(msgid=>{console.log(msgid) ;
+            msg.sendToCondition( conditionString , payload , options)
+            .then(msgid=>{console.log(msgid) ; 
                 console.log("notification sent " , req.body.topic , " with title : " , req.body.title) ;
 
                 admin.database().ref(`/Colleges/${userinfo.ccode}/notifications/${msgid.messageId}`).update({
@@ -188,9 +189,11 @@ function Handle_POST(app){
 
                 for(let i =1 ; i<topics.length ;i++)
                 {
-                    msg.sendToTopic(topics[i] , payload , options)
-                    .then(msgid=>console.log(msgid , topics[i]))
-                    .catch(err=>console.log(err)) ;
+                    
+                    conditionString = `'${topics[i]}' in topics && '${userinfo.ccode}' in topics` ; 
+                    msg.sendToCondition(conditionString , payload , options)
+                    .then(msgid=>console.log(msgid , topics[i])) 
+                    .catch(err=>console.log(err)) ; 
                 }
 
                 })
@@ -203,6 +206,9 @@ function Handle_POST(app){
         })
         .catch(err=>{res.render('login.ejs' , {error : err}); return true; })
     })
+
+
+
 
 
     app.post("/getcolleges" , urlencodedParser , (req,res)=>{
@@ -312,7 +318,6 @@ function Handle_POST(app){
         console.log(req.body) ;
         console.log("started registration handler") ;
 
-
         admin.auth().createUser({
             email: req.body.email,
             emailVerified: false,
@@ -400,9 +405,9 @@ function Handle_POST(app){
 //Handles all the GET request routes
 function Handle_GET(app){
 
-    app.get('/testfileupload' , (req ,res)=>{res.render('fileuploadtesting.ejs') ; }) ;
-
-    app.get('/' , (req ,res)=>{
+    app.get('/testfileupload' , (req ,res)=>{res.render('fileuploadtesting.ejs') ; }) ; 
+    
+    app.get('/' , (req , res)=>{
         res.render('index.ejs') ;
     })
 
@@ -430,12 +435,13 @@ function Handle_GET(app){
     })
 
     app.get('/timetable' , (req , res)=>{
-        isAuthenticated(req , res).then(uid=>{res.render('timetable.ejs') ; }).catch(err=>{res.render('login.ejs') ; }) ;
+        isAuthenticated(req , res)
+        .then(uid=>{res.render('timetable.ejs') ; })
+        .catch(err=>{res.render('login.ejs') ; }) ;
     })
 
 
     app.get('/login' , (req , res)=>{
-
         isAuthenticated(req , res)
         .then(uid=>{console.log("UID logged in : " + uid) ; res.render('dashboard.ejs' );})
         .catch(error=>{console.log(error) ; res.render('login.ejs' ) ; })
