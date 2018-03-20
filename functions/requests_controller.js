@@ -37,11 +37,10 @@ module.exports = function HandleRequests(app){
     console.log("Requests Handler running ! ") ;
     Handle_GET(app) ;
     Handle_POST(app) ;
-
 }
 
 
-//Checks if there is a token in the cookie and verfies it and returns true if the requested client is authenticated or not
+//checks if the admin user is logged in 
 function isAuthenticated(req , res)
 {
     return new Promise((resolve ,reject)=>{
@@ -51,6 +50,16 @@ function isAuthenticated(req , res)
     {
         admin.auth().verifyIdToken(req.cookies['__session']).then(decodedtoken=>{
             if(decodedtoken.uid){
+                admin.database().ref('/adminusers/'+uid).once('value' , snap=>{
+                    if(snap.exists())
+                    {
+                        resolve(decodedtoken.uid) ;
+                    }
+
+                    else{
+                        reject("Only College administrators can sign in : ") ; 
+                    }
+                }) ; 
                 console.log("User is signed in : " , decodedtoken.uid)  ;
                 resolve(decodedtoken.uid) ;
             }
@@ -61,11 +70,9 @@ function isAuthenticated(req , res)
             reject(error) ;
             // res.render('login.ejs')
         })
-
     }
     else
         reject('not signed in ') ;
-
     }) ;
 }
 
