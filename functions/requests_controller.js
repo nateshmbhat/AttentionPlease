@@ -50,7 +50,7 @@ function isAuthenticated(req , res)
     {
         admin.auth().verifyIdToken(req.cookies['__session']).then(decodedtoken=>{
             if(decodedtoken.uid){
-                admin.database().ref('/adminusers/'+uid).once('value' , snap=>{
+                admin.database().ref('/adminusers/'+decodedtoken.uid).once('value' , snap=>{
                     if(snap.exists())
                     {
                         resolve(decodedtoken.uid) ;
@@ -124,14 +124,17 @@ function Handle_POST(app){
                 if(postdata[i].length!=9)  throw Error("Invalid Post request ! ") ;
             }
 
-            //All checked . Now safe to add to the database
-            path = `/Colleges/C-1297/timetables/${req.body.year}/${req.body.branch}/${req.body.section}/` ;
-            console.log(path) ;
-            ref = admin.database().ref(path) ;
-            ref.update(postdata) ;
-
             res.status(200) ;
             res.send('Time Table successfully Updated ! ') ;
+
+            //All checked . Now safe to add to the database
+            admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
+                let userinfo = snap.val() ; 
+                path = `/Colleges/${userinfo.ccode}/timetables/${req.body.year}/${req.body.branch}/${req.body.section}/` ;
+                console.log(path) ;
+                admin.database().ref(path).update(postdata) ;
+
+            })
         })
 
         .catch(error=>{console.log(error.message ) ;
@@ -263,32 +266,61 @@ function Handle_POST(app){
 
             })
             .catch(err=>console.log("Error Occured !" , err)) ;
-
         })
         .catch(err=>{
-                console.log(err) ;
+            console.log(err) ;
         }) ;
-
     })
 
 
-    app.post('/testfileupload' ,urlencodedParser , (req , res)=>{
+
+    app.post('/putseats' ,urlencodedParser , (req , res)=>{
         console.log("\nGOT FILE POST REQUEST !!!\n\n") ;
         console.log(req.files) ;
+        
         let sampleFile = req.files.sampleFile ;
 
-        sampleFile.mv('./../data/mytestfile.jpg' , err=>{
+        fileid = randomid() ; 
+        sampleFile.mv(`./data/${fileid}` , err=>{
             if(!err){
                 console.log("Successfully got the file ! ") ;
-                let bucket = admin.storage().bucket() ;
+                admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
+                    userinfo = snap.val() ;
 
-                bucket.upload('./../data/mytestfile.jpg' , (err, file , response)=>{
-                    console.log(err , file, response) ;
-                }) ;
+                    var obj=xlsx.readFile(`./data/client_data/${fileid}`);
+                    var sh=obj.SheetNames;
+                    var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
+                    
+                    var final={};
+                    var temp={};
+                    var subs;
+                    for(i=0;dat[i]!=undefined;i++){
+                      temp.Name=dat[i].Name;
+                      final[dat[i].USN]=temp;
+                      subs=[];
+                      for(j=0;dat[i]['sub'+j]!=undefined;j++){
+                        subs[0]=dat[i]['date'+j];
+                        subs[1]=dat[i]['time'+j];
+                        subs[2]=dat[i]['room'+j];
+                        subs[3]=dat[i]['seatno'+j];
+                        temp[dat[i]['sub'+j]]=subs;
+                        subs=[];
+                      }
+                      temp={};
+                    }
+                    
+                    res.status(200).render('/allotseats.ejs') ; 
+                    admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final)  ;
+                }) ; 
+                // let bucket = admin.storage().bucket() ;
+
+                // bucket.upload('./../data/mytestfile.jpg' , (err, file , response)=>{
+                //     console.log(err , file, response) ;
+                // }) ;
             }
             else{
                 console.log(err) ;
-                res.status(500).send(err) ;
+                res.status(403).send(err.message) ;
             }
         }) ;
 

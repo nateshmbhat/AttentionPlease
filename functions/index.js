@@ -17,30 +17,7 @@ var admin=require('firebase-admin');
 app.use(cookieparser()) ;
 app.use(express.static('../public' )  ) ;
 app.use(express_file_upload()) ;
-var obj=xlsx.readFile('views/test.xlsx');
-var sh=obj.SheetNames;
-var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
 
-var final={};
-var temp={};
-var subs;
-for(i=0;dat[i]!=undefined;i++){
-  temp.Name=dat[i].Name;
-  final[dat[i].USN]=temp;
-  subs=[];
-  for(j=0;dat[i]['sub'+j]!=undefined;j++){
-    subs[0]=dat[i]['date'+j];
-    subs[1]=dat[i]['time'+j];
-    subs[2]=dat[i]['room'+j];
-    subs[3]=dat[i]['seatno'+j];
-    temp[dat[i]['sub'+j]]=subs;
-    subs=[];
-  }
-  temp={};
-}
-
-ref=admin.database().ref('/Colleges/C-1297/Seat');
-ref.update(final);
 
 handle_requests(app) ;
 

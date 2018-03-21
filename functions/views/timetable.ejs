@@ -120,7 +120,10 @@
 
         function getTimeTable()
         {
-            ref = firebase.database().ref(`/Colleges/C-1297/timetables/${$('#select_year').val()}/${$('#select_branch').val()}/${$('#select_section').val()}`)
+            firebase.ref(`/adminusers/${firebase.auth().getUid()}`).once('value' , adminsnap=>{
+            userinfo = adminsnap.val() ; 
+
+            ref = firebase.database().ref(`/Colleges/${userinfo.ccode}/timetables/${$('#select_year').val()}/${$('#select_branch').val()}/${$('#select_section').val()}`)
 
             ref.once('value' , snap=>
             {
@@ -150,9 +153,12 @@
                     {
                         input_elements[j].value = Arr[j+2] ; 
                     }
- 
-                  });
+
+                });
             });
+
+            });
+
         }
 
 
