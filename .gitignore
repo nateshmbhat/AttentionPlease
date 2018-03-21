@@ -1,8 +1,6 @@
 # Logs
 service account key
 logs
-~$*
-.vscode
 *.log
 .vscode
 npm-debug.log*
@@ -61,3 +59,16 @@ typings/
 # dotenv environment variables file
 .env
 
+#aditya's bootstrap junk
+Backups/
+CachedExtensions/
+GPUCache/
+machineid
+Cache/
+Cookies
+Local Storage/
+languagepacks.json
+CachedData
+Cookies-journal
+Preferences
+storage.json

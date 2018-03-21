@@ -37,11 +37,10 @@ module.exports = function HandleRequests(app){
     console.log("Requests Handler running ! ") ;
     Handle_GET(app) ;
     Handle_POST(app) ;
-
 }
 
 
-//Checks if there is a token in the cookie and verfies it and returns true if the requested client is authenticated or not
+//checks if the admin user is logged in 
 function isAuthenticated(req , res)
 {
     return new Promise((resolve ,reject)=>{
@@ -51,6 +50,16 @@ function isAuthenticated(req , res)
     {
         admin.auth().verifyIdToken(req.cookies['__session']).then(decodedtoken=>{
             if(decodedtoken.uid){
+                admin.database().ref('/adminusers/'+decodedtoken.uid).once('value' , snap=>{
+                    if(snap.exists())
+                    {
+                        resolve(decodedtoken.uid) ;
+                    }
+
+                    else{
+                        reject("Only College administrators can sign in : ") ; 
+                    }
+                }) ; 
                 console.log("User is signed in : " , decodedtoken.uid)  ;
                 resolve(decodedtoken.uid) ;
             }
@@ -61,11 +70,9 @@ function isAuthenticated(req , res)
             reject(error) ;
             // res.render('login.ejs')
         })
-
     }
     else
         reject('not signed in ') ;
-
     }) ;
 }
 
@@ -117,14 +124,17 @@ function Handle_POST(app){
                 if(postdata[i].length!=9)  throw Error("Invalid Post request ! ") ;
             }
 
-            //All checked . Now safe to add to the database
-            path = `/Colleges/C-1297/timetables/${req.body.year}/${req.body.branch}/${req.body.section}/` ;
-            console.log(path) ;
-            ref = admin.database().ref(path) ;
-            ref.update(postdata) ;
-
             res.status(200) ;
             res.send('Time Table successfully Updated ! ') ;
+
+            //All checked . Now safe to add to the database
+            admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
+                let userinfo = snap.val() ; 
+                path = `/Colleges/${userinfo.ccode}/timetables/${req.body.year}/${req.body.branch}/${req.body.section}/` ;
+                console.log(path) ;
+                admin.database().ref(path).update(postdata) ;
+
+            })
         })
 
         .catch(error=>{console.log(error.message ) ;
@@ -157,25 +167,26 @@ function Handle_POST(app){
                 } ,
 
                 data : {
-                    customid : customid_var ,
-                    college : userinfo.college ,
-                    state : userinfo.state ,
-                    district : userinfo.district ,
+                    customid : customid_var , 
+                    ccode : userinfo.ccode , 
                     detail_desc : "",
+                    image : "" ,
                     links : "" ,
-                    one_line_desc : "" ,
+                    one_line_desc : req.body.description,
                     title : req.body.title ,
                     topics : JSON.stringify(req.body.topic)
-                }
+                } , 
             }
 
             options = {
                 priority : 'high' ,
             }
 
+            conditionString = `'${req.body.topic[0]}' in topics && '${userinfo.ccode}' in topics`
+            console.log(conditionString) ; 
 
-            msg.sendToTopic(req.body.topic[0] , payload , options)
-            .then(msgid=>{console.log(msgid) ;
+            msg.sendToCondition( conditionString , payload , options)
+            .then(msgid=>{console.log(msgid) ; 
                 console.log("notification sent " , req.body.topic , " with title : " , req.body.title) ;
 
                 admin.database().ref(`/Colleges/${userinfo.ccode}/notifications/${msgid.messageId}`).update({
@@ -188,9 +199,11 @@ function Handle_POST(app){
 
                 for(let i =1 ; i<topics.length ;i++)
                 {
-                    msg.sendToTopic(topics[i] , payload , options)
-                    .then(msgid=>console.log(msgid , topics[i]))
-                    .catch(err=>console.log(err)) ;
+                    
+                    conditionString = `'${topics[i]}' in topics && '${userinfo.ccode}' in topics` ; 
+                    msg.sendToCondition(conditionString , payload , options)
+                    .then(msgid=>console.log(msgid , topics[i])) 
+                    .catch(err=>console.log(err)) ; 
                 }
 
                 })
@@ -203,6 +216,9 @@ function Handle_POST(app){
         })
         .catch(err=>{res.render('login.ejs' , {error : err}); return true; })
     })
+
+
+
 
 
     app.post("/getcolleges" , urlencodedParser , (req,res)=>{
@@ -250,32 +266,61 @@ function Handle_POST(app){
 
             })
             .catch(err=>console.log("Error Occured !" , err)) ;
-
         })
         .catch(err=>{
-                console.log(err) ;
+            console.log(err) ;
         }) ;
-
     })
 
 
-    app.post('/testfileupload' ,urlencodedParser , (req , res)=>{
+
+    app.post('/putseats' ,urlencodedParser , (req , res)=>{
         console.log("\nGOT FILE POST REQUEST !!!\n\n") ;
         console.log(req.files) ;
+        
         let sampleFile = req.files.sampleFile ;
 
-        sampleFile.mv('./../data/mytestfile.jpg' , err=>{
+        fileid = randomid() ; 
+        sampleFile.mv(`./data/${fileid}` , err=>{
             if(!err){
                 console.log("Successfully got the file ! ") ;
-                let bucket = admin.storage().bucket() ;
+                admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
+                    userinfo = snap.val() ;
 
-                bucket.upload('./../data/mytestfile.jpg' , (err, file , response)=>{
-                    console.log(err , file, response) ;
-                }) ;
+                    var obj=xlsx.readFile(`./data/client_data/${fileid}`);
+                    var sh=obj.SheetNames;
+                    var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
+                    
+                    var final={};
+                    var temp={};
+                    var subs;
+                    for(i=0;dat[i]!=undefined;i++){
+                      temp.Name=dat[i].Name;
+                      final[dat[i].USN]=temp;
+                      subs=[];
+                      for(j=0;dat[i]['sub'+j]!=undefined;j++){
+                        subs[0]=dat[i]['date'+j];
+                        subs[1]=dat[i]['time'+j];
+                        subs[2]=dat[i]['room'+j];
+                        subs[3]=dat[i]['seatno'+j];
+                        temp[dat[i]['sub'+j]]=subs;
+                        subs=[];
+                      }
+                      temp={};
+                    }
+                    
+                    res.status(200).render('/allotseats.ejs') ; 
+                    admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final)  ;
+                }) ; 
+                // let bucket = admin.storage().bucket() ;
+
+                // bucket.upload('./../data/mytestfile.jpg' , (err, file , response)=>{
+                //     console.log(err , file, response) ;
+                // }) ;
             }
             else{
                 console.log(err) ;
-                res.status(500).send(err) ;
+                res.status(403).send(err.message) ;
             }
         }) ;
 
@@ -311,7 +356,6 @@ function Handle_POST(app){
 
         console.log(req.body) ;
         console.log("started registration handler") ;
-
 
         admin.auth().createUser({
             email: req.body.email,
@@ -400,9 +444,9 @@ function Handle_POST(app){
 //Handles all the GET request routes
 function Handle_GET(app){
 
-    app.get('/testfileupload' , (req ,res)=>{res.render('fileuploadtesting.ejs') ; }) ;
-
-    app.get('/' , (req ,res)=>{
+    app.get('/testfileupload' , (req ,res)=>{res.render('fileuploadtesting.ejs') ; }) ; 
+    
+    app.get('/' , (req , res)=>{
         res.render('index.ejs') ;
     })
 
@@ -430,12 +474,13 @@ function Handle_GET(app){
     })
 
     app.get('/timetable' , (req , res)=>{
-        isAuthenticated(req , res).then(uid=>{res.render('timetable.ejs') ; }).catch(err=>{res.render('login.ejs') ; }) ;
+        isAuthenticated(req , res)
+        .then(uid=>{res.render('timetable.ejs') ; })
+        .catch(err=>{res.render('login.ejs') ; }) ;
     })
 
 
     app.get('/login' , (req , res)=>{
-
         isAuthenticated(req , res)
         .then(uid=>{console.log("UID logged in : " + uid) ; res.render('dashboard.ejs' );})
         .catch(error=>{console.log(error) ; res.render('login.ejs' ) ; })
