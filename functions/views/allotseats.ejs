@@ -9,13 +9,19 @@
 
 
 <body>
+  <div class="gtco-loader"></div>
+  <% include partials/scripts_and_css.ejs %>
 
-  <form ref='uploadForm' id='uploadForm' action='putseats' method='post' encType="multipart/form-data">
-      <i class="fa fa-file" ></i>
-      <input type="file" name="sampleFile"  class="mdb-skin file"/>
+  <div class="container">
+    <form ref='uploadForm' id='uploadForm' action='/putseats' method='post' encType="multipart/form-data">
+        <i class="fa fa-file" ></i>
+        <input type="file" name="sampleFile"  class="mdb-skin file"/>
+  
+        <span><i class="fa fa-cloud"> </i></span><input type='submit' value='Upload' class="btn btn-primary btn-block btn-mdb" />
+    </form>     
 
-      <span><i class="fa fa-cloud"> </i></span><input type='submit' value='Upload' class="btn btn-primary btn-block btn-mdb" />
-  </form>     
+  </div>
+
 
 </body>
 

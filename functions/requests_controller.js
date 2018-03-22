@@ -1,8 +1,6 @@
 /// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";import { json } from "body-parser";import { request } from "https";import { config } from "firebase-functions";import { decode } from "punycode";import { firebase } from "@firebase/app";import { decode } from "punycode";import { urlencoded } from "body-parser";import { isValidFormat } from "@firebase/util";import { firebase } from "@firebase/app";import { database } from "firebase-admin";import { database } from "firebase-admin";import { firebase } from "@firebase/app";import { firebase } from "@firebase/app";import { urlencoded } from "body-parser";import { userInfo } from "os";import { userInfo } from "os";import { contains } from "@firebase/util";
 
 
-
-
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS
 
 
@@ -24,7 +22,7 @@ const randomid = require("random-id") ;
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://attentionplease-24589.firebaseio.com/" ,
-  storageBucket : "attentionplease-24589.appspot.com/"
+  storageBucket : "attentionplease-24589.appspot.com"
 });
 
 
@@ -276,56 +274,73 @@ function Handle_POST(app){
 
     app.post('/putseats' ,urlencodedParser , (req , res)=>{
         console.log("\nGOT FILE POST REQUEST !!!\n\n") ;
-        console.log(req.files) ;
-        
-        let sampleFile = req.files.sampleFile ;
 
-        fileid = randomid() ; 
-        sampleFile.mv(`./data/${fileid}` , err=>{
-            if(!err){
-                console.log("Successfully got the file ! ") ;
-                admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
-                    userinfo = snap.val() ;
+        sampleFile = req.files.sampleFile ; 
+        console.log(sampleFile) ; 
+        sampleFile.mv('./data/testing.jpg') ;  
 
-                    var obj=xlsx.readFile(`./data/client_data/${fileid}`);
-                    var sh=obj.SheetNames;
-                    var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
-                    
-                    var final={};
-                    var temp={};
-                    var subs;
-                    for(i=0;dat[i]!=undefined;i++){
-                      temp.Name=dat[i].Name;
-                      final[dat[i].USN]=temp;
-                      subs=[];
-                      for(j=0;dat[i]['sub'+j]!=undefined;j++){
-                        subs[0]=dat[i]['date'+j];
-                        subs[1]=dat[i]['time'+j];
-                        subs[2]=dat[i]['room'+j];
-                        subs[3]=dat[i]['seatno'+j];
-                        temp[dat[i]['sub'+j]]=subs;
-                        subs=[];
-                      }
-                      temp={};
-                    }
-                    
-                    res.status(200).render('/allotseats.ejs') ; 
-                    admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final)  ;
-                }) ; 
-                // let bucket = admin.storage().bucket() ;
+        admin.storage().bucket().upload('./data/testing.jpg')
+        .then(file=>{console.log(file) ; })
+        .catch(err=>{console.log(err) ; }) ; 
+
+        isAuthenticated(req , res)
+        .then(uid=>{
+
+            // let sampleFile = req.files.sampleFile ;
+            // file = admin.storage().bucket() ; 
+            // console.log(sampleFile.data) ;
+            
+            // file.save(new Buffer("hello this is natesh !")).then(()=>{
+            //    console.log(file) ;  
+            // }) 
+            // .catch(err=>{console.log(err) ; })
+            
+
+            // fileid = randomid();
+            // sampleFile.mv(`./data/${fileid}`, err => {
+            // if (!err) {
+            //     console.log("Successfully got the file ! ");
+            //     admin.database().ref(`/adminusers/${uid}`).once('value', snap => {
+            //         userinfo = snap.val();
+
+            //         var obj = xlsx.readFile(`./data/client_data/${fileid}`);
+            //         var sh = obj.SheetNames;
+            //         var dat = xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
+
+            //         var final = {};
+            //         var temp = {};
+            //         var subs;
+            //         for (i = 0; dat[i] != undefined; i++) {
+            //             temp.Name = dat[i].Name;
+            //             final[dat[i].USN] = temp;
+            //             subs = [];
+            //             for (j = 0; dat[i]['sub' + j] != undefined; j++) {
+            //                 subs[0] = dat[i]['date' + j];
+            //                 subs[1] = dat[i]['time' + j];
+            //                 subs[2] = dat[i]['room' + j];
+            //                 subs[3] = dat[i]['seatno' + j];
+            //                 temp[dat[i]['sub' + j]] = subs;
+            //                 subs = [];
+            //             }
+            //             temp = {};
+            //         }
+
+            //         res.status(200).render('/allotseats.ejs');
+            //         admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final);
+            //     });
+            //     // let bucket = admin.storage().bucket() ;
 
                 // bucket.upload('./../data/mytestfile.jpg' , (err, file , response)=>{
                 //     console.log(err , file, response) ;
                 // }) ;
-            }
-            else{
-                console.log(err) ;
-                res.status(403).send(err.message) ;
-            }
-        }) ;
+            // } else {
+            //     console.log(err);
+            //     res.status(403).send(err.message);
+            // }
+            // });
 
-    }) ;
-
+            });
+    }); 
 
 
     app.post('/register' , urlencodedParser ,  (req , res)=>{
@@ -444,7 +459,7 @@ function Handle_POST(app){
 //Handles all the GET request routes
 function Handle_GET(app){
 
-    app.get('/testfileupload' , (req ,res)=>{res.render('fileuploadtesting.ejs') ; }) ; 
+    app.get('/allotseats' , (req ,res)=>{res.render('allotseats.ejs') ; }) ; 
     
     app.get('/' , (req , res)=>{
         res.render('index.ejs') ;
