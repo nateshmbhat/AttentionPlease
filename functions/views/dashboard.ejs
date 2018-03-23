@@ -44,7 +44,7 @@
         <div id="location-details">
         </div>
                      
-        <form method="post" action="/sendnotification">
+        <form method="post" action="/sendnotification" encType="multipart/form-data">
             
             <div id="dynamic"> </div>
             <div class="form-group">
@@ -67,7 +67,7 @@
                 <div class="file-field m-5">
                     <div class="btn btn-primary btn-sm float-left">
                         <span>Choose file</span>
-                        <input type="file" id="file_image">
+                        <input name="sampleFile" type="file" id="file_image">
                     </div>
                     <div class="file-path-wrapper">
                         <input class="file-path validate"  type="text" placeholder="Upload your file">

@@ -181,6 +181,7 @@ function Handle_POST(app){
                 priority : 'high' ,
             }
 
+
             conditionString = `'${req.body.topic[0]}' in topics && '${userinfo.ccode}' in topics`
             console.log(conditionString) ; 
 
@@ -193,16 +194,32 @@ function Handle_POST(app){
 
                 //Save the topic array before responding to client  : important
                 topics = req.body.topic ;
+                console.log("request files = > " ) ; 
+                console.log(req.files) ; 
+                image =  req.files ? req.files.sampleFile : undefined ;
                 res.status(200).json({success : "Notification sent successfully ! " })
 
 
                 for(let i =1 ; i<topics.length ;i++)
                 {
-                    
                     conditionString = `'${topics[i]}' in topics && '${userinfo.ccode}' in topics` ; 
                     msg.sendToCondition(conditionString , payload , options)
                     .then(msgid=>console.log(msgid , topics[i])) 
                     .catch(err=>console.log(err)) ; 
+                }
+
+                
+                if(image){
+                    image.mv(`data/${msgid}`)
+                    .then(file=>{
+                        admin.storage().bucket().upload(`data/${msgid}`, {destination:'notification_images'})
+                        .then(file=>{
+                            console.log(file) ; 
+                        })
+                        .catch(err=>{console.log(err)})
+                    })
+                    .catch(err=>{console.log(err) ; })
+                    
                 }
 
                 })
@@ -210,6 +227,9 @@ function Handle_POST(app){
             .catch(err=>{console.log(err)
                 res.render('dashboard.ejs' , {error : err.message}  ) ;
             }) ;
+
+
+            
         })
 
         })
