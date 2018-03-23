@@ -298,11 +298,12 @@ function Handle_POST(app){
                       final[dat[i].USN]=temp;
                       subs={};
                       for(j=0;dat[i]['sub'+j]!=undefined;j++){
+                        subs['subname']=dat[i]['sub'+j];
                         subs['date']=dat[i]['date'+j];
                         subs['time']=dat[i]['time'+j];
                         subs['room']=dat[i]['room'+j];
                         subs['seat']=dat[i]['seatno'+j];
-                        temp[dat[i]['sub'+j]]=subs;
+                        temp[j]=subs
                         subs={};
                       }
                       temp=[];
