@@ -5,10 +5,7 @@
     <title>Login</title>
 
     <style>
-         body{
-            background:linear-gradient(lightblue , blueviolet) no-repeat fixed ;
-        } 
-        h1{
+       h1{
             font-size:500% !important ;
             font-family: raleway , georgia, 'times new roman', times, serif !important ; 
             text-align: center ; 
@@ -56,6 +53,9 @@
                     <input class="col-6" id="title" type="text" maxlength="30" minlength="3" name="title" required/>
                     <label for="title" >Title : </label>
                 </div>
+                
+                
+
                 <br>
 
                 <div class="md-form">
@@ -64,7 +64,28 @@
                     <label for="textareaPrefix">Description : </label>
                 </div>
 
+                <div class="file-field m-5">
+                    <div class="btn btn-primary btn-sm float-left">
+                        <span>Choose file</span>
+                        <input type="file" id="file_image">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate"  type="text" placeholder="Upload your file">
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                            <div class="view overlay hoverable">
+                                    <img class="img-fluid" id="preview_image">
+                                    <a>
+                                        <div class="mask waves-effect rgba-dark-slight"></div>
+                                    </a>
+                                </div>
+                    </div>
+                </div>
+
             </div>
+            
 
             <div class="form-group"> </div>
 
@@ -90,6 +111,29 @@
 
 <script>
 
+    function initialize() { 
+        $("#file_image").change(function() {
+            readURL(this);
+        });
+     }
+
+     initialize() ; 
+
+
+    function readURL(input) {
+
+        if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+            $('#preview_image').attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    
     function fadeElementAfter(querystring , time=3000 ){
        setTimeout(()=>{
            $("button[type=submit]").attr("disabled" , true) ; 
@@ -141,6 +185,8 @@ $("form").on('submit' , e=>{
         $("#loader_circle").attr('hidden' , true) ; 
     })
 
+
+    
 })
 
 

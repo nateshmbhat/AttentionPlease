@@ -103,6 +103,7 @@ function validatePostBody(req , res , keys ){
 }
 
 
+
 //Handles all POST requests
 function Handle_POST(app){
     app.post("/createtimetable" , urlencodedParser ,  (req , res)=>{
@@ -274,70 +275,54 @@ function Handle_POST(app){
 
     app.post('/putseats' ,urlencodedParser , (req , res)=>{
         console.log("\nGOT FILE POST REQUEST !!!\n\n") ;
-
-        sampleFile = req.files.sampleFile ; 
-        console.log(sampleFile) ; 
-        sampleFile.mv('./data/testing.jpg') ;  
-
-        admin.storage().bucket().upload('./data/testing.jpg')
-        .then(file=>{console.log(file) ; })
-        .catch(err=>{console.log(err) ; }) ; 
-
         isAuthenticated(req , res)
         .then(uid=>{
 
-            // let sampleFile = req.files.sampleFile ;
-            // file = admin.storage().bucket() ; 
-            // console.log(sampleFile.data) ;
-            
-            // file.save(new Buffer("hello this is natesh !")).then(()=>{
-            //    console.log(file) ;  
-            // }) 
-            // .catch(err=>{console.log(err) ; })
-            
+            sampleFile = req.files.sampleFile ; 
+            console.log(sampleFile) ; 
+            let fileid = randomid(7) ; 
 
-            // fileid = randomid();
-            // sampleFile.mv(`./data/${fileid}`, err => {
-            // if (!err) {
-            //     console.log("Successfully got the file ! ");
-            //     admin.database().ref(`/adminusers/${uid}`).once('value', snap => {
-            //         userinfo = snap.val();
+            sampleFile.mv(`./data/${fileid}`, err => {
+            if (!err) {
+                console.log("Successfully got the file ! ");
+                admin.database().ref(`/adminusers/${uid}`).once('value', snap => {
+                    userinfo = snap.val();
 
-            //         var obj = xlsx.readFile(`./data/client_data/${fileid}`);
-            //         var sh = obj.SheetNames;
-            //         var dat = xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
+                    var obj = xlsx.readFile(`./data/client_data/${fileid}`);
+                    var sh = obj.SheetNames;
+                    var dat = xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
 
-            //         var final = {};
-            //         var temp = {};
-            //         var subs;
-            //         for (i = 0; dat[i] != undefined; i++) {
-            //             temp.Name = dat[i].Name;
-            //             final[dat[i].USN] = temp;
-            //             subs = [];
-            //             for (j = 0; dat[i]['sub' + j] != undefined; j++) {
-            //                 subs[0] = dat[i]['date' + j];
-            //                 subs[1] = dat[i]['time' + j];
-            //                 subs[2] = dat[i]['room' + j];
-            //                 subs[3] = dat[i]['seatno' + j];
-            //                 temp[dat[i]['sub' + j]] = subs;
-            //                 subs = [];
-            //             }
-            //             temp = {};
-            //         }
+                    var final = {};
+                    var temp = {};
+                    var subs;
+                    for (i = 0; dat[i] != undefined; i++) {
+                        temp.Name = dat[i].Name;
+                        final[dat[i].USN] = temp;
+                        subs = [];
+                        for (j = 0; dat[i]['sub' + j] != undefined; j++) {
+                            subs[0] = dat[i]['date' + j];
+                            subs[1] = dat[i]['time' + j];
+                            subs[2] = dat[i]['room' + j];
+                            subs[3] = dat[i]['seatno' + j];
+                            temp[dat[i]['sub' + j]] = subs;
+                            subs = [];
+                        }
+                        temp = {};
+                    }
 
-            //         res.status(200).render('/allotseats.ejs');
-            //         admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final);
-            //     });
-            //     // let bucket = admin.storage().bucket() ;
+                    res.status(200).render('/allotseats.ejs');
+                    admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final);
+                });
+                // let bucket = admin.storage().bucket() ;
 
-                // bucket.upload('./../data/mytestfile.jpg' , (err, file , response)=>{
-                //     console.log(err , file, response) ;
-                // }) ;
-            // } else {
-            //     console.log(err);
-            //     res.status(403).send(err.message);
-            // }
-            // });
+                bucket.upload('./../data/mytestfile.jpg' , (err, file , response)=>{
+                    console.log(err , file, response) ;
+                }) ;
+            } else {
+                console.log(err);
+                res.status(403).send(err.message);
+            }
+            });
 
             });
     }); 
