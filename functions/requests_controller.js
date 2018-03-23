@@ -145,6 +145,7 @@ function Handle_POST(app){
 
 
     app.post("/sendnotification" , urlencodedParser , (req , res)=>{
+        console.log(req.body) ;
         isAuthenticated(req , res)
         .then(uid=>{
         if(!validatePostBody(req , res , ['topic' , 'title' ,'description']))
@@ -180,20 +181,23 @@ function Handle_POST(app){
             options = {
                 priority : 'high' ,
             }
+            
+            topics = req.body.topic.split(',') ;
 
-
-            conditionString = `'${req.body.topic[0]}' in topics && '${userinfo.ccode}' in topics`
+            conditionString = `'${topics[0]}' in topics && '${userinfo.ccode}' in topics`
             console.log(conditionString) ; 
 
+            let primary_msgid  ; 
             msg.sendToCondition( conditionString , payload , options)
-            .then(msgid=>{console.log(msgid) ; 
+            .then(msgid=>{
+                primary_msgid = msgid ; 
+                console.log(msgid) ; 
                 console.log("notification sent " , req.body.topic , " with title : " , req.body.title) ;
 
                 admin.database().ref(`/Colleges/${userinfo.ccode}/notifications/${msgid.messageId}`).update({
-                    title : req.body.title , body : req.body.description , college : userinfo.college ,state : userinfo.state , district:userinfo.district , topics : req.body.topic , ccode : get_college_code(userinfo.state , userinfo.district , userinfo.college)}) ;
+                    title : req.body.title , body : req.body.description , college : userinfo.college ,state : userinfo.state , district:userinfo.district , topics : topics , ccode : get_college_code(userinfo.state , userinfo.district , userinfo.college)}) ;
 
                 //Save the topic array before responding to client  : important
-                topics = req.body.topic ;
                 console.log("request files = > " ) ; 
                 console.log(req.files) ; 
                 image =  req.files ? req.files.sampleFile : undefined ;
@@ -210,9 +214,9 @@ function Handle_POST(app){
 
                 
                 if(image){
-                    image.mv(`data/${msgid}`)
+                    image.mv(`data/${primary_msgid}`)
                     .then(file=>{
-                        admin.storage().bucket().upload(`data/${msgid}`, {destination:'notification_images'})
+                        admin.storage().bucket().upload(`data/${primary_msgid}`, {destination:'notification_images/'})
                         .then(file=>{
                             console.log(file) ; 
                         })

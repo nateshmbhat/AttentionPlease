@@ -76,7 +76,7 @@
                 <div class="container">
                     <div class="row text-center justify-content-center">
                         <div class="col-10">
-                            <div class="view overlay hoverable">
+                            <div class="view overlay hoverable z-depth-1">
                                     <img class="img-fluid rounded" id="preview_image">
                                     <a>
                                         <div class="mask waves-effect rgba-dark-slight"></div>
@@ -153,39 +153,68 @@ $("form").on('submit' , e=>{
     $('button[type=submit]').hide() ;
     $("#loader_circle").removeAttr("hidden") ; 
 
-    postdata = {} ;
+    postdata = new FormData() ; 
 
-    $('form').serializeArray().map(ele=> { if(ele.name!='topic') postdata[ele.name] = ele.value} ) ; 
+    $('form').serializeArray().map(ele=> { if(ele.name!='topic') postdata.append(ele.name , ele.value) }) ; 
     
     topicslist = [] ; 
     $("input:checkbox[name=topic]:checked").each(function(){
         topicslist.push($(this).val());
     });
-    postdata['topic'] = topicslist ; 
+    postdata.append('topic' , topicslist) ; 
 
+
+    
+    postdata.append('image_file',  document.getElementById('file_image').files[0] ) ; 
     console.log(postdata) ; 
 
-    $.post('/sendnotification' , postdata , (data , status , jqxhr_obj)=>{
+    // $.ajax({
+    //     type: "method",
+    //     url: "url",
+    //     data: "data",
+    //     dataType: "dataType",
+    //     success: function (response) {
+            
+    //     }
+    // });
+
+    $.ajax({url : '/sendnotification' , 
+            type: "post" , 
+            method:'post' , 
+            cache: false , 
+            contentType:false , 
+            data : postdata ,
+            processData:false, 
+            success:  (data , status , jqxhr_obj)=>{
+            if(data.success)
+            {
+                console.log('success') ;
+                $('#successalert').html(`<h3 class="text-center">${data.success}</h3>`)
+                $('#successalert').replaceWith($("#successalert").clone().removeAttr('hidden')) ; 
+                document.querySelector("form").reset() ; 
+                fadeElementAfter("#successalert" , 5000) ; 
+            }
+            else{
+                console.log('error') ; 
+                $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
+                $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden')) ; 
+                fadeElementAfter("#erroralert" , 4000) ; 
+            }
+
+            $('button[type=submit]').show() ; 
+
+            $("#loader_circle").attr('hidden' , true) ; 
+        } , 
+
+
+        error : (jqXHR, textStatus, errorThrown )=>{
+                console.log(jqXHR , textStatus , errorThrown) ; 
+                $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
+                $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden')) ; 
+                fadeElementAfter("#erroralert" , 4000) ; 
+        }
         
-        if(data.success)
-        {
-            console.log('success') ;
-            $('#successalert').html(`<h3 class="text-center">${data.success}</h3>`)
-            $('#successalert').replaceWith($("#successalert").clone().removeAttr('hidden')) ; 
-            document.querySelector("form").reset() ; 
-            fadeElementAfter("#successalert" , 5000) ; 
-        }
-        else{
-            console.log('error') ; 
-            $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
-            $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden')) ; 
-            fadeElementAfter("#erroralert" , 4000) ; 
-        }
-
-        $('button[type=submit]').show() ; 
-
-        $("#loader_circle").attr('hidden' , true) ; 
-    })
+    }) ; 
 
 
     
