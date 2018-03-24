@@ -9,6 +9,41 @@ const uniqid = require("uniqid" ) ;
 const utils = require("../utility_functions") ; 
 const randomid = require("random-id") ; 
 
+
+//returns a prom which resolves the right image link 
+function HandleImage(image)
+{
+    image_id = uniqid() ; 
+    return new Promise((resolve , reject)=>{
+        image.mv(`data/${image_id}`)
+        .then(()=>{
+
+            image_file = req.files.image_file; 
+
+            options  = { 
+                destination:`notification_images/` ,
+                metadata:{
+                    contentType: image.mimetype 
+                }
+            }
+
+            promise_image =  admin.storage().bucket().upload(`data/${image_id}`, options)
+                .then(file=>{
+                console.log(file) ; 
+                file["0"].getSignedUrl( { action: 'read', expires: '03-17-2025' } , (err, url)=>{
+                    resolve(url) ; 
+                    });
+                fs.unlink(`./data/${image_id}`) ; 
+            })
+            .catch(err=>resolve(""))
+        })
+        .catch(err=>{console.log(err) ;resolve("") ;  })
+    }) ; 
+}
+
+
+
+
 app.post('/' ,urlencodedParser ,  (req , res)=>{
     console.log(req.body) ;
     utils.isAuthenticated(req , res)
@@ -20,7 +55,7 @@ app.post('/' ,urlencodedParser ,  (req , res)=>{
         return ;
     }
     
-    let image_file , image_link="" , image_id = uniqid() ; 
+    let image_file = "", image_link=""  ; 
     
     utils.get_userinfo({type_of_user :"admin" , uid : uid})
     .then(userinfo=>{
@@ -32,93 +67,65 @@ app.post('/' ,urlencodedParser ,  (req , res)=>{
         image =  req.files!='undefined' && req.files!=undefined ? req.files.image_file: undefined ;
 
 
-        //image exists 
-        if(image){
-            image.mv(`data/${image_id}`)
-            .then(()=>{
-
-                image_file = req.files.image_file; 
-
-                options  = { 
-                    destination:`/notification_images` ,
-                    metadata:{
-                        contentType: image.mimetype 
-                    }
-                }
+        HandleImage(image).then(image_link=>{
+            console.log("Image_link : " , image_link) ; 
+            payload = {
+                notification : {
+                    title : req.body.title ,
+                    body : req.body.description
+                } ,
     
-                promise_image =  admin.storage().bucket().upload(`data/${image_id}`, options)
-                    .then(file=>{
-                    console.log(file) ; 
-                    image_link = file[0].bucket.metadata.mediaLink ; 
-                    fs.unlink(`./data/${image_id}`) ; 
-                })
-                .catch(err=>{console.log(err) ; })
-            })
-            .catch(err=>{console.log(err) ; })
-        }
-
-        
-        else {image_file = ""  ; image_link = ""} ; 
-
-        
-        payload = {
-            notification : {
-                title : req.body.title ,
-                body : req.body.description
-            } ,
-
-            data : {
-                customid : customid_var ,
-                ccode : userinfo.ccode ,
-                detail_desc : "",
-                image : image_link , 
-                links : "" ,
-                one_line_desc : req.body.description,
-                title : req.body.title ,
-                topics : JSON.stringify(req.body.topic)
-            } ,
-        }
-
-        //Save the topic array before responding to client  : important
-        topics = req.body.topic.split(',') ;
-
-        conditionString = `'${topics[0]}' in topics && '${userinfo.ccode}' in topics`
-        console.log("condition string : " , conditionString) ; 
-
-        
-        let primary_msgid  ; 
-        msg.sendToCondition( conditionString , payload , {priority:'high'})
-        .then(msgid=>{
-            primary_msgid = msgid.messageId ; 
-            console.log(msgid) ; 
-            console.log("notification sent " , req.body.topic , " with title : " , req.body.title) ;
-
-            
-            res.status(200).json({success : "Notification sent successfully ! " })
-
-            admin.database().ref(`/Colleges/${userinfo.ccode}/notifications/${msgid.messageId}`).update({
-                title : req.body.title , 
-                body : req.body.description ,
-                college : userinfo.college ,
-                state : userinfo.state , district:userinfo.district , topics : topics , ccode : utils.get_college_code(userinfo.state , userinfo.district , userinfo.college) , 
-                image :image_file ?  image_file.mediaLink : ""
-            }) ;
-
-
-            for(let i =1 ; i<topics.length ;i++)
-            {
-                conditionString = `'${topics[i]}' in topics && '${userinfo.ccode}' in topics` ; 
-                msg.sendToCondition(conditionString , payload , options)
-                .then(msgid=>console.log(msgid , topics[i]))
-                .catch(err=>console.log(err)) ;
+                data : {
+                    customid : customid_var ,
+                    ccode : userinfo.ccode ,
+                    detail_desc : "",
+                    image : image_link , 
+                    links : "" ,
+                    one_line_desc : req.body.description,
+                    title : req.body.title ,
+                    topics : JSON.stringify(req.body.topic)
+                } ,
             }
+    
+            //Save the topic array before responding to client  : important
+            topics = req.body.topic.split(',') ;
+    
+            conditionString = `'${topics[0]}' in topics && '${userinfo.ccode}' in topics`
+            console.log("condition string : " , conditionString) ; 
+    
             
+            let primary_msgid  ; 
+            msg.sendToCondition( conditionString , payload , {priority:'high'})
+            .then(msgid=>{
+                primary_msgid = msgid.messageId ; 
+                console.log(msgid) ; 
+                console.log("notification sent " , req.body.topic , " with title : " , req.body.title) ;
+    
+                res.status(200).json({success : "Notification sent successfully ! " })
+    
+                admin.database().ref(`/Colleges/${userinfo.ccode}/notifications/${primary_msgid}`).update({
+                    title : req.body.title , 
+                    body : req.body.description ,
+                    college : userinfo.college ,
+                    state : userinfo.state , district:userinfo.district , topics : topics , ccode : utils.get_college_code(userinfo.state , userinfo.district , userinfo.college) , 
+                    image :image_file ?  image_file.mediaLink : ""
+                }) ;
+    
+    
+                for(let i =1 ; i<topics.length ;i++)
+                {
+                    conditionString = `'${topics[i]}' in topics && '${userinfo.ccode}' in topics` ; 
+                    msg.sendToCondition(conditionString , payload , options)
+                    .then(msgid=>console.log(msgid , topics[i]))
+                    .catch(err=>console.log(err)) ;
+                }
+                
+            })
+    
+            .catch(err=>{console.log(err)
+                res.render('dashboard.ejs' , {error : err.message}  ) ;
+            }) ;
         })
-
-        .catch(err=>{console.log(err)
-            res.render('dashboard.ejs' , {error : err.message}  ) ;
-        }) ;
-        
     })
 
     })
