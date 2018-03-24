@@ -5,12 +5,14 @@
     <title>Login</title>
 
     <style>
-       h1{
+         
+        h1{
             font-size:500% !important ;
             font-family: raleway , georgia, 'times new roman', times, serif !important ; 
             text-align: center ; 
             padding:10px 0 ;
         } 
+
         h3{
             color:black !important;
             font-family:raleway , caladea , lora  , cambria  !important; 
@@ -19,7 +21,7 @@
     </style>
 </head>
 
-<body>
+<body background="assets/images/bg1.jpg">
     <div class="gtco-loader"></div>
     
     <% include partials/scripts_and_css.ejs %>
@@ -27,7 +29,7 @@
     <script src="/assets/js/dashboard.js"></script>       
     
     <% if(locals.login && login){%>
-        <% include partials/navbar.ejs %>
+        <% include partials/navbar.ejs%>
         <%}else{%>
         <%include partials/navbar_login.ejs%>
     <%} %>

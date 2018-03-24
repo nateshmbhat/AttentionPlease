@@ -39,7 +39,7 @@ module.exports = function HandleRequests(app){
 }
 
 
-//checks if the admin user is logged in 
+//checks if the admin user is logged in
 function isAuthenticated(req , res)
 {
     return new Promise((resolve ,reject)=>{
@@ -56,9 +56,9 @@ function isAuthenticated(req , res)
                     }
 
                     else{
-                        reject("Only College administrators can sign in : ") ; 
+                        reject("Only College administrators can sign in : ") ;
                     }
-                }) ; 
+                }) ;
                 console.log("User is signed in : " , decodedtoken.uid)  ;
                 resolve(decodedtoken.uid) ;
             }
@@ -150,7 +150,7 @@ function Handle_POST(app){
 
             //All checked . Now safe to add to the database
             admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
-                let userinfo = snap.val() ; 
+                let userinfo = snap.val() ;
                 path = `/Colleges/${userinfo.ccode}/timetables/${req.body.year}/${req.body.branch}/${req.body.section}/` ;
                 console.log(path) ;
                 admin.database().ref(path).update(postdata) ;
@@ -217,15 +217,15 @@ function Handle_POST(app){
                 } ,
 
                 data : {
-                    customid : customid_var , 
-                    ccode : userinfo.ccode , 
+                    customid : customid_var ,
+                    ccode : userinfo.ccode ,
                     detail_desc : "",
                     image : image_file ? image_file.mediaLink : "",
                     links : "" ,
                     one_line_desc : req.body.description,
                     title : req.body.title ,
                     topics : JSON.stringify(req.body.topic)
-                } , 
+                } ,
             }
 
             options = {
@@ -265,8 +265,8 @@ function Handle_POST(app){
                 {
                     conditionString = `'${topics[i]}' in topics && '${userinfo.ccode}' in topics` ; 
                     msg.sendToCondition(conditionString , payload , options)
-                    .then(msgid=>console.log(msgid , topics[i])) 
-                    .catch(err=>console.log(err)) ; 
+                    .then(msgid=>console.log(msgid , topics[i]))
+                    .catch(err=>console.log(err)) ;
                 }
 
                 
@@ -344,44 +344,41 @@ function Handle_POST(app){
 
     app.post('/putseats' ,urlencodedParser , (req , res)=>{
         console.log("\nGOT FILE POST REQUEST !!!\n\n") ;
-        isAuthenticated(req , res)
-        .then(uid=>{
+        console.log(req.files) ;
 
-            sampleFile = req.files.sampleFile ; 
-            console.log(sampleFile) ; 
-            let fileid = randomid(7) ; 
+        let sampleFile = req.files.sampleFile ;
 
-            sampleFile.mv(`./data/${fileid}`, err => {
-            if (!err) {
-                console.log("Successfully got the file ! ");
-                admin.database().ref(`/adminusers/${uid}`).once('value', snap => {
-                    userinfo = snap.val();
+        fileid = randomid() ;
+        sampleFile.mv(`./data/${fileid}` , err=>{
+            if(!err){
+                console.log("Successfully got the file ! ") ;
+                admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
+                    userinfo = snap.val() ;
 
-                    var obj = xlsx.readFile(`./data/client_data/${fileid}`);
-                    var sh = obj.SheetNames;
-                    var dat = xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
+                    var obj=xlsx.readFile(`./data/client_data/${fileid}`);
+                    var sh=obj.SheetNames;
+                    var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
 
-                    var final = {};
-                    var temp = {};
+                    var final={};
+                    var temp=[];
                     var subs;
-                    for (i = 0; dat[i] != undefined; i++) {
-                        temp.Name = dat[i].Name;
-                        final[dat[i].USN] = temp;
-                        subs = [];
-                        for (j = 0; dat[i]['sub' + j] != undefined; j++) {
-                            subs[0] = dat[i]['date' + j];
-                            subs[1] = dat[i]['time' + j];
-                            subs[2] = dat[i]['room' + j];
-                            subs[3] = dat[i]['seatno' + j];
-                            temp[dat[i]['sub' + j]] = subs;
-                            subs = [];
-                        }
-                        temp = {};
+                    for(i=0;dat[i]!=undefined;i++){
+                      final[dat[i].USN]=temp;
+                      subs={};
+                      for(j=0;dat[i]['sub'+j]!=undefined;j++){
+                        subs['subname']=dat[i]['sub'+j];
+                        subs['date']=dat[i]['date'+j];
+                        subs['time']=dat[i]['time'+j];
+                        subs['room']=dat[i]['room'+j];
+                        subs['seat']=dat[i]['seatno'+j];
+                        temp[j]=subs
+                        subs={};
+                      }
+                      temp=[];
                     }
-
-                    res.status(200).render('/allotseats.ejs');
-                    admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final);
-                });
+                    res.status(200).render('/allotseats.ejs') ;
+                    admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final)  ;
+                }) ;
                 // let bucket = admin.storage().bucket() ;
 
                 bucket.upload('./../data/mytestfile.jpg' , (err, file , response)=>{
@@ -393,7 +390,6 @@ function Handle_POST(app){
             }
             });
 
-            });
     }); 
 
 
