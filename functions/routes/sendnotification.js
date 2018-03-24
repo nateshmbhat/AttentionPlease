@@ -18,24 +18,22 @@ function HandleImage(image)
         image.mv(`data/${image_id}`)
         .then(()=>{
 
-            image_file = req.files.image_file; 
-
             options  = { 
-                destination:`notification_images/` ,
+                destination:`notification_images/${image_id}` ,
                 metadata:{
                     contentType: image.mimetype 
                 }
             }
 
-            promise_image =  admin.storage().bucket().upload(`data/${image_id}`, options)
+            admin.storage().bucket().upload(`data/${image_id}`, options)
                 .then(file=>{
-                console.log(file) ; 
+                // console.log(file) ; 
                 file["0"].getSignedUrl( { action: 'read', expires: '03-17-2025' } , (err, url)=>{
-                    resolve(url) ; 
+                        fs.unlink(`./data/${image_id}`) ; 
+                        resolve(url) ; 
                     });
-                fs.unlink(`./data/${image_id}`) ; 
             })
-            .catch(err=>resolve(""))
+            .catch(err=>{console.log(err) ; resolve("") ; } ) ; 
         })
         .catch(err=>{console.log(err) ;resolve("") ;  })
     }) ; 
@@ -67,6 +65,7 @@ app.post('/' ,urlencodedParser ,  (req , res)=>{
         image =  req.files!='undefined' && req.files!=undefined ? req.files.image_file: undefined ;
 
 
+        
         HandleImage(image).then(image_link=>{
             console.log("Image_link : " , image_link) ; 
             payload = {
@@ -108,7 +107,7 @@ app.post('/' ,urlencodedParser ,  (req , res)=>{
                     body : req.body.description ,
                     college : userinfo.college ,
                     state : userinfo.state , district:userinfo.district , topics : topics , ccode : utils.get_college_code(userinfo.state , userinfo.district , userinfo.college) , 
-                    image :image_file ?  image_file.mediaLink : ""
+                    image : image_link
                 }) ;
     
     

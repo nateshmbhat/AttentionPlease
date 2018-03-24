@@ -56,7 +56,9 @@
         <dl>
             <dt>Existing topics</dt>
             <dd>
-            <div class="list-group" id="topics_subscribed"> </div>
+                <div class="row">
+                    <div class="list-group col-3 rounded mt-2" id="topics_subscribed"> </div>
+                </div>
             </dd>
         </dl>
 
@@ -144,7 +146,7 @@ init_user()
             userinfo.email = user_global.email ;
             
             Object.getOwnPropertyNames(topics).forEach(ele=>{
-                $("#topics_subscribed").append(`<a href="#" class="list-group-item waves-effect font-small">${topics[ele].title}</a>`) ; 
+                $("#topics_subscribed").append(`<button class="list-group-item waves-effect font-small">${topics[ele].title}</button>`) ; 
             })
             $("#email").val(userinfo.email) ; 
             $("#name").val(userinfo.name) ;  
