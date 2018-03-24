@@ -29,6 +29,7 @@
     "random-id": "0.0.2",
     "react-router": "^4.2.0",
     "shortid": "^2.2.8",
+    "uniqid": "^4.1.1",
     "xlsx": "^0.12.5"
   }
 }

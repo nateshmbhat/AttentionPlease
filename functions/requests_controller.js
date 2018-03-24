@@ -17,6 +17,7 @@ const serviceAccount = require("./service account key/AttentionPlease-d86a646ccc
 const express_fileupload = require("express-fileupload") ;
 const gcs = require("@google-cloud/storage")() ;
 const randomid = require("random-id") ;
+const uniqid = require("uniqid" ) ; 
 
 
 admin.initializeApp({
@@ -175,11 +176,10 @@ function Handle_POST(app){
             return ;
         }
         
-        let image_file  , image_id = randomid() ; 
+        let image_file  , image_id = uniqid() ; 
         
-
-        admin.database().ref('/adminusers/'+uid).once('value' , snap=>{
-            let userinfo = snap.val() ;
+        get_userinfo({type_of_user :"admin" , uid : uid})
+        .then(userinfo=>{
             let customid_var =  randomid(8 , "0") ;
 
             const msg = admin.messaging() ;
@@ -201,13 +201,14 @@ function Handle_POST(app){
                         .then(file=>{
                         console.log(file) ; 
                         image_file = file ; 
+                        fs.unlink(`./data/${image_id}`) ; 
                     })
                     .catch(err=>{console.log(err)})
                 })
                 .catch(err=>{console.log(err) ; })
             }
-            else image_file = "" ; 
 
+            else image_file = "" ; 
 
             payload = {
                 notification : {
@@ -504,7 +505,6 @@ function Handle_POST(app){
         })
         .catch(err=>{console.log(err) ;res.render('index.ejs')}) ;
     })
-
 }
 
 
