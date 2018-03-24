@@ -75,6 +75,27 @@ function isAuthenticated(req , res)
 }
 
 
+//Returns the User info object which is 
+function get_userinfo({type_of_user = "admin" , uid} )
+{
+    console.log(type_of_user , uid ) ; 
+    return new Promise((resolve , reject)=>{
+        if(type_of_user=="admin"){
+            admin.database().ref('/adminusers/' + uid).once('value' , snap=>{
+                resolve(snap.val()) ; 
+            }).catch(err=>reject(err)) ; 
+        }
+
+        else if (type_of_user =="student")
+        {
+             admin.database().ref('/users/' + uid).once('value' , snap=>{
+                resolve(snap.val()) ; 
+            }).catch(err=>reject(err)) ; 
+        }
+    }) ;
+}
+
+
 function get_college_code(state , dist ,college)
 {
     let myarr = state_dist_collegewithCODE[state][dist]
@@ -155,6 +176,7 @@ function Handle_POST(app){
         }
         
         let image_file  , image_id = randomid() ; 
+        
 
         admin.database().ref('/adminusers/'+uid).once('value' , snap=>{
             let userinfo = snap.val() ;
@@ -170,8 +192,7 @@ function Handle_POST(app){
                 options  = {
                     destination:`notification_images/${image_id}` ,
                     metadata:{
-                        contentType: 'image/jpeg',
-                        // firebaseStorageDownloadTokens: uuid
+                        contentType: image.name.endsWith('.jpeg')?  'image/jpeg' : image.name.endsWith('.png') ? 'image/png' : "image/jpg" ,
                     }
                 }
                 image.mv(`data/${image_id}`)
@@ -535,7 +556,9 @@ function Handle_GET(app){
 
     app.get("/dashboard" , (req, res)=>{
         isAuthenticated(req, res)
-        .then(uid=>res.render('dashboard.ejs') )
+        .then(uid=>{ res.render('dashboard.ejs')  ; 
+            get_userinfo({uid : uid}) ; 
+        } )
         .catch(error=>res.render('login.ejs'))  ;
     })
 
