@@ -509,6 +509,7 @@ function Handle_POST(app){
 function Handle_GET(app){
 
     app.get('/allotseats' , (req ,res)=>{res.render('allotseats.ejs') ; }) ; 
+
     
     app.get('/' , (req , res)=>{
         res.render('index.ejs') ;
@@ -557,5 +558,13 @@ function Handle_GET(app){
         } )
         .catch(error=>res.render('login.ejs'))  ;
     })
+
+    app.get('/displayprofile' , (req ,res)=>{
+	res.render('displayprofile.ejs') ; 
+    }) 
+    
+     app.get('/dashboard2' , (req ,res)=>{
+    res.render('dashboard2.ejs') ; 
+    }) 
 
 }

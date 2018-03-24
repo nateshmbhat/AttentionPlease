@@ -23,7 +23,15 @@
     <h1 class="text-decoration">Seat Allotment</h1>
     <br>Add a spreadsheet file containing the seat allotment details...example format will soon follow
     <br><br>
-    <input type=file accept=".xml,.xlsx,.ods" class="btn btn-info">
+    <div class="view overlay">
+                <div class="image-upload">
+                    <label for="file-input">
+                        <h4  class="btn btn-info">Browse Spreadsheet File</h4>
+                    </label>
+                    <input id="file-input" type="file" accept=".xml,.xlsx,.ods" hidden="true"/>
+                </div>
+    </div>
+
     <br><br>
     <script type="text/javascript">
     // var xlsx=require('xlsx');
@@ -38,3 +46,7 @@
     //       console.log(desired_value);
     </script>
     <!--Card-->
+</div>
+  <% include partials/footer.ejs %>
+   <script>$("#div_footer").css('position' , 'fixed') ;</script>
+</body>

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Profile</title>
-
     <style>
 
     div #topics_subscribed li{
@@ -27,32 +26,42 @@
 <br><br>
 
 <!--Card-->
-    <div class="card" style="background-color: #BBDEFB">
+    <div class="card" style="background-color: white">
         <!--Card image-->
         <div class="view overlay">
-            <center><img src="assets/images/user.png" class="img-fluid" alt="" height="300px" width="300px"></center>
-            <a href="#">
-                <div class="mask rgba-white-slight"></div>
-            </a>
+            <center>
+                <div class="image-upload">
+                    <label for="file-input">
+                        <img src="assets/images/user.png" class="img-fluid" height="25px" width="250px">
+                    </label>
+
+                    <input id="file-input" type="file" hidden="true"/>
+                </div>
+            </center>
         </div>
 
         <!--Card content-->
         <div class="card-body">
             <!--Title-->
-            <h4 class="card-title" align="center">My Profile</h4>
+            <h1 class="card-title" align="center">My Profile</h1>
             <!--Text-->
-           <form >
-        <dl class="form-group">
-            <br><dt><label for="user_profile_name">Name</label></dt>
-            <dd><input class="form-control" required  id="name" name="name" size="30" type="text" /></dd>
-        </dl>
-        <dl class="form-group">
-            <dt><label for="user_profile_email">Email</label></dt>
-            <dd>
-                <input class="form-control" id="email" name="email" type="email" required>
-            </dd>
-        </dl>
+           <form>
+        <div class="row">
+            <div class="col">
+                <div class="md-form">
+                    <input class="form-control" required  id="name" name="name" type="text" />
+                    <label for="form1">Ente Name</label>
+                </div>
+            </div>
 
+            <div class="col">
+                <div class="md-form">
+                    <input class="form-control" id="email" name="email" type="email" required/>
+                    <label for="form1">Enter E-Mail</label>
+                </div>
+            </div>
+        </div>
+<vr>
         <dl>
             <dt>Existing topics</dt>
             <dd>
@@ -81,12 +90,64 @@
                 <label for="select_college">College : </label>
                 <input class="form-control" id= "select_college" type="text" readonly >
             </div>
-
         </dd>
     </dl>
 
+    <!--Basic textarea-->
+    <center><h2 class="Text">About Yourself</h2></center>
+        <div class="md-form">
+          <textarea type="text" id="textareaBasic" class="form-control md-textarea" rows="3"></textarea>
+          <label for="textareaBasic">About Yourself</label>
+        </div>
 
+    <center><h2 class="Text">Social Media Links</h2></center>
+    <div class="row">
+            <div class="col">
+                <div class="md-form">
+                    <input type="text" id="inputMDEx" class="form-control">
+                    <label for="inputMDEx"><i class="fa fa-facebook"></i> link</label>
+                </div>
+            </div> 
 
+        <div class="col">
+            <div class="md-form">
+                <input type="text" id="inputMDEx" class="form-control">
+                <label for="inputMDEx"><i class="fa fa-twitter pr-1"></i>  link</label>
+            </div>
+        </div>      
+
+        <div class="col">
+            <div class="md-form">
+                <input type="text" id="inputMDEx" class="form-control">
+                <label for="inputMDEx"><i class="fa fa-linkedin pr-1"></i> link</label>
+            </div>
+        </div> 
+
+        <div class="col">
+            <div class="md-form">
+                <input type="text" id="inputMDEx" class="form-control">
+                <label for="inputMDEx"><i class="fa fa-github pr-1"></i> link</label>
+            </div>
+        </div>      
+    </div>
+
+<br>
+
+    <center><h2 class="Text">Experience</h2></center>
+    <div class="row">
+        <div class="col">
+            <div class="md-form form-lg">
+                <input type="text" id="inputLGEx" class="form-control form-control-lg">
+                <label for="inputLGEx">Enter current position</label>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="md-form form-lg">
+                <input type="text" id="inputLGEx" class="form-control form-control-lg">
+                <label for="inputLGEx">Enter previous position</label>
+            </div>
+        </div>
         <!-- <p><button type="submit" class="btn btn-primary">Update profile</button></p> -->
     </div>
     </form>
@@ -193,8 +254,6 @@ $('form').on('submit' , (event)=>{
 
 </script>
 </div>
-
-
 <% include partials/footer.ejs %>
 </body>
 </html>
