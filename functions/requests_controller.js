@@ -16,8 +16,9 @@ const state_dist_collegewithCODE = require("./data/state_dist_collegeWITHCODE.js
 const serviceAccount = require("./service account key/AttentionPlease-d86a646ccc28(working notification).json") ;
 const express_fileupload = require("express-fileupload") ;
 const gcs = require("@google-cloud/storage")() ;
-const randomid = require("random-id") ;
-const uniqid = require("uniqid" ) ; 
+const uniqid = require("uniqid" ) ;
+const route_sendnotification = require("./routes/sendnotification") ; 
+const utils = require("./utility_functions") ; 
 
 
 admin.initializeApp({
@@ -39,101 +40,18 @@ module.exports = function HandleRequests(app){
 }
 
 
-//checks if the admin user is logged in
-function isAuthenticated(req , res)
-{
-    return new Promise((resolve ,reject)=>{
-        console.log(req.cookies) ;
-
-    if(req.cookies['__session'])
-    {
-        admin.auth().verifyIdToken(req.cookies['__session']).then(decodedtoken=>{
-            if(decodedtoken.uid){
-                admin.database().ref('/adminusers/'+decodedtoken.uid).once('value' , snap=>{
-                    if(snap.exists())
-                    {
-                        resolve(decodedtoken.uid) ;
-                    }
-
-                    else{
-                        reject("Only College administrators can sign in : ") ;
-                    }
-                }) ;
-                console.log("User is signed in : " , decodedtoken.uid)  ;
-                resolve(decodedtoken.uid) ;
-            }
-            // TODO ROUTE User with the required user details on the page
-        })
-        .catch(error=>{
-            console.log("User not signed in yet ! ")
-            reject(error) ;
-            // res.render('login.ejs')
-        })
-    }
-    else
-        reject('not signed in ') ;
-    }) ;
-}
-
-
-//Returns the User info object which is 
-function get_userinfo({type_of_user = "admin" , uid} )
-{
-    console.log(type_of_user , uid ) ; 
-    return new Promise((resolve , reject)=>{
-        if(type_of_user=="admin"){
-            admin.database().ref('/adminusers/' + uid).once('value' , snap=>{
-                resolve(snap.val()) ; 
-            }).catch(err=>reject(err)) ; 
-        }
-
-        else if (type_of_user =="student")
-        {
-             admin.database().ref('/users/' + uid).once('value' , snap=>{
-                resolve(snap.val()) ; 
-            }).catch(err=>reject(err)) ; 
-        }
-    }) ;
-}
-
-
-function get_college_code(state , dist ,college)
-{
-    let myarr = state_dist_collegewithCODE[state][dist]
-    for(let i = 0 ; i<myarr.length;  i++)
-    {
-        if(college==myarr[i][1]){
-            return myarr[i][0] ;
-        }
-    }
-}
-
-
-function validatePostBody(req , res , keys ){
-    console.log("\nExecuting PostBody validation : ") ;
-    console.log("Got Requests : ") ;
-    console.log(req.body) ;
-
-    for(i in keys){
-        if(!(keys[i] in req.body))
-        {
-            console.log("invalid post request returning ! ") ;
-            return false ;
-        }
-    }
-    return true ;
-}
-
-
 
 //Handles all POST requests
 function Handle_POST(app){
+
+    app.use('/sendnotification', route_sendnotification) ; 
+
     app.post("/createtimetable" , urlencodedParser ,  (req , res)=>{
 
         console.log(req.body) ;
-        isAuthenticated(req , res)
+        utils.isAuthenticated(req , res)
         .then(uid =>{
-            if(!validatePostBody(req , res , ['dataArray' , 'branch' , 'year' , 'section'])) throw Error("Invalid Request ! Make sure that the time fields are not empty !") ;
+            if(!utils.validatePostBody(req , res , ['dataArray' , 'branch' , 'year' , 'section'])) throw Error("Invalid Request ! Make sure that the time fields are not empty !") ;
 
             //check if each 1d array in data array has 9 elements : first 2 being the time
             postdata = req.body.dataArray ;
@@ -166,131 +84,12 @@ function Handle_POST(app){
 
 
 
-    app.post("/sendnotification" , urlencodedParser , (req , res)=>{
-        console.log(req.body) ;
-        isAuthenticated(req , res)
-        .then(uid=>{
-        if(!validatePostBody(req , res , ['topic' , 'title' ,'description']))
-        {
-            res.status('200').json({error : 'Make sure you have specified all the required details below ! '}) ;
-            return ;
-        }
-        
-        let image_file  , image_id = uniqid() ; 
-        
-        get_userinfo({type_of_user :"admin" , uid : uid})
-        .then(userinfo=>{
-            let customid_var =  randomid(8 , "0") ;
-
-            const msg = admin.messaging() ;
-            console.log("request files : " , req.files ) ; 
-
-
-            image =  req.files ? req.files.image_file: undefined ;
-
-            if(image){
-                options  = {
-                    destination:`notification_images/${image_id}` ,
-                    metadata:{
-                        contentType: image.name.endsWith('.jpeg')?  'image/jpeg' : image.name.endsWith('.png') ? 'image/png' : "image/jpg" ,
-                    }
-                }
-                image.mv(`data/${image_id}`)
-                .then(file=>{
-                    admin.storage().bucket().upload(`data/${image_id}`, options)
-                        .then(file=>{
-                        console.log(file) ; 
-                        image_file = file ; 
-                        fs.unlink(`./data/${image_id}`) ; 
-                    })
-                    .catch(err=>{console.log(err)})
-                })
-                .catch(err=>{console.log(err) ; })
-            }
-
-            else image_file = "" ; 
-
-            payload = {
-                notification : {
-                    title : req.body.title ,
-                    body : req.body.description
-                } ,
-
-                data : {
-                    customid : customid_var ,
-                    ccode : userinfo.ccode ,
-                    detail_desc : "",
-                    image : image_file ? image_file.mediaLink : "",
-                    links : "" ,
-                    one_line_desc : req.body.description,
-                    title : req.body.title ,
-                    topics : JSON.stringify(req.body.topic)
-                } ,
-            }
-
-            options = {
-                priority : 'high' ,
-            }
-            
-            topics = req.body.topic.split(',') ;
-
-            conditionString = `'${topics[0]}' in topics && '${userinfo.ccode}' in topics`
-            console.log("condition string : " , conditionString) ; 
-
-            //Save the topic array before responding to client  : important
-            
-            let primary_msgid  ; 
-            msg.sendToCondition( conditionString , payload , options)
-            .then(msgid=>{
-                primary_msgid = msgid.messageId ; 
-                console.log(msgid) ; 
-                console.log("notification sent " , req.body.topic , " with title : " , req.body.title) ;
-
-               
-                res.status(200).json({success : "Notification sent successfully ! " })
-
-
-                admin.database().ref(`/Colleges/${userinfo.ccode}/notifications/${msgid.messageId}`).update({
-                    title : req.body.title , 
-                    body : req.body.description ,
-                    college : userinfo.college ,
-                    state : userinfo.state , district:userinfo.district , topics : topics , ccode : get_college_code(userinfo.state , userinfo.district , userinfo.college) , 
-                    image :image_file ?  image_file.mediaLink : ""
-                }) ;
-
-                
-
-
-                for(let i =1 ; i<topics.length ;i++)
-                {
-                    conditionString = `'${topics[i]}' in topics && '${userinfo.ccode}' in topics` ; 
-                    msg.sendToCondition(conditionString , payload , options)
-                    .then(msgid=>console.log(msgid , topics[i]))
-                    .catch(err=>console.log(err)) ;
-                }
-
-                
-                
-                })
-
-            .catch(err=>{console.log(err)
-                res.render('dashboard.ejs' , {error : err.message}  ) ;
-            }) ;
-
-
-            
-        })
-
-        })
-        .catch(err=>{res.render('login.ejs' , {error : err}); return true; })
-    })
-
-
+    
 
 
 
     app.post("/getcolleges" , urlencodedParser , (req,res)=>{
-       if(!validatePostBody(req , res , ['state' , 'district'])) return ;
+       if(!utils.validatePostBody(req , res , ['state' , 'district'])) return ;
 
         try{
             console.log("Got college request !") ;
@@ -307,11 +106,11 @@ function Handle_POST(app){
 
     app.post('/updateprofile', urlencodedParser ,(req , res)=>{
         console.log(req.body) ;
-        isAuthenticated(req , res)
+        utils.isAuthenticated(req , res)
         .then(uid=>{
             //TODO : check if "topics" is also present in the request
             //Right when use is not subbed to any topic , it results in invalid post request
-            if(!validatePostBody(req , res , ['name' , 'email'  , 'state' , 'district' , 'college' ])) return ;
+            if(!utils.validatePostBody(req , res , ['name' , 'email'  , 'state' , 'district' , 'college' ])) return ;
 
             admin.auth().updateUser(uid , {
                 displayName : req.body.name ,
@@ -326,7 +125,7 @@ function Handle_POST(app){
                     district : req.body.district ,
                     state : req.body.state ,
                     name : req.body.name ,
-                    ccode : get_college_code(req.body.state , req.body.district , req.body.college) ,
+                    ccode : utils.get_college_code(req.body.state , req.body.district , req.body.college) ,
 
                 })
                 .then(user=>{console.log("Updated successfully !") ; })
@@ -348,7 +147,7 @@ function Handle_POST(app){
 
         let sampleFile = req.files.sampleFile ;
 
-        fileid = randomid() ;
+        fileid = uniqid() ;
         sampleFile.mv(`./data/${fileid}` , err=>{
             if(!err){
                 console.log("Successfully got the file ! ") ;
@@ -395,7 +194,7 @@ function Handle_POST(app){
 
     app.post('/register' , urlencodedParser ,  (req , res)=>{
         flag_valid = 0 ;
-        if(!validatePostBody(req , res , ['state' , 'district' , 'college' , 'email' , 'password' , 'name'  , 'phone'])) return ;
+        if(!utils.validatePostBody(req , res , ['state' , 'district' , 'college' , 'email' , 'password' , 'name'  , 'phone'])) return ;
 
         if(Object.getOwnPropertyNames(state_dist_colleges).indexOf(req.body.state)>=0){
             if(Object.getOwnPropertyNames(state_dist_colleges[req.body.state]).indexOf(req.body.district)>=0)
@@ -444,7 +243,7 @@ function Handle_POST(app){
                 };
                 //Set the collegeID for the user object corresponding to the selected college name
 
-                userinfo.ccode = get_college_code(userinfo.state , userinfo.district , userinfo.college) ;
+                userinfo.ccode = utils.get_college_code(userinfo.state , userinfo.district , userinfo.college) ;
 
                 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                 console.log(userinfo) ;
@@ -469,9 +268,9 @@ function Handle_POST(app){
     app.post('/createtopic'   , urlencodedParser , (req, res)=>{
         console.log(req.body) ;
 
-        isAuthenticated(req,res)
+        utils.isAuthenticated(req,res)
         .then(uid=>{
-            if(!validatePostBody(req , res ,['topic' , 'desc'])) return ;
+            if(!utils.validatePostBody(req , res ,['topic' , 'desc'])) return ;
 
             console.log("user id is " , uid) ;
             admin.database().ref('/adminusers/'+uid).once('value',snap=>{
@@ -522,11 +321,11 @@ function Handle_GET(app){
 
 
     app.get('/createtopic' , (req , res)=>{
-        isAuthenticated(req , res).then(uid=>res.render('createtopic.ejs')).catch(err=>res.render('login.ejs')) ;
+        utils.isAuthenticated(req , res).then(uid=>res.render('createtopic.ejs')).catch(err=>res.render('login.ejs')) ;
     })
 
     app.get('/profile' , (req , res)=>{
-        isAuthenticated(req , res).then(uid=>{res.render('profile.ejs') ; }).catch(err=>res.render('login.ejs')) ;
+        utils.isAuthenticated(req , res).then(uid=>{res.render('profile.ejs') ; }).catch(err=>res.render('login.ejs')) ;
     })
 
     app.get('/home' , (req,res)=>{
@@ -538,22 +337,23 @@ function Handle_GET(app){
     })
 
     app.get('/timetable' , (req , res)=>{
-        isAuthenticated(req , res)
+        utils.isAuthenticated(req , res)
         .then(uid=>{res.render('timetable.ejs') ; })
         .catch(err=>{res.render('login.ejs') ; }) ;
     })
 
 
     app.get('/login' , (req , res)=>{
-        isAuthenticated(req , res)
+        utils.isAuthenticated(req , res)
         .then(uid=>{console.log("UID logged in : " + uid) ; res.render('dashboard.ejs' );})
         .catch(error=>{console.log(error) ; res.render('login.ejs' ) ; })
     })
 
     app.get("/dashboard" , (req, res)=>{
-        isAuthenticated(req, res)
-        .then(uid=>{ res.render('dashboard.ejs')  ; 
-            get_userinfo({uid : uid}) ; 
+        console.log("handling dashboard get ...") ; 
+        utils.isAuthenticated(req, res)
+        .then(uid=>{ console.log("authenticated : ", uid) ;   res.render('dashboard.ejs')  ; 
+            utils.get_userinfo({uid : uid}) ; 
         } )
         .catch(error=>res.render('login.ejs'))  ;
     })
