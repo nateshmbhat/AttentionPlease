@@ -153,12 +153,40 @@ function Handle_POST(app){
             res.status('200').json({error : 'Make sure you have specified all the required details below ! '}) ;
             return ;
         }
+        
+        let image_file  , image_id = randomid() ; 
 
         admin.database().ref('/adminusers/'+uid).once('value' , snap=>{
             let userinfo = snap.val() ;
             let customid_var =  randomid(8 , "0") ;
 
             const msg = admin.messaging() ;
+            console.log("request files : " , req.files ) ; 
+
+
+            image =  req.files ? req.files.image_file: undefined ;
+
+            if(image){
+                options  = {
+                    destination:`notification_images/${image_id}` ,
+                    metadata:{
+                        contentType: 'image/jpeg',
+                        // firebaseStorageDownloadTokens: uuid
+                    }
+                }
+                image.mv(`data/${image_id}`)
+                .then(file=>{
+                    admin.storage().bucket().upload(`data/${image_id}`, options)
+                        .then(file=>{
+                        console.log(file) ; 
+                        image_file = file ; 
+                    })
+                    .catch(err=>{console.log(err)})
+                })
+                .catch(err=>{console.log(err) ; })
+            }
+            else image_file = "" ; 
+
 
             payload = {
                 notification : {
@@ -170,7 +198,7 @@ function Handle_POST(app){
                     customid : customid_var , 
                     ccode : userinfo.ccode , 
                     detail_desc : "",
-                    image : "" ,
+                    image : image_file ? image_file.mediaLink : "",
                     links : "" ,
                     one_line_desc : req.body.description,
                     title : req.body.title ,
@@ -185,23 +213,30 @@ function Handle_POST(app){
             topics = req.body.topic.split(',') ;
 
             conditionString = `'${topics[0]}' in topics && '${userinfo.ccode}' in topics`
-            console.log(conditionString) ; 
+            console.log("condition string : " , conditionString) ; 
 
+            //Save the topic array before responding to client  : important
+            
             let primary_msgid  ; 
             msg.sendToCondition( conditionString , payload , options)
             .then(msgid=>{
-                primary_msgid = msgid ; 
+                primary_msgid = msgid.messageId ; 
                 console.log(msgid) ; 
                 console.log("notification sent " , req.body.topic , " with title : " , req.body.title) ;
 
-                admin.database().ref(`/Colleges/${userinfo.ccode}/notifications/${msgid.messageId}`).update({
-                    title : req.body.title , body : req.body.description , college : userinfo.college ,state : userinfo.state , district:userinfo.district , topics : topics , ccode : get_college_code(userinfo.state , userinfo.district , userinfo.college)}) ;
-
-                //Save the topic array before responding to client  : important
-                console.log("request files = > " ) ; 
-                console.log(req.files) ; 
-                image =  req.files ? req.files.sampleFile : undefined ;
+               
                 res.status(200).json({success : "Notification sent successfully ! " })
+
+
+                admin.database().ref(`/Colleges/${userinfo.ccode}/notifications/${msgid.messageId}`).update({
+                    title : req.body.title , 
+                    body : req.body.description ,
+                    college : userinfo.college ,
+                    state : userinfo.state , district:userinfo.district , topics : topics , ccode : get_college_code(userinfo.state , userinfo.district , userinfo.college) , 
+                    image :image_file ?  image_file.mediaLink : ""
+                }) ;
+
+                
 
 
                 for(let i =1 ; i<topics.length ;i++)
@@ -213,19 +248,7 @@ function Handle_POST(app){
                 }
 
                 
-                if(image){
-                    image.mv(`data/${primary_msgid}`)
-                    .then(file=>{
-                        admin.storage().bucket().upload(`data/${primary_msgid}`, {destination:'notification_images/'})
-                        .then(file=>{
-                            console.log(file) ; 
-                        })
-                        .catch(err=>{console.log(err)})
-                    })
-                    .catch(err=>{console.log(err) ; })
-                    
-                }
-
+                
                 })
 
             .catch(err=>{console.log(err)

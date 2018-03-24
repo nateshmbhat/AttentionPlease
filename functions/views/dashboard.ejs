@@ -166,17 +166,7 @@ $("form").on('submit' , e=>{
 
     
     postdata.append('image_file',  document.getElementById('file_image').files[0] ) ; 
-    console.log(postdata) ; 
-
-    // $.ajax({
-    //     type: "method",
-    //     url: "url",
-    //     data: "data",
-    //     dataType: "dataType",
-    //     success: function (response) {
-            
-    //     }
-    // });
+    console.log(postdata.entries()) ; 
 
     $.ajax({url : '/sendnotification' , 
             type: "post" , 
