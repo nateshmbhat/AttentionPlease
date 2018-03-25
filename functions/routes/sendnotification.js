@@ -43,7 +43,7 @@ function HandleImage(image)
 
 
 app.post('/' ,urlencodedParser ,  (req , res)=>{
-    console.log(req.body) ;
+    console.log("Request body : " , req.body) ;
     utils.isAuthenticated(req , res)
     .then(uid=>{
 

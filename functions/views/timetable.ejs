@@ -47,74 +47,81 @@
             </div>
 
 
-            
-            <div hidden id="addNewTimeTable" class="mt-5">
-                
-                <div class="input-field col s2">
-                    <div class="row">
-                        <h5 >Select Year and Branch : </h5>
-                        <select class="ml-5 text-center"  id="select_year" >
-                            <option  value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                        </select>
-                        <select class="ml-5 text-center font-bold"  id="select_branch" >
-                            <option value="CSE">CSE</option>
-                            <option value="ISE">ISE</option>
-                            <option value="EC">EC</option>
-                            <option value="TE">TE</option>
-                            <option value="MECH">MECH</option>
-                            <option value="BIOTECH">BIOTECH</option>
-                            <option value="CHEMICAL">CHEMICAL</option>
-                        </select>
+            <div class="card text-left|center|right">
+              <img class="card-img-top" src="" alt="">
+              <div class="card-body">
+                <!-- <h4 class="card-title">Set Timetable</h4> -->
 
-                    </div>    
-                </div>
-
-                <div class="input-field col s2">
-                        <div class="row">
-                            <h5 >Section : </h5>
-                            <select class="ml-5"  id="select_section" >
-                            </select>
-                        </div>    
-                </div>
-
-
-                <table class="table table-bordered table-responsive">
-                    <thead class="blue-grey lighten-4">
-                        <th class="days ">Time \ Day</th>
-                        <th class="days ">Monday</th>
-                        <th class="days ">Tuesday</th>
-                        <th class="days ">Wednesday</th>
-                        <th class="days ">Thursday</th>
-                        <th class="days ">Friday</th>
-                        <th class="days ">Saturday</th>
-                        <th class="days ">Sunday</th>
-                    </thead>
-
-                    <tbody id="timetable_body">
-                   </tbody>
-                </table>
-
-                <div class="alert text-center animated shake alert-danger erroralert" hidden> </div>
-                <div class="alert text-center animated zoomIn alert-success successalert" hidden> </div>
-                
-                <button type="button" title="Add Row" class=" hoverable btn btn-warning waves-effect waves-light rounded" id="btn_addRow">
-                    <i class="fa fa-plus"></i>
-                </button>
-                
-                <button title="Remove Row" class="hoverable btn btn-danger waves-effect waves-light rounded" id="btn_delRow">
-                    <i class="fa fa-minus white-text"></i>
-                </button>
-
-                <button class="btn btn-success hoverable waves-effect waves-light" type="submit" id="btn_saveTimeTable">Save Timetable</button>
-
-                <div class="m-5"> </div>
-
-                <!-- <button class="btn btn-info hoverable waves-effect waves-light"  id="btn_tester">TEST</button> -->
-
+              </div>
+              <div hidden id="addNewTimeTable" class="mt-5 p-3">
+                  
+                  <div class="input-field col s2 ">
+                      <div class="row">
+                          <h5 >Select Year and Branch : </h5>
+                          <select class="ml-5 text-center"  id="select_year" >
+                              <option  value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                          </select>
+                          <select class="ml-5 text-center font-bold"  id="select_branch" >
+                              <option value="CSE">CSE</option>
+                              <option value="ISE">ISE</option>
+                              <option value="EC">EC</option>
+                              <option value="TE">TE</option>
+                              <option value="MECH">MECH</option>
+                              <option value="BIOTECH">BIOTECH</option>
+                              <option value="CHEMICAL">CHEMICAL</option>
+                          </select>
+  
+                      </div>    
+                  </div>
+  
+                  <div class="input-field col s2">
+                          <div class="row">
+                              <h5 >Section : </h5>
+                              <select class="ml-5"  id="select_section" >
+                              </select>
+                          </div>    
+                  </div>
+  
+  
+                  <table class="table table-bordered table-responsive">
+                      <thead class="blue-grey lighten-4">
+                          <th class="days ">Time \ Day</th>
+                          <th class="days ">Monday</th>
+                          <th class="days ">Tuesday</th>
+                          <th class="days ">Wednesday</th>
+                          <th class="days ">Thursday</th>
+                          <th class="days ">Friday</th>
+                          <th class="days ">Saturday</th>
+                          <th class="days ">Sunday</th>
+                      </thead>
+  
+                      <tbody id="timetable_body">
+                     </tbody>
+                  </table>
+  
+                  <div class="alert text-center animated shake alert-danger erroralert" hidden> </div>
+                  <div class="alert text-center animated zoomIn alert-success successalert" hidden> </div>
+                  
+                  <button type="button" title="Add Row" class=" hoverable btn btn-warning waves-effect waves-light rounded" id="btn_addRow">
+                      <i class="fa fa-plus"></i>
+                  </button>
+                  
+                  <button title="Remove Row" class="hoverable btn btn-danger waves-effect waves-light rounded" id="btn_delRow">
+                      <i class="fa fa-minus white-text"></i>
+                  </button>
+  
+                  <button class="btn btn-success hoverable waves-effect waves-light" type="submit" id="btn_saveTimeTable">Save Timetable</button>
+  
+                  <div class="m-5"> </div>
+  
+                  <!-- <button class="btn btn-info hoverable waves-effect waves-light"  id="btn_tester">TEST</button> -->
+  
+              </div>
             </div>
+            
         </div>
 <script>
 
