@@ -13,7 +13,7 @@
     <% include partials/navbar.ejs %>
 
 
- 
+
 
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
@@ -24,12 +24,18 @@
     <br>Add a spreadsheet file containing the seat allotment details...example format will soon follow
     <br><br>
     <div class="view overlay">
+      <form method="post" action="/putseats">
                 <div class="image-upload">
                     <label for="file-input">
-                        <h4  class="btn btn-info">Browse Spreadsheet File</h4>
+                        <h4  class="btn btn-info rounded">Browse Spreadsheet File</h4>
                     </label>
                     <input id="file-input" type="file" name="seat_file" accept=".xml,.xlsx,.ods" hidden="true"/>
                 </div>
+                <label for="submit_seats">
+                    <h4  class="btn btn-info btn-sm">Submit</h4>
+                </label>
+                <input id="submit_seats" type="submit" hidden>
+      </form>
     </div>
 
     <br><br>
