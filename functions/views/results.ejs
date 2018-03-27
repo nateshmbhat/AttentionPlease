@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Results Declaration</title>
+
+    <style>
+        th.days {
+            font-weight: bold;
+            font-family: raleway, caladea, lora;
+            font-size: 120%;
+            transition : all .4s ;
+        }
+        th.days:hover{
+
+        }
+
+    </style>
+</head>
+
+
+<body background="assets/images/bg1.jpg">
+        <div class="gtco-loader"></div>
+        <% include partials/scripts_and_css.ejs %>
+        <script src="assets/js/footable.js"></script>
+        <!-- Compiled and minified CSS -->
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+
+        <!-- Compiled and minified JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
+        <% if(locals.login && login){%>
+        <% include partials/navbar.ejs %>
+        <%} else {%>
+        <% include partials/navbar_login.ejs %>
+        <%} %>
+
+        <div class="container">
+            <h1 class="text-center">Results</h1>
+            <div class="text-center">
+                <button type="button" class="btn btn-primary waves-effect waves-dark" data-toggle="modal" id="btn_addTimeTable" data-target="#modaltimetable">Add New Result </button>
+            </div>
+
+
+
+            <div hidden id="addNewTimeTable" class="mt-5">
+
+                <div class="input-field col s2">
+                    <div class="row">
+                        <h5 >Select Semester and Branch : </h5>
+                        <select class="ml-5 text-center"  id="select_year" >
+                            <option  value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option  value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                        </select>
+                        <select class="ml-5 text-center font-bold"  id="select_branch" >
+                            <option value="CSE">CSE</option>
+                            <option value="ISE">ISE</option>
+                            <option value="EC">EC</option>
+                            <option value="TE">TE</option>
+                            <option value="MECH">MECH</option>
+                            <option value="BIOTECH">BIOTECH</option>
+                            <option value="CHEMICAL">CHEMICAL</option>
+                        </select>
+
+                    </div>
+                </div>
+
+
+                <table class="table table-bordered table-responsive">
+                    <tbody id="timetable_body">
+                   </tbody>
+                </table>
+
+                <div class="alert text-center animated shake alert-danger erroralert" hidden> </div>
+                <div class="alert text-center animated zoomIn alert-success successalert" hidden> </div>
+
+                <button type="button" title="Add Row" class=" hoverable btn btn-warning waves-effect waves-light rounded" id="btn_addRow">
+                    <i class="fa fa-plus"></i>
+                </button>
+
+                <button title="Remove Row" class="hoverable btn btn-danger waves-effect waves-light rounded" id="btn_delRow">
+                    <i class="fa fa-minus white-text"></i>
+                </button>
+
+                <button class="btn btn-success hoverable waves-effect waves-light" type="submit" id="btn_saveTimeTable">Upload results</button>
+
+                <div class="m-5"> </div>
+
+                <!-- <button class="btn btn-info hoverable waves-effect waves-light"  id="btn_tester">TEST</button> -->
+
+            </div>
+        </div>
+<script>
+
+
+        function getTimeTable()
+        {
+            firebase.ref(`/adminusers/${firebase.auth().getUid()}`).once('value' , adminsnap=>{
+            userinfo = adminsnap.val() ;
+
+            ref = firebase.database().ref(`/Colleges/${userinfo.ccode}/timetables/${$('#select_year').val()}/${$('#select_branch').val()}/${$('#select_section').val()}`)
+
+            ref.once('value' , snap=>
+            {
+                dataArray = snap.val() ;
+                console.log(dataArray) ;
+
+                $("#timetable_body").html("") ;
+
+                if(dataArray==null || typeof(dataArray)=='undefined')
+                {
+                    addRow(3) ;
+                    $("#btn_saveTimeTable").text("Save TimeTable")
+                    return ;
+                }
+
+                $("#btn_saveTimeTable").html(`Update`)
+
+                //Clear table and start populating
+
+                dataArray.forEach(Arr => {
+                    addRow(1) ;
+                    $("#timetable_body tr:last input.startTime").val(Arr[0]) ;
+                    $("#timetable_body tr:last input.endTime").val(Arr[1]) ;
+
+                    input_elements = $("#timetable_body tr:last input.courseName") ;
+                    for(j =0  , len = input_elements.length ; j<len ; j++)
+                    {
+                        input_elements[j].value = Arr[j+2] ;
+                    }
+
+                });
+            });
+
+            });
+
+        }
+
+
+        function saveTimeTable()
+        {
+            rowsArray = [] ;   //final data that needs to be stored in database
+
+            // [["8:00am" , "9:00am" , "GTC" , "OOPS" , "FAFL"] , ["9:00am" ,"10:00am" , "OOPS" ,"GTC" , "MC" , "ADA"]]
+            rows = $("#timetable_body tr") //row elements
+
+                for(i =0 ; i<rows.length ; i++)
+                {
+                    startTime = rows[i].querySelector("input.startTime").value ;
+                    endTime = rows[i].querySelector("input.endTime").value ;
+                    columnArray =  [ startTime , endTime ] ;
+                    input_elements = rows[i].querySelectorAll("input.courseName") ;
+                    for(j =0  , len = input_elements.length ; j<len ; j++)
+                    {
+                        columnArray.push(input_elements[j].value) ;
+                    }
+                    rowsArray.push(columnArray) ;
+                }
+
+            console.log(rowsArray) ;
+
+            let jqXHR = $.post('/createtimetable' , {
+                dataArray : rowsArray ,
+                branch:$('#select_branch').val() ,
+                year : $('#select_year').val() ,
+                section : $('#select_section').val()
+                } , function success(data , textStatus , jqXHR){
+                    console.log(data) ;
+                    console.log(jqXHR.status) ;
+
+
+                $("div.successalert").html(data) ;
+                $("div.successalert").replaceWith($("div.successalert").clone()) ;
+                $("div.successalert").removeAttr('hidden') ;
+                $("div.successalert").fadeIn() ;
+
+                setTimeout( ()=>{$("div.successalert").fadeOut() ;} , 3000)
+
+             })
+
+             .fail(data=>{
+                 console.log(data.responseText) ;
+                 $("div.erroralert").html(data.responseText) ;
+                 $("div.erroralert").replaceWith($('div.erroralert').clone()) ;
+                 $("div.erroralert").removeAttr('hidden') ;
+                 $("div.erroralert").fadeIn() ;
+
+                 setTimeout( ()=>{$("div.erroralert").fadeOut() ;} , 5000)
+
+
+             })
+
+        }
+
+
+        function addRow(n = 1)
+        {
+            let row = `<tr>
+            <td>
+                <div class="row">
+                    <div class="col">
+                        <input required type="text" placeholder="Start time" class="timepicker inline startTime">
+                    </div>
+                    <div class="col">
+                        <input required type="text" placeholder="End time" class="timepicker inline endTime">
+                    </div>
+                </div>
+            </td>
+            `
+
+            for(i =0 ; i < 7 ; i++)
+            {
+                row+= `<td><input type="text" class="md-form form-control text-center font-weight-bold courseName"></td>`
+            }
+
+            row+=`</tr>` ;
+
+            for(let i =0 ; i<n ; i++)
+            {
+
+                $("#timetable_body tr:last").after(row) ;
+
+                if(typeof($("#timetable_body tr:last").html())=='undefined')
+                {
+                    $("#timetable_body").html(row) ;
+                }
+
+                $(".timepicker").pickatime({'twelvehour' : true})
+            }
+        }
+
+
+            function initialize() {
+                jQuery('[data-toggle="tooltip"]').tooltip()
+                $(".days").addClass("text-center").addClass("hoverable") ;
+                // addRow(3) ;
+
+                //Event handlers
+
+                $("#btn_addTimeTable").on('click', event => {
+                    $("#addNewTimeTable").fadeIn().removeAttr("hidden").fadeIn();
+                })
+
+                $("#btn_saveTimeTable").on('click' , saveTimeTable) ;
+
+                $("#btn_addRow").on('click' , e=>{
+                    addRow() ;
+                }) ;
+
+                $("#btn_delRow").on('click' , e=>{
+                    $("#timetable_body tr:last").remove() ;
+                }) ;
+                $("#select_section").on('change' , getTimeTable );
+                $("#select_year").on('change' , getTimeTable );
+                $("#select_branch").on('change' , getTimeTable )
+
+
+                //set the SEction list
+                s = "ABCDEFGHIJ" ;
+                $('#select_section').html(`<option value="A">A</option>`) ;
+                for(let i =1 ; i<s.length ; i++)
+                {
+                    $('#select_section option:last').after(`<option value="${s[i]}">${s[i]}</option>`) ;
+                }
+
+                $('select').material_select() ;
+                addRow(3) ;
+            }
+
+            initialize();
+            getTimeTable() ;
+
+            //DEBUG
+            // $('#btn_addTimeTable').click() ;
+            // $('#btn_tester').on('click' , getTimeTable) ;
+
+        </script>
+
+</body>
+
+</html>

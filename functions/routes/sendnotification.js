@@ -8,27 +8,27 @@ const gcs = require("@google-cloud/storage")() ;
 const uniqid = require("uniqid" ) ; 
 const utils = require("../utility_functions") ; 
 const randomid = require("random-id") ; 
+const multer = require("multer") ; 
+const os = require('os') ; 
 
 
 //returns a prom which resolves the right image link 
 function HandleImage(image)
 {
-    image_id = uniqid() ; 
+    image_id = image.filename ; 
     return new Promise((resolve , reject)=>{
-        image.mv(`data/${image_id}`)
-        .then(()=>{
-
             options  = { 
-                destination:`notification_images/${image_id}` ,
+                destination:`notification_images/${uniqid()}` ,
                 metadata:{
                     contentType: image.mimetype 
                 }
             }
 
+            if(!image) resolve("") ; 
             admin.storage().bucket().upload(`data/${image_id}`, options)
                 .then(file=>{
                 // console.log(file) ; 
-                file["0"].getSignedUrl( { action: 'read', expires: '03-17-2025' } , (err, url)=>{
+                file["0"].getSignedUrl( { action: 'read', expires: Date.now()+24*3600 } , (err, url)=>{
                         fs.unlink(`./data/${image_id}`) ; 
                         resolve(url) ; 
                     });
@@ -36,14 +36,16 @@ function HandleImage(image)
             .catch(err=>{console.log(err) ; resolve("") ; } ) ; 
         })
         .catch(err=>{console.log(err) ;resolve("") ;  })
-    }) ; 
 }
 
 
 
 
-app.post('/' ,urlencodedParser ,  (req , res)=>{
-    console.log("Request body : " , req.body) ;
+app.post('/' ,  multer({ dest: "data/" , limits : { fileSize : 5242880 } }).single('image_file'),  (req , res)=>{
+
+    console.log("req.body : " , req.body) ;
+    console.log("req.file  : " , req.file) ; 
+
     utils.isAuthenticated(req , res)
     .then(uid=>{
 
@@ -60,10 +62,8 @@ app.post('/' ,urlencodedParser ,  (req , res)=>{
         
         let customid_var =  randomid(8 , "0") ;
         const msg = admin.messaging() ;
-        console.log("request files : " , req.files ) ; 
 
-        image =  req.files!='undefined' && req.files!=undefined ? req.files.image_file: undefined ;
-
+        image =  req.file ; 
 
         
         HandleImage(image).then(image_link=>{

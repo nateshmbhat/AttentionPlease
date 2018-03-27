@@ -16,7 +16,6 @@ var admin=require('firebase-admin');
 
 app.use(cookieparser()) ;
 app.use(express.static('../public' )  ) ;
-app.use(express_file_upload()) ;
 
 
 handle_requests(app) ;
