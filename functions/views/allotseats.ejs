@@ -13,12 +13,12 @@
   <% include partials/scripts_and_css.ejs %>
 
   <div class="container">
-    <form ref='uploadForm' id='uploadForm' action='/putseats' method='post' encType="multipart/form-data">
+    <form  id='uploadForm' action='/putseats' method='post' encType="multipart/form-data">
         <i class="fa fa-file" ></i>
-        <input type="file" name="sampleFile"  class="mdb-skin file"/>
-        <span><i class="fa fa-cloud"> </i></span><input type='submit' value='Upload' class="btn btn-primary btn-block btn-mdb" />
-
+        
         <input type="text" name="name" placeholder="Name : ">
+        <input type="file" name="seat_file"  class="mdb-skin file"/>
+        <span><i class="fa fa-cloud"> </i></span><input type='submit' value='Upload' class="btn btn-primary btn-block btn-mdb" />
     </form>     
 
   </div>

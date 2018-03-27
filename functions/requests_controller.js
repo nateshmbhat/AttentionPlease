@@ -19,6 +19,8 @@ const gcs = require("@google-cloud/storage")() ;
 const uniqid = require("uniqid" ) ;
 const route_sendnotification = require("./routes/sendnotification") ; 
 const utils = require("./utility_functions") ; 
+const os= require("os") ; 
+const multer = require("multer") ; 
 
 
 admin.initializeApp({
@@ -82,9 +84,6 @@ function Handle_POST(app){
     }) ;
 });
 
-
-
-    
 
 
 
@@ -194,7 +193,9 @@ function Handle_POST(app){
 
     app.post('/register' , urlencodedParser ,  (req , res)=>{
         flag_valid = 0 ;
-        if(!utils.validatePostBody(req , res , ['state' , 'district' , 'college' , 'email' , 'password' , 'name'  , 'phone'])) return ;
+    try{
+        if(!utils.validatePostBody(req , res , ['state' , 'district' , 'college' , 'email' , 'password' , 'name'  , 'phone'])) 
+        {throw Error("Invalid Post request ! ") ;}
 
         if(Object.getOwnPropertyNames(state_dist_colleges).indexOf(req.body.state)>=0){
             if(Object.getOwnPropertyNames(state_dist_colleges[req.body.state]).indexOf(req.body.district)>=0)
@@ -204,19 +205,31 @@ function Handle_POST(app){
                     flag_valid = 1 ;
                 }
                 else{
-                    res.render('index.ejs' , {error : "Invalid College Entry . Please make sure that you have selected one of the colleges in the provided list itself."}) ;
-                    return ;
+                    throw Error("Invalid College Entry . Please make sure that you have selected one of the colleges in the provided list itself.") ; 
                 }
-
             }
         }
 
         if(!flag_valid)
-            {
-                //CANCEL registration by sending the error !
-                res.render('index.ejs' , {error : "Invalid Location Details ! "})
-                return ;
+        {
+            //CANCEL registration by sending the error !
+            throw Error("Invalid Location Details ! ") ; 
+        }
+
+
+        //check if an admin user is already registered under a particular college 
+        let state = req.body.state,
+        district = req.body.district,
+        college = req.body.college;
+
+        admin.database().ref(`/Colleges/${get_college_code(state , district , college)}/admin/`).once('value', snap => {
+            admininfo = snap.val();
+            if (!admininfo) {
+                    throw Error('Warning ! An admin already exists for the specified college. This incident will be reported.'
+                );
             }
+        }) ; 
+
 
         console.log(req.body) ;
         console.log("started registration handler") ;
@@ -253,15 +266,22 @@ function Handle_POST(app){
                 res.render('index.ejs' , {success : "You have been registered successfully. Please proceed with Login :) "});
 
         })
-
-
         .catch((error)=>{
             /// TODO : Send the error alert to the client with the error
             res.status(400) ;
             res.render( "index.ejs" , {error : error.message}) ;
             console.log(error)
         }) ;
-    })
+    }
+    catch(error)
+    {
+        /// TODO : Send the error alert to the client with the error
+        res.status(400) ;
+        res.render( "index.ejs" , {error : error.message}) ;
+        console.log(error)
+    }
+
+})
 
 
 
