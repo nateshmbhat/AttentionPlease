@@ -17,6 +17,7 @@ $("#form_login").bind("submit" , function(event){
             }   
 
             firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION) ;
+
             //user is logged in 
             setcookie(()=>{
                 setInterval(setcookie , 3500) ;
