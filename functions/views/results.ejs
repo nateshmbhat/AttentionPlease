@@ -42,17 +42,17 @@
         <div class="container">
             <h1 class="text-center">Results</h1>
             <div class="text-center">
-                <button type="button" class="btn btn-primary waves-effect waves-dark" data-toggle="modal" id="btn_addTimeTable" data-target="#modaltimetable">Add New Result </button>
+                <button type="button" class="btn btn-primary waves-effect waves-dark" data-toggle="modal" id="btn_addResult" data-target="#modaltimetable">Add New Result </button>
             </div>
 
 
 
-            <div hidden id="addNewTimeTable" class="mt-5">
+            <div id="addNewTimeTable" class="mt-5" hidden>
 
                 <div class="input-field col s2">
                     <div class="row">
                         <h5 >Select Semester and Branch : </h5>
-                        <select class="ml-5 text-center"  id="select_year" >
+                        <select class="ml-5 text-center font-bold" id="select_year" >
                             <option  value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -75,11 +75,10 @@
                     </div>
                 </div>
 
-
-                <table class="table table-bordered table-responsive">
-                    <tbody id="timetable_body">
-                   </tbody>
-                </table>
+                <h6>Enter the Column Headings:</h6>
+                <div id="column_headings">
+                  <input type="text" id="col_heading"></input>
+                </div>
 
                 <div class="alert text-center animated shake alert-danger erroralert" hidden> </div>
                 <div class="alert text-center animated zoomIn alert-success successalert" hidden> </div>
@@ -103,71 +102,12 @@
 <script>
 
 
-        function getTimeTable()
-        {
-            firebase.ref(`/adminusers/${firebase.auth().getUid()}`).once('value' , adminsnap=>{
-            userinfo = adminsnap.val() ;
-
-            ref = firebase.database().ref(`/Colleges/${userinfo.ccode}/timetables/${$('#select_year').val()}/${$('#select_branch').val()}/${$('#select_section').val()}`)
-
-            ref.once('value' , snap=>
-            {
-                dataArray = snap.val() ;
-                console.log(dataArray) ;
-
-                $("#timetable_body").html("") ;
-
-                if(dataArray==null || typeof(dataArray)=='undefined')
-                {
-                    addRow(3) ;
-                    $("#btn_saveTimeTable").text("Save TimeTable")
-                    return ;
-                }
-
-                $("#btn_saveTimeTable").html(`Update`)
-
-                //Clear table and start populating
-
-                dataArray.forEach(Arr => {
-                    addRow(1) ;
-                    $("#timetable_body tr:last input.startTime").val(Arr[0]) ;
-                    $("#timetable_body tr:last input.endTime").val(Arr[1]) ;
-
-                    input_elements = $("#timetable_body tr:last input.courseName") ;
-                    for(j =0  , len = input_elements.length ; j<len ; j++)
-                    {
-                        input_elements[j].value = Arr[j+2] ;
-                    }
-
-                });
-            });
-
-            });
-
-        }
-
-
         function saveTimeTable()
         {
-            rowsArray = [] ;   //final data that needs to be stored in database
+            colsArray = [] ;   //final data that needs to be stored in database
+            cols = $("column_headings input") //row elements
 
-            // [["8:00am" , "9:00am" , "GTC" , "OOPS" , "FAFL"] , ["9:00am" ,"10:00am" , "OOPS" ,"GTC" , "MC" , "ADA"]]
-            rows = $("#timetable_body tr") //row elements
-
-                for(i =0 ; i<rows.length ; i++)
-                {
-                    startTime = rows[i].querySelector("input.startTime").value ;
-                    endTime = rows[i].querySelector("input.endTime").value ;
-                    columnArray =  [ startTime , endTime ] ;
-                    input_elements = rows[i].querySelectorAll("input.courseName") ;
-                    for(j =0  , len = input_elements.length ; j<len ; j++)
-                    {
-                        columnArray.push(input_elements[j].value) ;
-                    }
-                    rowsArray.push(columnArray) ;
-                }
-
-            console.log(rowsArray) ;
+            console.log(colsArray) ;
 
             let jqXHR = $.post('/createtimetable' , {
                 dataArray : rowsArray ,
@@ -205,37 +145,17 @@
 
         function addRow(n = 1)
         {
-            let row = `<tr>
-            <td>
-                <div class="row">
-                    <div class="col">
-                        <input required type="text" placeholder="Start time" class="timepicker inline startTime">
-                    </div>
-                    <div class="col">
-                        <input required type="text" placeholder="End time" class="timepicker inline endTime">
-                    </div>
-                </div>
-            </td>
+            let row = `<input type="text" id="col_heading">
             `
-
-            for(i =0 ; i < 7 ; i++)
-            {
-                row+= `<td><input type="text" class="md-form form-control text-center font-weight-bold courseName"></td>`
-            }
-
-            row+=`</tr>` ;
-
             for(let i =0 ; i<n ; i++)
             {
 
-                $("#timetable_body tr:last").after(row) ;
+                $("#column_headings input:last").after(row) ;
 
-                if(typeof($("#timetable_body tr:last").html())=='undefined')
+                if(typeof($("#column_headings input:last").html())=='undefined')
                 {
-                    $("#timetable_body").html(row) ;
+                    $("#column_headings").html(row) ;
                 }
-
-                $(".timepicker").pickatime({'twelvehour' : true})
             }
         }
 
@@ -247,7 +167,7 @@
 
                 //Event handlers
 
-                $("#btn_addTimeTable").on('click', event => {
+                $("#btn_addResult").on('click', event => {
                     $("#addNewTimeTable").fadeIn().removeAttr("hidden").fadeIn();
                 })
 
@@ -258,11 +178,8 @@
                 }) ;
 
                 $("#btn_delRow").on('click' , e=>{
-                    $("#timetable_body tr:last").remove() ;
+                    $("#column_headings input:last").remove() ;
                 }) ;
-                $("#select_section").on('change' , getTimeTable );
-                $("#select_year").on('change' , getTimeTable );
-                $("#select_branch").on('change' , getTimeTable )
 
 
                 //set the SEction list
@@ -278,11 +195,9 @@
             }
 
             initialize();
-            getTimeTable() ;
 
             //DEBUG
             // $('#btn_addTimeTable').click() ;
-            // $('#btn_tester').on('click' , getTimeTable) ;
 
         </script>
 
