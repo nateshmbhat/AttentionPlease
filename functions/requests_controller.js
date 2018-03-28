@@ -382,8 +382,8 @@ function Handle_GET(app){
 	res.render('displayprofile.ejs') ; 
     }) 
     
-     app.get('/dashboard2' , (req ,res)=>{
-    res.render('dashboard2.ejs') ; 
+     app.get('/notifier' , (req ,res)=>{
+    res.render('notifier.ejs') ; 
     }) 
 
     app.get('/assignrole' , (req ,res)=>{
