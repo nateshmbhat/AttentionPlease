@@ -107,9 +107,15 @@
 
 
 <script>
+
 function saveTimeTable() {
     colsArray = []; //final data that needs to be stored in database
-    cols = $("input.col_heading").forEach(ele => colsArray.push(ele));
+    
+    cols = $("input.col_heading") ; 
+    for(let i =0 ; i<cols.length ; i++)
+    {
+        colsArray.push(cols[i].value) ; console.log(cols[i])  ;  
+    }
 
     postdata = new FormData();
     postdata.append('headings', colsArray);
@@ -120,7 +126,7 @@ function saveTimeTable() {
     console.log(colsArray);
 
     $.ajax({
-        url: '/putresulsts',
+        url: '/putresults',
         type: "post",
         method: 'post',
         cache: false,
@@ -137,13 +143,13 @@ function saveTimeTable() {
             } else {
                 console.log('error');
                 $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
-                $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden'));
+                var temp=[];         $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden'));
                 fadeElementAfter("#erroralert", 4000);
             }
 
             $('button[type=submit]').show();
 
-            $("#loader_circle").attr('hidden', true);
+            // $("#loader_circle").attr('hidden', true);
         },
 
 
@@ -164,8 +170,8 @@ function addRow(n = 1) {
 }
 
     function initialize() {
-        jQuery('[data-toggle="tooltip"]').tooltip()
-        $(".days").addClass("text-center").addClass("hoverable");
+        // jQuery('[data-toggle="tooltip"]').tooltip()
+        // $(".days").addClass("text-center").addClass("hoverable");
 
         //Event handlers
 
