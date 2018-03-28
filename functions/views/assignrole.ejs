@@ -155,4 +155,33 @@
 <!-- Card -->
                         
 
+
+
+    <script>
+
+        const adminuid = firebase.auth().user.uid ; 
+        let userinfo  ; 
+    
+        firebase.database().ref(`/adminusers/${adminuid}`).once('value' , snap=>{
+    
+            userinfo = snap.val() ; 
+    
+            firebase.database().ref(`/Colleges/${userinfo.ccode}/adminrequests`).once('value' , snap=>{
+                pushids = snap.val() ; 
+    
+                console.log("admin requests : "  , data); 
+    
+                Object.getOwnPropertyNames(pushids).forEach(pushid=>{
+                    name = pushid.name ;
+                    usn = pushid.usn ; 
+                    uid = pushid.uid ; 
+                    desc = pushid.desc ; 
+                })
+               
+            })
+    
+        });
+    
+    
+    </script>
 </body>
