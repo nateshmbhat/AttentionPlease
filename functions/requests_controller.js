@@ -1,5 +1,6 @@
 /// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";import { json } from "body-parser";import { request } from "https";import { config } from "firebase-functions";import { decode } from "punycode";import { firebase } from "@firebase/app";import { decode } from "punycode";import { urlencoded } from "body-parser";import { isValidFormat } from "@firebase/util";import { firebase } from "@firebase/app";import { database } from "firebase-admin";import { database } from "firebase-admin";import { firebase } from "@firebase/app";import { firebase } from "@firebase/app";import { urlencoded } from "body-parser";import { userInfo } from "os";import { userInfo } from "os";import { contains } from "@firebase/util";
 
+
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS
 
 
@@ -84,15 +85,20 @@ function Handle_POST(app){
 });
 
 
+
+
     app.post("/getcolleges" , urlencodedParser , (req,res)=>{
        if(!utils.validatePostBody(req , res , ['state' , 'district'])) return ;
+
         try{
             console.log("Got college request !") ;
             res.send(state_dist_colleges[req.body.state][req.body.district] ) ;
         }
         catch(error){
+
            res.status(400) ;
            res.send(error) ;
+
         }
     })
 
@@ -110,16 +116,16 @@ function Handle_POST(app){
                 email : req.body.email ,
             })
             .then(user=>{
+
                 console.log('request body is ') ; console.log(req.body) ;
-
                 let ref = admin.database().ref('/adminusers/' + user.uid) ;
-
                 ref.update({
                     college : req.body.college ,
                     district : req.body.district ,
                     state : req.body.state ,
                     name : req.body.name ,
                     ccode : utils.get_college_code(req.body.state , req.body.district , req.body.college) ,
+
                 })
                 .then(user=>{console.log("Updated successfully !") ; })
                 .catch(err=>{consolge.log("ERROR OCCURED ! ") ; console.log(err)}) ;
@@ -248,19 +254,14 @@ function Handle_POST(app){
                     district : req.body.district ,
                     college : req.body.college ,
                 };
-
                 //Set the collegeID for the user object corresponding to the selected college name
-
 
                 userinfo.ccode = utils.get_college_code(userinfo.state , userinfo.district , userinfo.college) ;
 
+                //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                 console.log(userinfo) ;
-
-
-                // Put this admin inside the colleges/ccode so that during registration , we can prevent users from registering.
-                admin.database().ref(`/Colleges/${userinfo.ccode}/admin/${user.uid}`).set(userinfo) ;
-
-                ref_user = admin.database().ref("/adminusers/"+user.uid).set(userinfo) ;
+                ref_user = admin.database().ref("/adminusers/"+user.uid) ;
+                ref_user.set(userinfo) ;
 
                 res.render('index.ejs' , {success : "You have been registered successfully. Please proceed with Login :) "});
 
