@@ -15,8 +15,9 @@ const os = require('os') ;
 //returns a prom which resolves the right image link 
 function HandleImage(image)
 {
-    image_id = image.filename ; 
     return new Promise((resolve , reject)=>{
+            if(!image) resolve("") ; 
+            image_id = image.filename ; 
             options  = { 
                 destination:`notification_images/${uniqid()}` ,
                 metadata:{
@@ -24,12 +25,11 @@ function HandleImage(image)
                 }
             }
 
-            if(!image) resolve("") ; 
-            admin.storage().bucket().upload(`data/${image_id}`, options)
+            admin.storage().bucket().upload( image.filename, options)
                 .then(file=>{
                 // console.log(file) ; 
                 file["0"].getSignedUrl( { action: 'read', expires: Date.now()+24*3600 } , (err, url)=>{
-                        fs.unlink(`./data/${image_id}`) ; 
+                        fs.unlink(image.path) ; 
                         resolve(url) ; 
                     });
             })
@@ -37,7 +37,6 @@ function HandleImage(image)
         })
         .catch(err=>{console.log(err) ;resolve("") ;  })
 }
-
 
 
 
