@@ -1,219 +1,160 @@
-<html >
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Login</title>
+<!DOCTYPE html>
+<html lang="en">
 
-    <style>
-         
-        h1{
-            font-size:500% !important ;
-            font-family: raleway , georgia, 'times new roman', times, serif !important ; 
-            text-align: center ; 
-            padding:10px 0 ;
-        } 
+  <head>
 
-        h3{
-            color:black !important;
-            font-family:raleway , caladea , lora  , cambria  !important; 
-        }
-        
-    </style>
-</head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-<body background="assets/images/bg1.jpg">
-    <div class="gtco-loader"></div>
-    
-    <% include partials/scripts_and_css.ejs %>
-   
-    <script src="/assets/js/dashboard.js"></script>       
-    
-    <% if(locals.login && login){%>
-        <% include partials/navbar.ejs%>
-        <%}else{%>
-        <%include partials/navbar_login.ejs%>
-    <%} %>
+    <title>Dashboard</title>
 
-            
-    <h1 class="animated flipInX ">Notify Them </h1>
-    <div class="jumbotron container z-depth-1">
+    <!-- Bootstrap core CSS -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-  
+    <!-- Custom fonts for this template -->
+    <link href="assets/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
 
-        <h3 id="collegename" class="text-center" style="font-family: raleway"></h3>
-        <div id="location-details">
+    <!-- Plugin CSS -->
+    <link href="assets/vendor/magnific-popup/magnific-popup.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="assets/css/creative.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  </head>
+
+  <body id="page-top">
+
+     <header class="masthead text-center text-white d-flex" style="background-image:url(/assets/images/bg2.jpg);">
+      <div class="container my-auto" >
+        <div class="row">
+          <div class="col-lg-10 mx-auto">
+            <h1 class="text-uppercase">
+              <strong>Welcome Admin</strong>
+            </h1>
+            <hr>
+          </div>
+          <div class="col-lg-8 mx-auto">
+            <p class="text-faded mb-5">You have successfully logged into the attention please web page!</p>
+            <a class="btn btn-primary btn-xl js-scroll-trigger" href="displayprofile">View Profile</a>
+          </div>
+        </div>      
+      </div>
+    </header>
+
+
+    <section class="bg-primary" id="about">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto text-center">
+            <h2 class="section-heading text-white">Update Profile Section</h2>
+            <hr class="light my-4">
+            <p class="text-faded mb-4">Being an admin you can set your profile by updating it with your credentials which will be available to the students in their app.</p>
+            <a class="btn btn-light btn-xl js-scroll-trigger" href="profile">Update Profile</a>
+          </div>
         </div>
-                     
-        <form method="post" action="/sendnotification" encType="multipart/form-data">
-            
-            <div id="dynamic"> </div>
-            <div class="form-group">
-                <div class="md-form">
-                    <i class="fa fa-envelope prefix"></i>
-                    <input class="col-6" id="title" type="text" maxlength="30" minlength="3" name="title" required/>
-                    <label for="title" >Title : </label>
-                </div>
-                
-                
+      </div>
+    </section>
 
-                <br>
-
-                <div class="md-form">
-                    <i class="fa fa-pencil prefix"></i>
-                    <textarea type="text" id="textareaPrefix" name="description" class="form-control md-textarea" rows="3"></textarea>
-                    <label for="textareaPrefix">Description : </label>
-                </div>
-
-                <div class="file-field m-5">
-                    <div class="btn btn-primary btn-sm float-left">
-                        <span>Choose file</span>
-                        <input name="sampleFile" type="file" id="file_image">
+    <section id="services">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 text-center">
+            <h2 class="section-heading">Features</h2>
+            <hr class="my-4">
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+                <div class="col-lg-3 col-md-6 text-center">
+                    <a href="createtopic">
+                    <div class="service-box mt-5 mx-auto">
+                        <i class="fa fa-4x fa-bell text-primary mb-3 sr-icons"></i>
+                        <h3 class="mb-3">Send Notifications</h3>
+                        <p class="text-muted mb-0">Seamlessly Send Notifications about events college circulars</p>
                     </div>
-                    <div class="file-path-wrapper">
-                        <input class="file-path validate"  type="text" placeholder="Upload your file">
-                    </div>
+                    </a>
                 </div>
-                <div class="container">
-                    <div class="row text-center justify-content-center">
-                        <div class="col-10">
-                            <div class="view overlay hoverable z-depth-1">
-                                    <img class="img-fluid rounded" id="preview_image">
-                                    <a>
-                                        <div class="mask waves-effect rgba-dark-slight"></div>
-                                    </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+          <div class="col-lg-3 col-md-6 text-center">
+            <div class="service-box mt-5 mx-auto">
+            <a href="results">
+              <i class="fa fa-4x fa-graduation-cap text-primary mb-3 sr-icons"></i>
+              <h3 class="mb-3">Post Results</h3>
+              <p class="text-muted mb-0">Post Results that will be viewed directly by students</p>
+            </a>
             </div>
-            
-
-            <div class="form-group"> </div>
-
-
-            <!-- circle icon  -->
-            <div class="text-center text-align-center">
-                <div id="loader_circle" class="preloader-wrapper big active" hidden> <div class="spinner-layer spinner-blue"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-red"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-yellow"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-green"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> </div>
-            </div>    
-            
-            <div class="animated shake hoverable rounded alert alert-danger"  hidden role="alert" id="erroralert"><h2 style="color:black;"></h2></div>
-
-            <div class="animated zoomIn hoverable rounded alert alert-success " hidden role="alert" id="successalert"><h2 style="color:black"></h2></div>
-
-            <div class="form-group text-center">
-                <button type="submit" class="btn rounded btn-dark-green waves-effect waves-light">Notify</button>
+          </div>
+          <div class="col-lg-3 col-md-6 text-center">
+            <div class="service-box mt-5 mx-auto">
+            <a href="expr">
+              <i class="fa fa-4x fa-group text-primary mb-3 sr-icons"></i>
+              <h3 class="mb-3">Allot Seats</h3>
+              <p class="text-muted mb-0">Send the desired seating arrangement to the students on their exams.</p>
+            </a>
             </div>
+          </div>
+          <div class="col-lg-3 col-md-6 text-center">
+            <div class="service-box mt-5 mx-auto">
+            <a href="timetable">
+              <i class="fa fa-4x fa-calendar-check-o text-primary mb-3 sr-icons"></i>
+              <h3 class="mb-3">Time Table</h3>
+              <p class="text-muted mb-0">Send the time-tables to the students as per their classes and semesters.</p>
+            </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        </form>
+    <section class="bg-dark text-white">
+      <div class="container text-center">
+        <h2 class="mb-4">Assign/Edit the roles of other members who share the work.</h2>
+        <a class="btn btn-light btn-xl sr-button" href="http://startbootstrap.com/template-overviews/creative/">Assign New</a>&nbsp&nbsp&nbsp&nbsp
+        <a class="btn btn-light btn-xl sr-button" href="http://startbootstrap.com/template-overviews/creative/">Update Existing</a>
+      </div>
+    </section>
 
-    </div>
-   
-    <br><br><br><br><br>
-    <% include partials/footer.ejs %>
-    
-</body>
+    <section id="contact">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto text-center">
+            <h2 class="section-heading">Contact Us</h2>
+            <hr class="my-4">
+            <p class="mb-5">We provide 24/7 service. Contact our team for any issues or queries that you may have. Any feedback for improvement is always appreciated. Feel free to contact us for any such queries.</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4 ml-auto text-center">
+            <i class="fa fa-phone fa-3x mb-3 sr-contact"></i>
+            <p>9919261377</p>
+          </div>
+          <div class="col-lg-4 mr-auto text-center">
+            <i class="fa fa-envelope-o fa-3x mb-3 sr-contact"></i>
+            <p>
+              <a href="mailto:adi97rao@gmail.com">adi97rao@gmail.com</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
+    <!-- Bootstrap core JavaScript -->
+    <script src="assets/vendor/jquery/jquery.min.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-<script>
+    <!-- Plugin JavaScript -->
+    <script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="assets/vendor/scrollreveal/scrollreveal.min.js"></script>
+    <script src="assets/vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
 
-    function initialize() { 
-        $("#file_image").change(function() {
-            readURL(this);
-        });
-     }
+    <!-- Custom scripts for this template -->
+    <script src="assets/js/creative.min.js"></script>
 
-     initialize() ; 
+  </body>
 
-
-    function readURL(input) {
-
-        if (input.files && input.files[0]) {
-        var reader = new FileReader();
-
-        reader.onload = function(e) {
-            $('#preview_image').attr('src', e.target.result);
-        }
-
-        reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    
-    function fadeElementAfter(querystring , time=3000 ){
-       setTimeout(()=>{
-           $("button[type=submit]").attr("disabled" , true) ; 
-           $(querystring).fadeOut(()=>{
-                $(querystring).attr("hidden" , true) ; 
-                $(querystring).show() ; 
-           $("button[type=submit]").removeAttr("disabled") ; 
-           }) ; 
-       } , time ) ;
-    }
-
-
-$("form").on('submit' , e=>{
-    e.preventDefault() ;
-    $('button[type=submit]').hide() ;
-    $("#loader_circle").removeAttr("hidden") ; 
-
-    postdata = new FormData() ; 
-
-    $('form').serializeArray().map(ele=> { if(ele.name!='topic') postdata.append(ele.name , ele.value) }) ; 
-    
-    topicslist = [] ; 
-    $("input:checkbox[name=topic]:checked").each(function(){
-        topicslist.push($(this).val());
-    });
-    postdata.append('topic' , topicslist) ; 
-
-
-    
-    postdata.append('image_file',  document.getElementById('file_image').files[0] ) ; 
-    console.log(postdata.entries()) ; 
-
-    $.ajax({url : '/sendnotification' , 
-            type: "post" , 
-            method:'post' , 
-            cache: false , 
-            contentType:false , 
-            data : postdata ,
-            processData:false, 
-            success:  (data , status , jqxhr_obj)=>{
-            if(data.success)
-            {
-                console.log('success') ;
-                $('#successalert').html(`<h3 class="text-center">${data.success}</h3>`)
-                $('#successalert').replaceWith($("#successalert").clone().removeAttr('hidden')) ; 
-                document.querySelector("form").reset() ; 
-                fadeElementAfter("#successalert" , 5000) ; 
-            }
-            else{
-                console.log('error') ; 
-                $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
-                $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden')) ; 
-                fadeElementAfter("#erroralert" , 4000) ; 
-            }
-
-            $('button[type=submit]').show() ; 
-
-            $("#loader_circle").attr('hidden' , true) ; 
-        } , 
-
-
-        error : (jqXHR, textStatus, errorThrown )=>{
-                console.log(jqXHR , textStatus , errorThrown) ; 
-                $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
-                $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden')) ; 
-                fadeElementAfter("#erroralert" , 4000) ; 
-        }
-        
-    }) ; 
-
-
-    
-})
-
-
-</script>
 </html>
