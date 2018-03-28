@@ -110,16 +110,16 @@ function Handle_POST(app){
                 email : req.body.email ,
             })
             .then(user=>{
-
                 console.log('request body is ') ; console.log(req.body) ;
+
                 let ref = admin.database().ref('/adminusers/' + user.uid) ;
+
                 ref.update({
                     college : req.body.college ,
                     district : req.body.district ,
                     state : req.body.state ,
                     name : req.body.name ,
                     ccode : utils.get_college_code(req.body.state , req.body.district , req.body.college) ,
-
                 })
                 .then(user=>{console.log("Updated successfully !") ; })
                 .catch(err=>{consolge.log("ERROR OCCURED ! ") ; console.log(err)}) ;
