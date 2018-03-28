@@ -25,7 +25,8 @@
 <body background="assets/images/bg1.jpg">
 <body>
         <div class="gtco-loader"></div>
-  <% include partials/scripts_and_css.ejs %>
+    <% include partials/scripts_and_css.ejs %>
+    <% include partials/navbar.ejs %>
         <script src="assets/js/footable.js"></script>
         <!-- Compiled and minified CSS -->
 
@@ -34,11 +35,7 @@
         <!-- Compiled and minified JavaScript -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 
-        <% if(locals.login && login){%>
-        <% include partials/navbar.ejs %>
-        <%} else {%>
-        <% include partials/navbar_login.ejs %>
-        <%} %>
+        
 
         <div class="container">
             <h1 class="animated zoomIn text-center">Time Table</h1>
