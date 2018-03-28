@@ -52,7 +52,7 @@
                 <div class="input-field col s2">
                     <div class="row">
                         <h5 >Select Semester and Branch : </h5>
-                        <select class="ml-5 text-center font-bold" id="select_year" >
+                        <select class="ml-5 text-center font-bold" id="select_sem" >
                             <option  value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -77,8 +77,13 @@
 
                 <h6>Enter the Column Headings:</h6>
                 <div id="column_headings">
-                  <input type="text" id="col_heading"></input>
+                  <input type="text" class="col_heading"></input>
                 </div>
+
+                <div class="h-4 mb-4">
+                    <h4 class="h4">Select the Spreadsheet file containing the results :  </h4>
+                    <input type="file" name="result_file" id="result_file">
+                </div> 
 
                 <div class="alert text-center animated shake alert-danger erroralert" hidden> </div>
                 <div class="alert text-center animated zoomIn alert-success successalert" hidden> </div>
@@ -91,6 +96,8 @@
                     <i class="fa fa-minus white-text"></i>
                 </button>
 
+
+
                 <button class="btn btn-success hoverable waves-effect waves-light" type="submit" id="btn_saveTimeTable">Upload results</button>
 
                 <div class="m-5"> </div>
@@ -102,61 +109,64 @@
 <script>
 
 
-        function saveTimeTable()
-        {
+function saveTimeTable()
+{
             colsArray = [] ;   //final data that needs to be stored in database
-            cols = $("column_headings input") //row elements
+            cols = $("input.col_heading").forEach(ele=>colsArray.push(ele)) ; 
+
+            postdata = new FormData() ; 
+            postdata.append('headings'  , colsArray) ; 
+            postdata.append(branch,$('#select_branch').val()) ; 
+            postdata.append(year , $('#select_sem').val() ) ; 
+            postdata.append('result_file' , document.getElementById("result_file").files[0]) ; 
 
             console.log(colsArray) ;
 
-            let jqXHR = $.post('/createtimetable' , {
-                dataArray : rowsArray ,
-                branch:$('#select_branch').val() ,
-                year : $('#select_year').val() ,
-                section : $('#select_section').val()
-                } , function success(data , textStatus , jqXHR){
-                    console.log(data) ;
-                    console.log(jqXHR.status) ;
+            $.ajax({url : '/putresulsts' , 
+            type: "post" , 
+            method:'post' , 
+            cache: false , 
+            contentType:false , 
+            data : postdata ,
+            processData:false, 
+            success:  (data , status , jqxhr_obj)=>{
+            if(data.success)
+            {
+                console.log('success') ;
+                $('#successalert').html(`<h3 class="text-center">${data.success}</h3>`)
+                $('#successalert').replaceWith($("#successalert").clone().removeAttr('hidden')) ; 
+                document.querySelector("form").reset() ; 
+                fadeElementAfter("#successalert" , 5000) ; 
+            }
+            else{
+                console.log('error') ; 
+                $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
+                $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden')) ; 
+                fadeElementAfter("#erroralert" , 4000) ; 
+            }
+
+            $('button[type=submit]').show() ; 
+
+            $("#loader_circle").attr('hidden' , true) ; 
+        } , 
 
 
-                $("div.successalert").html(data) ;
-                $("div.successalert").replaceWith($("div.successalert").clone()) ;
-                $("div.successalert").removeAttr('hidden') ;
-                $("div.successalert").fadeIn() ;
-
-                setTimeout( ()=>{$("div.successalert").fadeOut() ;} , 3000)
-
-             })
-
-             .fail(data=>{
-                 console.log(data.responseText) ;
-                 $("div.erroralert").html(data.responseText) ;
-                 $("div.erroralert").replaceWith($('div.erroralert').clone()) ;
-                 $("div.erroralert").removeAttr('hidden') ;
-                 $("div.erroralert").fadeIn() ;
-
-                 setTimeout( ()=>{$("div.erroralert").fadeOut() ;} , 5000)
-
-
-             })
-
+        error : (jqXHR, textStatus, errorThrown )=>{
+                console.log(jqXHR , textStatus , errorThrown) ; 
+                $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
+                $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden')) ; 
+                fadeElementAfter("#erroralert" , 4000) ; 
         }
-
+        
+        }) ; 
+    }
 
         function addRow(n = 1)
         {
-            let row = `<input type="text" id="col_heading">
+            let row = `<input type="text" class="col_heading">
             `
             for(let i =0 ; i<n ; i++)
             {
-
-                $("#column_headings input:last").after(row) ;
-
-                if(typeof($("#column_headings input:last").html())=='undefined')
-                {
-                    $("#column_headings").html(row) ;
-                }
-            }
         }
 
 
