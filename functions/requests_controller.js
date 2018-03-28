@@ -280,8 +280,20 @@ function Handle_POST(app){
         res.render( "index.ejs" , {error : error.message}) ;
         console.log(error)
     }
-
 })
+
+
+    app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (req , res)=>{
+        console.log("req.body" , req.body); 
+        console.log("req.file" , req.file) ; 
+        branch = req.body.branch ; 
+        semester = req.body.sem ;
+        result_file = req.file ; 
+        result_file_path  = req.file.path ; 
+
+        //KARAN REST IF YOUR CODE : TODO 
+    })  ;
+
 
 
 
