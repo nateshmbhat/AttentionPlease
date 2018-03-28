@@ -17,8 +17,8 @@ const serviceAccount = require("./service account key/AttentionPlease-d86a646ccc
 const express_fileupload = require("express-fileupload") ;
 const gcs = require("@google-cloud/storage")() ;
 const uniqid = require("uniqid" ) ;
-const route_sendnotification = require("./routes/sendnotification") ; 
-const utils = require("./utility_functions") ; 
+const route_sendnotification = require("./routes/sendnotification") ;
+const utils = require("./utility_functions") ;
 
 
 admin.initializeApp({
@@ -44,7 +44,7 @@ module.exports = function HandleRequests(app){
 //Handles all POST requests
 function Handle_POST(app){
 
-    app.use('/sendnotification', route_sendnotification) ; 
+    app.use('/sendnotification', route_sendnotification) ;
 
     app.post("/createtimetable" , urlencodedParser ,  (req , res)=>{
 
@@ -84,7 +84,7 @@ function Handle_POST(app){
 
 
 
-    
+
 
 
 
@@ -189,7 +189,7 @@ function Handle_POST(app){
             }
             });
 
-    }); 
+    });
 
 
     app.post('/register' , urlencodedParser ,  (req , res)=>{
@@ -307,19 +307,14 @@ function Handle_POST(app){
 //Handles all the GET request routes
 function Handle_GET(app){
 
-    app.get('/allotseats' , (req ,res)=>{res.render('allotseats.ejs') ; }) ; 
+    app.get('/allotseats' , (req ,res)=>{
+      res.render('expr.ejs') ;
+    }) ;
 
-    
+
     app.get('/' , (req , res)=>{
         res.render('index.ejs') ;
     })
-
-    //this code is experimental by KPS
-    app.get('/expr',(req,res)=>{
-        res.render('expr.ejs');
-    })
-    //end of experimental code
-
 
     app.get('/createtopic' , (req , res)=>{
         utils.isAuthenticated(req , res).then(uid=>res.render('createtopic.ejs')).catch(err=>res.render('login.ejs')) ;
@@ -351,20 +346,20 @@ function Handle_GET(app){
     })
 
     app.get("/dashboard" , (req, res)=>{
-        console.log("handling dashboard get ...") ; 
+        console.log("handling dashboard get ...") ;
         utils.isAuthenticated(req, res)
-        .then(uid=>{ console.log("authenticated : ", uid) ;   res.render('dashboard.ejs')  ; 
-            utils.get_userinfo({uid : uid}) ; 
+        .then(uid=>{ console.log("authenticated : ", uid) ;   res.render('dashboard.ejs')  ;
+            utils.get_userinfo({uid : uid}) ;
         } )
         .catch(error=>res.render('login.ejs'))  ;
     })
 
     app.get('/displayprofile' , (req ,res)=>{
-	res.render('displayprofile.ejs') ; 
-    }) 
-    
+	res.render('displayprofile.ejs') ;
+    })
+
      app.get('/dashboard2' , (req ,res)=>{
-    res.render('dashboard2.ejs') ; 
-    }) 
+    res.render('dashboard2.ejs') ;
+    })
 
 }
