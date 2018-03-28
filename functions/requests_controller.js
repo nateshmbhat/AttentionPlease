@@ -386,4 +386,8 @@ function Handle_GET(app){
     res.render('dashboard2.ejs') ; 
     }) 
 
+    app.get('/assignrole' , (req ,res)=>{
+    res.render('assignrole.ejs') ; 
+    })  
+
 }
