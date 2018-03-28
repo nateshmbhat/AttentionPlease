@@ -77,7 +77,7 @@ function Handle_POST(app){
             })
         })
 
-        .catch(error=>{console.log(error.message ) ;
+        .catch(error=>{console.log(error.message) ;
             res.status(400) ;
             res.send(error.message) ;
     }) ;
@@ -255,12 +255,12 @@ function Handle_POST(app){
                 userinfo.ccode = utils.get_college_code(userinfo.state , userinfo.district , userinfo.college) ;
 
                 console.log(userinfo) ;
-           
+
 
                 // Put this admin inside the colleges/ccode so that during registration , we can prevent users from registering.
                 admin.database().ref(`/Colleges/${userinfo.ccode}/admin/${user.uid}`).set(userinfo) ;
 
-                ref_user = admin.database().ref("/adminusers/"+user.uid).set(userinfo) ; 
+                ref_user = admin.database().ref("/adminusers/"+user.uid).set(userinfo) ;
 
                 res.render('index.ejs' , {success : "You have been registered successfully. Please proceed with Login :) "});
 
@@ -385,7 +385,7 @@ function Handle_GET(app){
     })
 
     app.get('/assignrole' , (req ,res)=>{
-    res.render('assignrole.ejs') ; 
-    })  
+    res.render('assignrole.ejs') ;
+    })
 
 }
