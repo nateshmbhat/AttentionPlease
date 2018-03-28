@@ -311,6 +311,9 @@ function Handle_GET(app){
       res.render('expr.ejs') ;
     }) ;
 
+    app.get('/results' , (req,res)=>{
+      res.render('results.ejs') ;
+    }) ;
 
     app.get('/' , (req , res)=>{
         res.render('index.ejs') ;
