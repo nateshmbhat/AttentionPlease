@@ -46,7 +46,6 @@
             </div>
 
 
-
             <div id="addNewTimeTable" class="mt-5" hidden>
 
                 <div class="input-field col s2">
@@ -75,7 +74,7 @@
                     </div>
                 </div>
 
-                <h6>Enter the Column Headings:</h6>
+                <h5>Enter the Column Headings:</h5>
                 <div id="column_headings">
                   <input type="text" class="col_heading"></input>
                 </div>
@@ -160,7 +159,8 @@ function saveTimeTable() {
 
 function addRow(n = 1) {
     let row = `<input type="text" class="col_heading"> `
-    $('input.col_heading:last').after(row) ; 
+    for(i=0 ; i<n ;i++)
+        $('input.col_heading:last').after(row) ; 
 }
 
     function initialize() {
@@ -176,7 +176,7 @@ function addRow(n = 1) {
         $("#btn_saveTimeTable").on('click', saveTimeTable);
 
         $("#btn_addRow").on('click', e => {
-            addRow(1);
+            addRow();
         });
 
         $("#btn_delRow").on('click', e => {
