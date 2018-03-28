@@ -97,7 +97,6 @@
                 </button>
 
 
-
                 <button class="btn btn-success hoverable waves-effect waves-light" type="submit" id="btn_saveTimeTable">Upload results</button>
 
                 <div class="m-5"> </div>
@@ -106,110 +105,92 @@
 
             </div>
         </div>
+
+
 <script>
+function saveTimeTable() {
+    colsArray = []; //final data that needs to be stored in database
+    cols = $("input.col_heading").forEach(ele => colsArray.push(ele));
 
+    postdata = new FormData();
+    postdata.append('headings', colsArray);
+    postdata.append(branch, $('#select_branch').val());
+    postdata.append(year, $('#select_sem').val());
+    postdata.append('result_file', document.getElementById("result_file").files[0]);
 
-function saveTimeTable()
-{
-            colsArray = [] ;   //final data that needs to be stored in database
-            cols = $("input.col_heading").forEach(ele=>colsArray.push(ele)) ; 
+    console.log(colsArray);
 
-            postdata = new FormData() ; 
-            postdata.append('headings'  , colsArray) ; 
-            postdata.append(branch,$('#select_branch').val()) ; 
-            postdata.append(year , $('#select_sem').val() ) ; 
-            postdata.append('result_file' , document.getElementById("result_file").files[0]) ; 
-
-            console.log(colsArray) ;
-
-            $.ajax({url : '/putresulsts' , 
-            type: "post" , 
-            method:'post' , 
-            cache: false , 
-            contentType:false , 
-            data : postdata ,
-            processData:false, 
-            success:  (data , status , jqxhr_obj)=>{
-            if(data.success)
-            {
-                console.log('success') ;
+    $.ajax({
+        url: '/putresulsts',
+        type: "post",
+        method: 'post',
+        cache: false,
+        contentType: false,
+        data: postdata,
+        processData: false,
+        success: (data, status, jqxhr_obj) => {
+            if (data.success) {
+                console.log('success');
                 $('#successalert').html(`<h3 class="text-center">${data.success}</h3>`)
-                $('#successalert').replaceWith($("#successalert").clone().removeAttr('hidden')) ; 
-                document.querySelector("form").reset() ; 
-                fadeElementAfter("#successalert" , 5000) ; 
-            }
-            else{
-                console.log('error') ; 
+                $('#successalert').replaceWith($("#successalert").clone().removeAttr('hidden'));
+                document.querySelector("form").reset();
+                fadeElementAfter("#successalert", 5000);
+            } else {
+                console.log('error');
                 $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
-                $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden')) ; 
-                fadeElementAfter("#erroralert" , 4000) ; 
+                $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden'));
+                fadeElementAfter("#erroralert", 4000);
             }
 
-            $('button[type=submit]').show() ; 
+            $('button[type=submit]').show();
 
-            $("#loader_circle").attr('hidden' , true) ; 
-        } , 
+            $("#loader_circle").attr('hidden', true);
+        },
 
 
-        error : (jqXHR, textStatus, errorThrown )=>{
-                console.log(jqXHR , textStatus , errorThrown) ; 
-                $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
-                $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden')) ; 
-                fadeElementAfter("#erroralert" , 4000) ; 
+        error: (jqXHR, textStatus, errorThrown) => {
+            console.log(jqXHR, textStatus, errorThrown);
+            $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
+            $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden'));
+            fadeElementAfter("#erroralert", 4000);
         }
-        
-        }) ; 
+
+    });
+}
+
+function addRow(n = 1) {
+    let row = `<input type="text" class="col_heading"> `
+    $('input.col_heading:last').after(row) ; 
+}
+
+    function initialize() {
+        jQuery('[data-toggle="tooltip"]').tooltip()
+        $(".days").addClass("text-center").addClass("hoverable");
+
+        //Event handlers
+
+        $("#btn_addResult").on('click', event => {
+            $("#addNewTimeTable").fadeIn().removeAttr("hidden").fadeIn();
+        })
+
+        $("#btn_saveTimeTable").on('click', saveTimeTable);
+
+        $("#btn_addRow").on('click', e => {
+            addRow(1);
+        });
+
+        $("#btn_delRow").on('click', e => {
+            $("#column_headings input:last").remove();
+        });
+
+        $('select').material_select();
+        addRow(3);
     }
-
-        function addRow(n = 1)
-        {
-            let row = `<input type="text" class="col_heading">
-            `
-            for(let i =0 ; i<n ; i++)
-            {
-        }
-
-
-            function initialize() {
-                jQuery('[data-toggle="tooltip"]').tooltip()
-                $(".days").addClass("text-center").addClass("hoverable") ;
-                // addRow(3) ;
-
-                //Event handlers
-
-                $("#btn_addResult").on('click', event => {
-                    $("#addNewTimeTable").fadeIn().removeAttr("hidden").fadeIn();
-                })
-
-                $("#btn_saveTimeTable").on('click' , saveTimeTable) ;
-
-                $("#btn_addRow").on('click' , e=>{
-                    addRow() ;
-                }) ;
-
-                $("#btn_delRow").on('click' , e=>{
-                    $("#column_headings input:last").remove() ;
-                }) ;
-
-
-                //set the SEction list
-                s = "ABCDEFGHIJ" ;
-                $('#select_section').html(`<option value="A">A</option>`) ;
-                for(let i =1 ; i<s.length ; i++)
-                {
-                    $('#select_section option:last').after(`<option value="${s[i]}">${s[i]}</option>`) ;
-                }
-
-                $('select').material_select() ;
-                addRow(3) ;
-            }
-
             initialize();
-
             //DEBUG
             // $('#btn_addTimeTable').click() ;
 
-        </script>
+    </script>
 
 </body>
 
