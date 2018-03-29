@@ -49,7 +49,7 @@ app.post('/' ,  multer({ dest: os.tmpdir() , limits : { fileSize : 5242880 } }).
     utils.isAuthenticated(req , res)
     .then(uid=>{
 
-    if(!utils.validatePostBody(req , res , ['topic' , 'title' ,'description']))
+    if(!utils.validatePostBody(req , res , ['topic' , 'title' ,'short_desc' , 'long_desc']))
     {
         res.status('200').json({error : 'Make sure you have specified all the required details below ! '}) ;
         return ;
@@ -71,16 +71,16 @@ app.post('/' ,  multer({ dest: os.tmpdir() , limits : { fileSize : 5242880 } }).
             payload = {
                 notification : {
                     title : req.body.title ,
-                    body : req.body.description
+                    body : req.body.short_desc
                 } ,
     
                 data : {
                     customid : customid_var ,
                     ccode : userinfo.ccode ,
-                    detail_desc : "",
+                    detail_desc : req.body.long_desc ,
                     image : image_link , 
                     links : "" ,
-                    one_line_desc : req.body.description,
+                    one_line_desc : req.body.short_desc , 
                     title : req.body.title ,
                     topics : JSON.stringify(req.body.topic)
                 } ,
@@ -104,10 +104,12 @@ app.post('/' ,  multer({ dest: os.tmpdir() , limits : { fileSize : 5242880 } }).
     
                 admin.database().ref(`/Colleges/${userinfo.ccode}/notifications/${primary_msgid}`).update({
                     title : req.body.title , 
-                    body : req.body.description ,
-                    college : userinfo.college ,
-                    state : userinfo.state , district:userinfo.district , topics : topics , ccode : utils.get_college_code(userinfo.state , userinfo.district , userinfo.college) , 
-                    image : image_link
+                    one_line_desc : req.body.short_desc,
+                    detail_desc : req.body.long_desc , 
+                    ccode : userinfo.ccode,
+                    topics : topics , 
+                    image : image_link , 
+                    thumb_image : image_link 
                 }) ;
     
     
