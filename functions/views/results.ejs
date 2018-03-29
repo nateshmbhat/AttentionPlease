@@ -78,11 +78,12 @@
                 <div id="column_headings">
                   <input type="text" class="col_heading"></input>
                 </div>
+                <input type=number id="startrow">
 
                 <div class="h-4 mb-4">
                     <h4 class="h4">Select the Spreadsheet file containing the results :  </h4>
                     <input type="file" accept=".xlsx,.odt,.xls" name="result_file" id="result_file">
-                </div> 
+                </div>
 
                 <div class="alert text-center animated shake alert-danger erroralert" hidden> </div>
                 <div class="alert text-center animated zoomIn alert-success successalert" hidden> </div>
@@ -110,17 +111,18 @@
 
 function saveTimeTable() {
     colsArray = []; //final data that needs to be stored in database
-    
-    cols = $("input.col_heading") ; 
+
+    cols = $("input.col_heading") ;
     for(let i =0 ; i<cols.length ; i++)
     {
-        colsArray.push(cols[i].value) ; console.log(cols[i])  ;  
+        colsArray.push(cols[i].value) ; console.log(cols[i])  ;
     }
 
     postdata = new FormData();
     postdata.append('headings', colsArray);
     postdata.append('branch', $('#select_branch').val());
     postdata.append('sem', $('#select_sem').val());
+
     postdata.append('result_file', document.getElementById("result_file").files[0]);
 
     console.log(colsArray);
@@ -166,7 +168,7 @@ function saveTimeTable() {
 function addRow(n = 1) {
     let row = `<input type="text" class="col_heading"> `
     for(i=0 ; i<n ;i++)
-        $('input.col_heading:last').after(row) ; 
+        $('input.col_heading:last').after(row) ;
 }
 
     function initialize() {

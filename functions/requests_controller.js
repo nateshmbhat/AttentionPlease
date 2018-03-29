@@ -218,9 +218,9 @@ function Handle_POST(app){
 
 
         //check if an admin user is already registered under a particular college
-        let state = req.body.state, 
+        let state = req.body.state,
         district = req.body.district,
-        college = req.body.college; 
+        college = req.body.college;
 
         admin.database().ref(`/Colleges/${get_college_code(state , district , college)}/admin/`).once('value', snap => {
             admininfo = snap.val();
@@ -287,15 +287,16 @@ function Handle_POST(app){
 
 
 app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (req , res)=>{
-    console.log("req.body" , req.body); 
-    console.log("req.file" , req.file) ; 
-    branch = req.body.branch ; 
+    console.log("req.body" , req.body);
+    console.log("req.file" , req.file) ;
+    branch = req.body.branch ;
     semester = req.body.sem ;
-    headings = req.body.headings.split(',') ; 
-    result_file = req.file ; 
-    result_file_path  = req.file.path ; 
+    headings = req.body.headings.split(',') ;
+    result_file = req.file ;
+    result_file_path  = req.file.path ;
+    start = req.file.startrow ;
 
-    //KARAN REST OF YOUR CODE : TODO 
+    //KARAN REST OF YOUR CODE : TODO
     var xlsx=require('xlsx');
     console.log(headings);
     var obj=xlsx.readFile(result_file_path);
@@ -304,7 +305,7 @@ app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (r
 
     var final={};
     var temp=[];
-    
+
     for(i=0;dat[i]!=undefined;i++){
         for(j=0;j<headings.length;j++){
             temp[j]=dat[i][headings[j]];
@@ -413,12 +414,12 @@ function Handle_GET(app){
     })
 
     app.get('/displayprofile' , (req ,res)=>{
-	res.render('displayprofile.ejs') ; 
-    }) 
-    
+	res.render('displayprofile.ejs') ;
+    })
+
      app.get('/notifier' , (req ,res)=>{
-    res.render('notifier.ejs') ; 
-    }) 
+    res.render('notifier.ejs') ;
+    })
 
     app.get('/assignrole' , (req ,res)=>{
     res.render('assignrole.ejs') ;
