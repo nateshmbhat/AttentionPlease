@@ -32,8 +32,6 @@
     <h1 class="animated flipInX ">Notify Them </h1>
     <div class="jumbotron container z-depth-1" style="background-color: white">
 
-  
-
         <h3 id="collegename" class="text-center" style="font-family: raleway"></h3>
         <div id="location-details">
         </div>
@@ -47,16 +45,21 @@
                     <input class="col-6" id="title" type="text" maxlength="30" minlength="3" name="title" required/>
                     <label for="title">Title : </label>
                 </div>
-                
-                
-
                 <br>
 
                 <div class="md-form">
-                    <i class="fa fa-pencil prefix"></i>
-                    <textarea type="text" id="textareaPrefix" name="description" class="form-control md-textarea" rows="3"></textarea>
-                    <label for="textareaPrefix">Description : </label>
+                    <i class="fa fa-page prefix"></i>
+                    <textarea rows="2" type="text" id="textareaPrefix" maxlength="120" name="short_desc" class="form-control md-textarea" rows="3"></textarea>
+                    <label for="textareaPrefix">Short Description : </label>
                 </div>
+
+
+                <div class="md-form mt-3 mb-3">
+                    <i class="fa fa-pencil prefix"></i>
+                    <textarea type="text" id="textareaPrefix" maxlength="1000" name="long_desc" class="form-control md-textarea" rows="3"></textarea>
+                    <label for="textareaPrefix">Long Description : </label>
+                </div>
+
 
                 <div class="file-field m-5">
                     <div class="btn btn-primary btn-sm float-left">
@@ -165,7 +168,7 @@ $("form").on('submit' , e=>{
 
     
     postdata.append('image_file',  document.getElementById('file_image').files[0] ) ; 
-    console.log(postdata.entries()) ; 
+console.log(postdata.entries()) ; 
 
     $.ajax({url : '/sendnotification' , 
             type: "post" , 

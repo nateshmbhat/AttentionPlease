@@ -75,7 +75,16 @@
                 <div id="column_headings">
                   <input type="text" class="col_heading"></input>
                 </div>
-                <input type=number id="startrow">
+
+                <div class="row">
+                  <div class="col-5 mt-3">
+                    Enter the row number from which the data starts :
+                  </div>
+
+                  <div class="col-2">
+                    <input type=number id="startrow" min="0">
+                  </div>
+                </div>
 
                 <div class="h-4 mb-4">
                     <h4 class="h4">Select the Spreadsheet file containing the results :  </h4>
@@ -119,7 +128,6 @@ function saveTimeTable() {
     postdata.append('headings', colsArray);
     postdata.append('branch', $('#select_branch').val());
     postdata.append('sem', $('#select_sem').val());
-
     postdata.append('result_file', document.getElementById("result_file").files[0]);
 
     console.log(colsArray);

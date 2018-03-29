@@ -1,6 +1,5 @@
 /// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";import { json } from "body-parser";import { request } from "https";import { config } from "firebase-functions";import { decode } from "punycode";import { firebase } from "@firebase/app";import { decode } from "punycode";import { urlencoded } from "body-parser";import { isValidFormat } from "@firebase/util";import { firebase } from "@firebase/app";import { database } from "firebase-admin";import { database } from "firebase-admin";import { firebase } from "@firebase/app";import { firebase } from "@firebase/app";import { urlencoded } from "body-parser";import { userInfo } from "os";import { userInfo } from "os";import { contains } from "@firebase/util";
 
-
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS
 
 
@@ -136,56 +135,48 @@ function Handle_POST(app){
         }) ;
     })
 
+    
+    
+    app.post('/putseats' , multer({dest : os.tmpdir() } ).single('seat_file') , (req , res)=>{
+        console.log('req.body' , req.body) ; 
+        console.log('req.file' , req.file) ;
+        
+        file_path = req.file.path ; 
+        file_name = req.file.name ; 
 
+        res.status(200).render('/allotseats.ejs' , {success : "Successfully got the file for furthur processing "}) ;
+        
+        admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
+            userinfo = snap.val() ;
 
-    app.post('/putseats' ,urlencodedParser , (req , res)=>{
-        console.log("\nGOT FILE POST REQUEST !!!\n\n") ;
-        console.log(req.files) ;
+            var obj=xlsx.readFile(file_path);
+            var sh=obj.SheetNames;
+            var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
 
-        let sampleFile = req.files.sampleFile ;
+            var final={};
+            var temp=[];
+            var subs={};
+            for(i=0;dat[i]!=undefined;i++){
 
-        fileid = uniqid() ;
-        sampleFile.mv(`./data/${fileid}` , err=>{
-            if(!err){
-                console.log("Successfully got the file ! ") ;
-                admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
-                    userinfo = snap.val() ;
-
-                    var obj=xlsx.readFile(`./data/client_data/${fileid}`);
-                    var sh=obj.SheetNames;
-                    var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
-
-                    var final={};
-                    var temp=[];
-                    var subs;
-                    for(i=0;dat[i]!=undefined;i++){
-                      final[dat[i].USN]=temp;
-                      subs={};
-                      for(j=0;dat[i]['sub'+j]!=undefined;j++){
-                        subs['subname']=dat[i]['sub'+j];
-                        subs['date']=dat[i]['date'+j];
-                        subs['time']=dat[i]['time'+j];
-                        subs['room']=dat[i]['room'+j];
-                        subs['seat']=dat[i]['seatno'+j];
-                        temp[j]=subs
-                        subs={};
-                      }
-                      temp=[];
-                    }
-                    res.status(200).render('/allotseats.ejs') ;
-                    admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final)  ;
-                }) ;
-                // let bucket = admin.storage().bucket() ;
-
-                bucket.upload('./../data/mytestfile.jpg' , (err, file , response)=>{
-                    console.log(err , file, response) ;
-                }) ;
-            } else {
-                console.log(err);
-                res.status(403).send(err.message);
+                //final[dat[i].USN]=temp;
+                for(j=0;dat[i]['sub'+j]!=undefined;j++){
+                subs['subname']=dat[i]['sub'+j];
+                subs['date']=dat[i]['date'+j];
+                subs['time']=dat[i]['time'+j];
+                subs['room']=dat[i]['room'+j];
+                subs['seat']=dat[i]['seatno'+j];
+                temp[j]=subs;
+                subs={};
+                }
+                temp=[];
             }
-            });
+            admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final)  ;
+        }) ;
 
+    if(!req.file)
+    {
+        res.status(403).send("File not uploaded . Make sure that a valid spreadsheet file is selected ! ");
+    }
     });
 
 
@@ -358,9 +349,8 @@ app.post('/createtopic'   , urlencodedParser , (req, res)=>{
 //Handles all the GET request routes
 function Handle_GET(app){
 
-    app.get('/allotseats' , (req ,res)=>{
-        //Todo add authentication
-      res.render('expr.ejs') ;
+    app.get('/allotseats' , (req ,res)=>{k
+      res.render('allotseats.ejs') ;
     }) ;
 
     app.get('/results' , (req,res)=>{
@@ -412,17 +402,20 @@ function Handle_GET(app){
     })
 
     app.get('/displayprofile' , (req ,res)=>{
-        //Todo add authentication
-        res.render('displayprofile.ejs') ; 
-    }) 
-    
+        utils.isAuthenticated(req , res)
+        .then(uid=>{console.log("authenticated : " , uid) ; res.render('displayprofile.ejs') ; })
+        .catch(error=>{res.render('login.ejs') ; })
+    })
+
     app.get('/notifier' , (req ,res)=>{
-        //Todo add authentication
-        res.render('notifier.ejs') ; 
-    }) 
+        utils.isAuthenticated(req, res)
+        .then(uid=>{console.log("authenticated : " , uid) ; res.render('notifier.ejs') ; })
+        .catch(error=>res.render('login.ejs')) ;
+    })
 
     app.get('/assignrole' , (req ,res)=>{
-        //Todo add authentication
-        res.render('assignrole.ejs') ;
+        utils.isAuthenticated(req , res)
+        .then(uid => {console.log("authenticated : " , uid) ; res.render('assignrole.ejs') ;})
+        .catch(error=>{res.render('login.ejs') ; })
     })
 }

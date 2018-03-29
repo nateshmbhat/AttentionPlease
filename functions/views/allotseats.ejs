@@ -29,28 +29,24 @@
                     <label for="file-input">
                         <h4  class="btn btn-info">Browse Spreadsheet File</h4>
                     </label>
-                    <input id="file-input" type="file" name="seat_file" accept=".xml,.xlsx,.ods" hidden="true"/>
+                    <input id="file-input"  type="file" name="seat_file" accept=".xml,.xlsx,.ods" hidden="true"/>
                 </div>
                 <label for="submit_seats">
                     <h4  class="btn btn-info btn-sm">Submit</h4>
                 </label>
+                <% if(locals.error) {%>
+                    <div class="animated shake rounded alert alert-danger"   role="alert" id="erroralert"><h2 style="color:black;">Error : <%=error%></h2></div>
+                <%}%>
+
+                <% if(locals.success){%> 
+                    <div class="animated zoomIn rounded alert alert-success green" role="alert" id="successalert"><h2 style="color:black"><%=success%></h2></div>
+                <%}%> 
                 <input id="submit_seats" type="submit" hidden>
       </form>
     </div>
 
     <br><br>
-    <script type="text/javascript">
-    // var xlsx=require('xlsx');
-    //       if(typeof require !== 'undefined') XLSX=require('xlsx');
-    //       var workbook=XLSX.readFile('./test.xlsx');
-    //       var first_sheet_name=workbook.SheetNames[0];
-    //       var address_of_cell='A1';
-    //       var worksheet=workbook.Sheets[first_sheet_name];
-    //       var desired_cell=worksheet[address_of_cell];
-    //       var desired_value=(desired_cell ? desired_cell.v : undefined);
-    //       console.log("hello");
-    //       console.log(desired_value);
-    </script>
+
     <!--Card-->
 </div>
   <% include partials/footer.ejs %>
