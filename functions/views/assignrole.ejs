@@ -75,36 +75,27 @@
 
     <script>
 
-    function addStudentCard(){
-        if($('.accordian_wrapper .userrequest_panel:last').html())
-        {
-            console.log("Inside if part ") ; 
-            $('.accordian_wrapper .userrequest_panel:last').after(userrequest_panel) ; 
-        }
-        else 
-        { console.log("Else part running ! " ) ;  $('.accordian_wrapper').html(userrequest_panel) ; }
-    }
-
 
     function initialize(){
-    // const adminuid = firebase.auth().user.uid ; 
-    // let userinfo  ; 
+        // const adminuid = firebase.auth().user.uid ; 
+        // let userinfo  ; 
 
-    // firebase.database().ref(`/adminusers/${adminuid}`).once('value' , snap=>{
+        // firebase.database().ref(`/adminusers/${adminuid}`).once('value' , snap=>{
 
-    //     userinfo = snap.val() ; 
+        //     userinfo = snap.val() ; 
 
-    //     firebase.database().ref(`/Colleges/${userinfo.ccode}/adminrequests`).once('value' , snap=>{
-    //         pushids = snap.val() ; 
+        //     firebase.database().ref(`/Colleges/${userinfo.ccode}/adminrequests`).once('value' , snap=>{
+        //         pushids = snap.val() ; 
 
-    //         console.log("admin requests : "  , data); 
+        //         console.log("admin requests : "  , data); 
 
-    //         Object.getOwnPropertyNames(pushids).forEach(pushid=>{
-    //             name = pushid.name ;
-    //             usn = pushid.usn ; 
-    //             uid = pushid.uid ; 
-    //             desc = pushid.desc ; 
-    //         })
+        //         Object.getOwnPropertyNames(pushids).forEach(pushid=>{
+        //             name = pushid.name ;
+        //             usn = pushid.usn ; 
+        //             uid = pushid.uid ; 
+        //             desc = pushid.desc ; 
+        //         })
+
             let name="natesh"  , uid = "388nklldkf328fd" , usn = "1si16cs066" , desc="fksdlfsdjf sdlkfsdklfkdslfsdlf sdfdjsf klsd fdsfdsf sdflskdf  ds fsdfsdklf ;sdkfsd" ; 
 
             let userrequest_panel = ` 
@@ -128,11 +119,31 @@
                         <div class="card-body rgba-black-light white-text z-depth-1">
                             <h5> User ID : ${uid}</h5>
                             <p class="p-md-4 mb-0">${desc}</p>
+
+                            <button class="btn btn-success">Accept</button>
+                            <button class="btn btn-danger">Reject</button>
                         </div>
                     </div>
                 </div>
                 <!-- Accordion card -->
-            ` ; 
+                ` ; 
+
+                function addStudentCard(num = 1){
+                    for(counter= 0 ; counter <num ; counter++)
+                    {
+
+                        if($('.accordian_wrapper .userrequest_panel:last').html())
+                            {
+                                console.log("Inside if part ") ; 
+                                $('.accordian_wrapper .userrequest_panel:last').after(userrequest_panel) ; 
+                            }
+                            else 
+                            { console.log("Else part running ! " ) ;  $('.accordian_wrapper').html(userrequest_panel) ; }
+                        }
+
+                    }        
+
+                addStudentCard(5) ; 
         
                 // })
         // });
