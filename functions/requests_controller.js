@@ -275,8 +275,7 @@ function Handle_POST(app){
     }
 
     catch(error)
-    {
-        /// TODO : Send the error alert to the client with the error
+    { /// TODO : Send the error alert to the client with the error
         res.status(400) ;
         res.render( "index.ejs" , {error : error.message}) ;
         console.log(error)
@@ -312,9 +311,7 @@ app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (r
         console.log('iteration'+i+' '+temp);
         final[dat[i][headings[0]]]=temp;
     }
-
     console.log(final);
-
 })  ;
 
 
@@ -363,10 +360,12 @@ app.post('/createtopic'   , urlencodedParser , (req, res)=>{
 function Handle_GET(app){
 
     app.get('/allotseats' , (req ,res)=>{
+        //Todo add authentication
       res.render('expr.ejs') ;
     }) ;
 
     app.get('/results' , (req,res)=>{
+        //Todo add authentication
       res.render('results.ejs') ;
     }) ;
 
@@ -383,6 +382,7 @@ function Handle_GET(app){
     })
 
     app.get('/home' , (req,res)=>{
+        //Todo add authentication
         res.redirect('/') ;
     })
 
@@ -413,15 +413,17 @@ function Handle_GET(app){
     })
 
     app.get('/displayprofile' , (req ,res)=>{
-	res.render('displayprofile.ejs') ; 
+        //Todo add authentication
+        res.render('displayprofile.ejs') ; 
     }) 
     
-     app.get('/notifier' , (req ,res)=>{
-    res.render('notifier.ejs') ; 
+    app.get('/notifier' , (req ,res)=>{
+        //Todo add authentication
+        res.render('notifier.ejs') ; 
     }) 
 
     app.get('/assignrole' , (req ,res)=>{
-    res.render('assignrole.ejs') ;
+        //Todo add authentication
+        res.render('assignrole.ejs') ;
     })
-
 }

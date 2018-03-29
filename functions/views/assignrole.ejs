@@ -75,6 +75,17 @@
 
     <script>
 
+    function addStudentCard(){
+        if($('.accordian_wrapper .userrequest_panel:last').html())
+        {
+            console.log("Inside if part ") ; 
+            $('.accordian_wrapper .userrequest_panel:last').after(userrequest_panel) ; 
+        }
+        else 
+        { console.log("Else part running ! " ) ;  $('.accordian_wrapper').html(userrequest_panel) ; }
+    }
+
+
     function initialize(){
     // const adminuid = firebase.auth().user.uid ; 
     // let userinfo  ; 
@@ -115,7 +126,7 @@
                     <!-- Card body -->
                     <div id="collapse30" class="collapse show" role="tabpanel" aria-labelledby="heading30" data-parent="#accordionEx5">
                         <div class="card-body rgba-black-light white-text z-depth-1">
-                            <h5>${uid}</h5>
+                            <h5> User ID : ${uid}</h5>
                             <p class="p-md-4 mb-0">${desc}</p>
                         </div>
                     </div>
@@ -123,13 +134,11 @@
                 <!-- Accordion card -->
             ` ; 
         
-        if($('.accordian_wrapper userrequest_panel:last'))
-            $('.accordian_wrapper userrequest_panel:last').after(userrequest_panel) ; 
-        else 
-        { $('.accordian_wrapper').html(userrequest_panel) ; }
-        // })
+                // })
         // });
     }
+
+    initialize() ; 
 
     </script>
 </body>
