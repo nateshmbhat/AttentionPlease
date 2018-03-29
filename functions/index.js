@@ -34,16 +34,24 @@ for(i=0;dat[i]!=undefined;i++){
     subs['time']=dat[i]['time'+j];
     subs['room']=dat[i]['room'+j];
     subs['seat']=dat[i]['seatno'+j];
+    temp.push(subs);
   }
-  
-  console.log("-----------------------------------");
 
+  final[dat[i]['USN']]=temp;
+
+  console.log("-----------------------------------");
+  console.log(temp);
+  console.log("----------------------------------");
+  temp=[];
+
+  console.log("-----------------------------------");
+  console.log(final);
   console.log("----------------------------------");
 
-  //final[dat[i]['USN']]=temp;
+
 }
 
-console.log(temp);
+//console.log(final);
 
   // final[dat[i].USN]=temp;
   // for(j=0;dat[i]['sub'+j]!=undefined;j++){

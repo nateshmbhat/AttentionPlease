@@ -165,26 +165,26 @@
 
           <div class="resume-item d-flex flex-column flex-md-row mb-3">
             <div class="resume-content mr-auto">
-              <h3 class="mb-0">State : </h3>
+              <h3 class="mb-0" id="state">State : </h3>
             </div>
           </div>
 
           <div class="resume-item d-flex flex-column flex-md-row mb-3">
             <div class="resume-content mr-auto">
-              <h3 class="mb-0">District : </h3>
+              <h3 class="mb-0" id="district">District : </h3>
             </div>
           </div>
 
           <div class="resume-item d-flex flex-column flex-md-row mb-3">
             <div class="resume-content mr-auto">
-              <h3 class="mb-0">College : </h3>
+              <h3 class="mb-0" id="college">College : </h3>
             </div>
           </div>
 
         </div>
       </section>
 
-      
+
 
     </div>
 
@@ -201,6 +201,67 @@
       <% include partials/footer.ejs %>
    <script>$("#div_footer").css('position' , 'fixed') ;</script>
 
+
+   <script>
+
+   let user_global ;
+
+   function getformdata(){
+       form = {} ;
+       $('form').serializeArray().forEach(ele=>{
+           form[ele.name] = ele.value ;
+       })
+       return form ;
+   }
+
+
+
+   function init_user(){
+       return new Promise((resolve , reject)=>{
+           user_global = firebase.auth().currentUser ;
+           if(!user_global){
+               firebase.auth().onAuthStateChanged(user=>{
+                   if(user)
+                       resolve(user_global = user) ;
+                   else
+                       window.location = 'login' ;
+               });
+           }
+           else resolve(user_global) ;
+       }) ;
+   }
+
+
+
+   //Set the form element values
+   init_user()
+   .then(user=>{
+       ref = firebase.database().ref('/adminusers/' + user_global.uid) ;
+       ref.once('value', snap=>
+       {
+           userinfo = snap.val() ;
+           firebase.database().ref(`/Colleges/${userinfo.ccode}/topics/`).once('value' , shot=>{
+               topics = shot.val() ;
+               console.log(userinfo , topics) ;
+               userinfo.name = user_global.displayName  ;
+               userinfo.email = user_global.email ;
+
+               Object.getOwnPropertyNames(topics).forEach(ele=>{
+                   $("#topics_subscribed").append(`<button class="list-group-item waves-effect font-small">${topics[ele].title}</button>`) ;
+               })
+               $("#email").val(userinfo.email) ;
+               $("#name").val(userinfo.name) ;
+               $('#biodata').html(userinfo.biodata) ;
+               $('#college').val('COLLEGE : '+userinfo.college);
+               $('#state').val('STATE'+userinfo.state);
+               $('#district').val('DISTRICT'+userinfo.district) ;
+           }) ;
+       })
+   })
+
+
+
+   </script>
   </body>
 
 </html>
