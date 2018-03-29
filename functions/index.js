@@ -14,6 +14,54 @@ var admin=require('firebase-admin');
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   END OF IMPORTS
 
+//for test..........................................................>
+
+var obj=xlsx.readFile(`views/test.xlsx`);
+var sh=obj.SheetNames;
+var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
+
+// console.log(dat);
+
+var final={};
+var temp=new Array();
+var subs={};
+for(i=0;dat[i]!=undefined;i++){
+  for(j=0;dat[i]['sub'+j]!=undefined;j++){
+    subs['name']=dat[i]['Name'];
+    subs['subject']=dat[i]['sub'+j];
+    subs['block']=dat[i]['block'+j];
+    subs['date']=dat[i]['date'+j];
+    subs['time']=dat[i]['time'+j];
+    subs['room']=dat[i]['room'+j];
+    subs['seat']=dat[i]['seatno'+j];
+  }
+  
+  console.log("-----------------------------------");
+
+  console.log("----------------------------------");
+
+  //final[dat[i]['USN']]=temp;
+}
+
+console.log(temp);
+
+  // final[dat[i].USN]=temp;
+  // for(j=0;dat[i]['sub'+j]!=undefined;j++){
+  //   subs['name']=dat[i]
+  //   subs['subject']=dat[i]['sub'+j];
+  //   subs['date']=dat[i]['date'+j];
+  //   subs['time']=dat[i]['time'+j];
+  //   subs['room']=dat[i]['room'+j];
+  //   subs['seat']=dat[i]['seatno'+j];
+  //   subs['block']
+  //   temp[j]=subs;
+  //   subs={};
+  // }
+  // temp=[];
+//}
+
+//for test end......................................................>
+
 app.use(cookieparser()) ;
 app.use(express.static('../public' )  ) ;
 

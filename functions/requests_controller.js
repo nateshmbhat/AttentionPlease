@@ -157,17 +157,17 @@ function Handle_POST(app){
 
                     var final={};
                     var temp=[];
-                    var subs;
+                    var subs={};
                     for(i=0;dat[i]!=undefined;i++){
-                      final[dat[i].USN]=temp;
-                      subs={};
+
+                      //final[dat[i].USN]=temp;
                       for(j=0;dat[i]['sub'+j]!=undefined;j++){
                         subs['subname']=dat[i]['sub'+j];
                         subs['date']=dat[i]['date'+j];
                         subs['time']=dat[i]['time'+j];
                         subs['room']=dat[i]['room'+j];
                         subs['seat']=dat[i]['seatno'+j];
-                        temp[j]=subs
+                        temp[j]=subs;
                         subs={};
                       }
                       temp=[];
@@ -413,13 +413,13 @@ function Handle_GET(app){
 
     app.get('/displayprofile' , (req ,res)=>{
         //Todo add authentication
-        res.render('displayprofile.ejs') ; 
-    }) 
-    
+        res.render('displayprofile.ejs') ;
+    })
+
     app.get('/notifier' , (req ,res)=>{
         //Todo add authentication
-        res.render('notifier.ejs') ; 
-    }) 
+        res.render('notifier.ejs') ;
+    })
 
     app.get('/assignrole' , (req ,res)=>{
         //Todo add authentication
