@@ -273,6 +273,7 @@ function Handle_POST(app){
             console.log(error)
         }) ;
     }
+
     catch(error)
     {
         /// TODO : Send the error alert to the client with the error
@@ -283,55 +284,78 @@ function Handle_POST(app){
 })
 
 
-    app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (req , res)=>{
-        console.log("req.body" , req.body); 
-        console.log("req.file" , req.file) ; 
-        branch = req.body.branch ; 
-        semester = req.body.sem ;
-        result_file = req.file ; 
-        result_file_path  = req.file.path ; 
-
-        //KARAN REST IF YOUR CODE : TODO 
-    })  ;
 
 
+app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (req , res)=>{
+    console.log("req.body" , req.body);
+    console.log("req.file" , req.file) ;
+    branch = req.body.branch ;
+    semester = req.body.sem ;
+    headings = req.body.headings.split(',') ;
+    result_file = req.file ;
+    result_file_path  = req.file.path ;
+    start = req.file.startrow ;
+
+    //KARAN REST OF YOUR CODE : TODO
+    var xlsx=require('xlsx');
+    console.log(headings);
+    var obj=xlsx.readFile(result_file_path);
+    var sh=obj.SheetNames;
+    var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
+
+    var final={};
+    var temp=[];
+
+    for(i=0;dat[i]!=undefined;i++){
+        for(j=0;j<headings.length;j++){
+            temp[j]=dat[i][headings[j]];
+        }
+        console.log('iteration'+i+' '+temp);
+        final[dat[i][headings[0]]]=temp;
+    }
+
+    console.log(final);
+
+})  ;
 
 
-    app.post('/createtopic'   , urlencodedParser , (req, res)=>{
-        console.log(req.body) ;
 
-        utils.isAuthenticated(req,res)
-        .then(uid=>{
-            if(!utils.validatePostBody(req , res ,['topic' , 'desc'])) return ;
 
-            console.log("user id is " , uid) ;
-            admin.database().ref('/adminusers/'+uid).once('value',snap=>{
+app.post('/createtopic'   , urlencodedParser , (req, res)=>{
+    console.log(req.body) ;
 
-                userinfo = snap.val() ;
-                let ref = admin.database().ref('/Colleges/' + userinfo.ccode + '/topics') ;
-                topicobject = {title : req.body.topic , desc : req.body.desc} ;
+    utils.isAuthenticated(req,res)
+    .then(uid=>{
+        if(!utils.validatePostBody(req , res ,['topic' , 'desc'])) return ;
 
-                ref.once('value' , snap=>{
-                    topicids = snap.val()  ;
-                    arr = [] ;
-                    // fill the present topic names in arr
-                    Object.getOwnPropertyNames(topicids).forEach(id=>arr.push(topicids[id].title))
+        console.log("user id is " , uid) ;
+        admin.database().ref('/adminusers/'+uid).once('value',snap=>{
 
-                    if(arr.indexOf(req.body.topic)<0) //Insert only if topic doesnt already exists !
-                    {
-                        ref.push(topicobject) ;
-                        res.render('createtopic.ejs' , {success : true}) ;
-                    }
-                    else{
-                        //Topic already exists
-                        res.render('createtopic.ejs' , {topicexists : true}) ;
-                    }
-                })
+            userinfo = snap.val() ;
+            let ref = admin.database().ref('/Colleges/' + userinfo.ccode + '/topics') ;
+            topicobject = {title : req.body.topic , desc : req.body.desc} ;
+
+            ref.once('value' , snap=>{
+                topicids = snap.val()  ;
+                arr = [] ;
+                // fill the present topic names in arr
+                Object.getOwnPropertyNames(topicids).forEach(id=>arr.push(topicids[id].title))
+
+                if(arr.indexOf(req.body.topic)<0) //Insert only if topic doesnt already exists !
+                {
+                    ref.push(topicobject) ;
+                    res.render('createtopic.ejs' , {success : true}) ;
+                }
+                else{
+                    //Topic already exists
+                    res.render('createtopic.ejs' , {topicexists : true}) ;
+                }
             })
-
         })
-        .catch(err=>{console.log(err) ;res.render('index.ejs')}) ;
+
     })
+    .catch(err=>{console.log(err) ;res.render('index.ejs')}) ;
+})
 }
 
 
@@ -390,12 +414,12 @@ function Handle_GET(app){
     })
 
     app.get('/displayprofile' , (req ,res)=>{
-	res.render('displayprofile.ejs') ; 
-    }) 
-    
+	res.render('displayprofile.ejs') ;
+    })
+
      app.get('/notifier' , (req ,res)=>{
-    res.render('notifier.ejs') ; 
-    }) 
+    res.render('notifier.ejs') ;
+    })
 
     app.get('/assignrole' , (req ,res)=>{
     res.render('assignrole.ejs') ;
