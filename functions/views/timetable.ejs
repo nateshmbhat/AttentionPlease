@@ -218,8 +218,10 @@
                  $("div.erroralert").fadeIn() ; 
 
                  setTimeout( ()=>{$("div.erroralert").fadeOut() ;} , 5000)
+                  
 
              })
+
         }
 
 
@@ -244,63 +246,65 @@
             }
 
             row+=`</tr>` ; 
-            
+
             for(let i =0 ; i<n ; i++)
             {
+
                 $("#timetable_body tr:last").after(row) ; 
 
                 if(typeof($("#timetable_body tr:last").html())=='undefined')
                 {
                     $("#timetable_body").html(row) ;
                 }
+
                 $(".timepicker").pickatime({'twelvehour' : true})
             }
         }
 
 
-        function initialize() {
-            jQuery('[data-toggle="tooltip"]').tooltip()
-            $(".days").addClass("text-center").addClass("hoverable") ; 
-            // addRow(3) ; 
+            function initialize() {
+                jQuery('[data-toggle="tooltip"]').tooltip()
+                $(".days").addClass("text-center").addClass("hoverable") ; 
+                // addRow(3) ; 
+    
+                //Event handlers 
 
-            //Event handlers 
+                $("#btn_addTimeTable").on('click', event => {
+                    $("#addNewTimeTable").fadeIn().removeAttr("hidden").fadeIn();
+                })
+    
+                $("#btn_saveTimeTable").on('click' , saveTimeTable) ; 
+    
+                $("#btn_addRow").on('click' , e=>{
+                    addRow() ; 
+                }) ; 
 
-            $("#btn_addTimeTable").on('click', event => {
-                $("#addNewTimeTable").fadeIn().removeAttr("hidden").fadeIn();
-            })
-
-            $("#btn_saveTimeTable").on('click' , saveTimeTable) ; 
-
-            $("#btn_addRow").on('click' , e=>{
-                addRow() ; 
-            }) ; 
-
-            $("#btn_delRow").on('click' , e=>{
-                $("#timetable_body tr:last").remove() ;  
-            }) ; 
-            $("#select_section").on('change' , getTimeTable ); 
-            $("#select_year").on('change' , getTimeTable );
-            $("#select_branch").on('change' , getTimeTable )
+                $("#btn_delRow").on('click' , e=>{
+                    $("#timetable_body tr:last").remove() ;  
+                }) ; 
+                $("#select_section").on('change' , getTimeTable ); 
+                $("#select_year").on('change' , getTimeTable );
+                $("#select_branch").on('change' , getTimeTable )
 
 
-            //set the SEction list
-            s = "ABCDEFGHIJ" ; 
-            $('#select_section').html(`<option value="A">A</option>`) ; 
-            for(let i =1 ; i<s.length ; i++)
-            {
-                $('#select_section option:last').after(`<option value="${s[i]}">${s[i]}</option>`) ; 
-            }
-            
-            $('select').material_select() ; 
-            addRow(3) ; 
-        }                
+                //set the SEction list
+                s = "ABCDEFGHIJ" ; 
+                $('#select_section').html(`<option value="A">A</option>`) ; 
+                for(let i =1 ; i<s.length ; i++)
+                {
+                    $('#select_section option:last').after(`<option value="${s[i]}">${s[i]}</option>`) ; 
+                }
+                
+                $('select').material_select() ; 
+                addRow(3) ; 
+            }                
 
-        initialize();
-        getTimeTable() ; 
+            initialize();
+            getTimeTable() ; 
 
-        //DEBUG 
-        // $('#btn_addTimeTable').click() ; 
-        // $('#btn_tester').on('click' , getTimeTable) ; 
+            //DEBUG 
+            // $('#btn_addTimeTable').click() ; 
+            // $('#btn_tester').on('click' , getTimeTable) ; 
 
         </script>
   <% include partials/footer.ejs %>

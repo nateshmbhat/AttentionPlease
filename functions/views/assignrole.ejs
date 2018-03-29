@@ -53,15 +53,8 @@
     <% include partials/navbar.ejs %>
 
 
-
-
-
-
-
-
 <!-- Card -->
 <div class="card card-image" style="background-image: url(https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20%2814%29.jpg);">
-
 
     <!-- Content -->
     <div class="rgba-black-strong py-5 px-4">
@@ -69,32 +62,7 @@
             <div class="col-md-10 col-xl-8">
                 
                 <!--Accordion wrapper-->
-                <div class="accordion accordion-5" id="accordionEx5" role="tablist" aria-multiselectable="true">
-
-                    <!-- Accordion card -->
-                    <div class="card mb-4">
-
-                        <!-- Card header -->
-                        <div class="card-header p-0 z-depth-1" role="tab" id="heading30">
-                            <a data-toggle="collapse" data-parent="#accordionEx5" href="#collapse30" aria-expanded="true" aria-controls="collapse30">
-                                <i class="fa fa-cloud fa-2x p-3 mr-4 float-left black-text" aria-hidden="true"></i>
-                                <h4 class="text-uppercase white-text mb-0 py-3 mt-1">
-                                    Item #1
-                                </h4>
-                            </a>
-                        </div>
-
-                        <!-- Card body -->
-                        <div id="collapse30" class="collapse show" role="tabpanel" aria-labelledby="heading30" data-parent="#accordionEx5">
-                            <div class="card-body rgba-black-light white-text z-depth-1">
-                                <p class="p-md-4 mb-0">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute,
-                                non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch
-                                3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda
-                                shoreditch et.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Accordion card -->
+                <div class="accordion accordion-5 accordian_wrapper" id="accordionEx5" role="tablist" aria-multiselectable="true">
                </div>
                 <!--/.Accordion wrapper-->
 
@@ -104,35 +72,64 @@
     <!-- Content -->
 </div>
 <!-- Card -->
-                        
-
-
 
     <script>
 
-        const adminuid = firebase.auth().user.uid ; 
-        let userinfo  ; 
-    
-        firebase.database().ref(`/adminusers/${adminuid}`).once('value' , snap=>{
-    
-            userinfo = snap.val() ; 
-    
-            firebase.database().ref(`/Colleges/${userinfo.ccode}/adminrequests`).once('value' , snap=>{
-                pushids = snap.val() ; 
-    
-                console.log("admin requests : "  , data); 
-    
-                Object.getOwnPropertyNames(pushids).forEach(pushid=>{
-                    name = pushid.name ;
-                    usn = pushid.usn ; 
-                    uid = pushid.uid ; 
-                    desc = pushid.desc ; 
-                })
-               
-            })
-    
-        });
-    
-    
+    function initialize(){
+    // const adminuid = firebase.auth().user.uid ; 
+    // let userinfo  ; 
+
+    // firebase.database().ref(`/adminusers/${adminuid}`).once('value' , snap=>{
+
+    //     userinfo = snap.val() ; 
+
+    //     firebase.database().ref(`/Colleges/${userinfo.ccode}/adminrequests`).once('value' , snap=>{
+    //         pushids = snap.val() ; 
+
+    //         console.log("admin requests : "  , data); 
+
+    //         Object.getOwnPropertyNames(pushids).forEach(pushid=>{
+    //             name = pushid.name ;
+    //             usn = pushid.usn ; 
+    //             uid = pushid.uid ; 
+    //             desc = pushid.desc ; 
+    //         })
+            let name="natesh"  , uid = "388nklldkf328fd" , usn = "1si16cs066" , desc="fksdlfsdjf sdlkfsdklfkdslfsdlf sdfdjsf klsd fdsfdsf sdflskdf  ds fsdfsdklf ;sdkfsd" ; 
+
+            let userrequest_panel = ` 
+                <!-- Accordion card -->
+                <div class="card mb-4 userrequest_panel">
+                    <!-- Card header -->
+                    <div class="card-header p-0 z-depth-1" role="tab" id="heading30">
+                        <a data-toggle="collapse" data-parent="#accordionEx5" href="#collapse30" aria-expanded="true" aria-controls="collapse30">
+                            <i class="fa fa-cloud fa-2x p-3 mr-4 float-left black-text" aria-hidden="true"></i>
+                            <h4 class="text-uppercase white-text mb-0 py-3 ml-2 mt-1 justify-content-left" style="display:inline ; align-left ; float:left" >
+                                ${name}
+                            </h4>
+                            <h4 class="text-uppercase white-text mb-0 py-3 mt-1 mr-4 justify-content-right" style="display:inline;align:right;float:right;">
+                                ${usn}
+                            </h4>
+                        </a>
+                    </div>
+
+                    <!-- Card body -->
+                    <div id="collapse30" class="collapse show" role="tabpanel" aria-labelledby="heading30" data-parent="#accordionEx5">
+                        <div class="card-body rgba-black-light white-text z-depth-1">
+                            <h5>${uid}</h5>
+                            <p class="p-md-4 mb-0">${desc}</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Accordion card -->
+            ` ; 
+        
+        if($('.accordian_wrapper userrequest_panel:last'))
+            $('.accordian_wrapper userrequest_panel:last').after(userrequest_panel) ; 
+        else 
+        { $('.accordian_wrapper').html(userrequest_panel) ; }
+        // })
+        // });
+    }
+
     </script>
 </body>
