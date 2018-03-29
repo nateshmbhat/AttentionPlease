@@ -358,7 +358,7 @@ app.post('/createtopic'   , urlencodedParser , (req, res)=>{
 function Handle_GET(app){
 
     app.get('/allotseats' , (req ,res)=>{k
-      res.render('expr.ejs') ;
+      res.render('allotseats.ejs') ;
     }) ;
 
     app.get('/results' , (req,res)=>{

@@ -34,6 +34,8 @@ for(i=0;dat[i]!=undefined;i++){
     subs['time']=dat[i]['time'+j];
     subs['room']=dat[i]['room'+j];
     subs['seat']=dat[i]['seatno'+j];
+
+    temp.push(subs) ;  
   }
   
   console.log("-----------------------------------");
