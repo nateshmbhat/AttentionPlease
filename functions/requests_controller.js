@@ -135,56 +135,48 @@ function Handle_POST(app){
         }) ;
     })
 
+    
+    
+    app.post('/putseats' , multer({dest : os.tmpdir() } ).single('seat_file') , (req , res)=>{
+        console.log('req.body' , req.body) ; 
+        console.log('req.file' , req.file) ;
+        
+        file_path = req.file.path ; 
+        file_name = req.file.name ; 
 
+        res.status(200).render('/allotseats.ejs' , {success : "Successfully got the file for furthur processing "}) ;
+        
+        admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
+            userinfo = snap.val() ;
 
-    app.post('/putseats' ,urlencodedParser , (req , res)=>{
-        console.log("\nGOT FILE POST REQUEST !!!\n\n") ;
-        console.log(req.files) ;
+            var obj=xlsx.readFile(file_path);
+            var sh=obj.SheetNames;
+            var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
 
-        let sampleFile = req.files.sampleFile ;
+            var final={};
+            var temp=[];
+            var subs={};
+            for(i=0;dat[i]!=undefined;i++){
 
-        fileid = uniqid() ;
-        sampleFile.mv(`./data/${fileid}` , err=>{
-            if(!err){
-                console.log("Successfully got the file ! ") ;
-                admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
-                    userinfo = snap.val() ;
-
-                    var obj=xlsx.readFile(`./data/client_data/${fileid}`);
-                    var sh=obj.SheetNames;
-                    var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
-
-                    var final={};
-                    var temp=[];
-                    var subs={};
-                    for(i=0;dat[i]!=undefined;i++){
-
-                      //final[dat[i].USN]=temp;
-                      for(j=0;dat[i]['sub'+j]!=undefined;j++){
-                        subs['subname']=dat[i]['sub'+j];
-                        subs['date']=dat[i]['date'+j];
-                        subs['time']=dat[i]['time'+j];
-                        subs['room']=dat[i]['room'+j];
-                        subs['seat']=dat[i]['seatno'+j];
-                        temp[j]=subs;
-                        subs={};
-                      }
-                      temp=[];
-                    }
-                    res.status(200).render('/allotseats.ejs') ;
-                    admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final)  ;
-                }) ;
-                // let bucket = admin.storage().bucket() ;
-
-                bucket.upload('./../data/mytestfile.jpg' , (err, file , response)=>{
-                    console.log(err , file, response) ;
-                }) ;
-            } else {
-                console.log(err);
-                res.status(403).send(err.message);
+                //final[dat[i].USN]=temp;
+                for(j=0;dat[i]['sub'+j]!=undefined;j++){
+                subs['subname']=dat[i]['sub'+j];
+                subs['date']=dat[i]['date'+j];
+                subs['time']=dat[i]['time'+j];
+                subs['room']=dat[i]['room'+j];
+                subs['seat']=dat[i]['seatno'+j];
+                temp[j]=subs;
+                subs={};
+                }
+                temp=[];
             }
-            });
+            admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final)  ;
+        }) ;
 
+    if(!req.file)
+    {
+        res.status(403).send("File not uploaded . Make sure that a valid spreadsheet file is selected ! ");
+    }
     });
 
 

@@ -24,9 +24,11 @@ var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
 
 var final={};
 var temp=new Array();
-var subs={};
+
 for(i=0;dat[i]!=undefined;i++){
+  temp = [] ; 
   for(j=0;dat[i]['sub'+j]!=undefined;j++){
+    subs = new Object() ; 
     subs['name']=dat[i]['Name'];
     subs['subject']=dat[i]['sub'+j];
     subs['block']=dat[i]['block'+j];
@@ -34,18 +36,15 @@ for(i=0;dat[i]!=undefined;i++){
     subs['time']=dat[i]['time'+j];
     subs['room']=dat[i]['room'+j];
     subs['seat']=dat[i]['seatno'+j];
-
     temp.push(subs) ;  
   }
-  
-  console.log("-----------------------------------");
 
-  console.log("----------------------------------");
+  console.log(temp) ; 
 
-  //final[dat[i]['USN']]=temp;
+   final[dat[i]['USN']]=temp;
 }
 
-console.log(temp);
+console.log(final);
 
   // final[dat[i].USN]=temp;
   // for(j=0;dat[i]['sub'+j]!=undefined;j++){
