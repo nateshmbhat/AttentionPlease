@@ -25,18 +25,12 @@
     <div class="gtco-loader"></div>
     
     <% include partials/scripts_and_css.ejs %>
+    <% include partials/navbar.ejs %>
    
     <script src="/assets/js/dashboard.js"></script>       
     
-    <% if(locals.login && login){%>
-        <% include partials/navbar.ejs%>
-        <%}else{%>
-        <%include partials/navbar_login.ejs%>
-    <%} %>
-
-            
     <h1 class="animated flipInX ">Notify Them </h1>
-    <div class="jumbotron container z-depth-1">
+    <div class="jumbotron container z-depth-1" style="background-color: white">
 
         <h3 id="collegename" class="text-center" style="font-family: raleway"></h3>
         <div id="location-details">
@@ -49,7 +43,7 @@
                 <div class="md-form">
                     <i class="fa fa-envelope prefix"></i>
                     <input class="col-6" id="title" type="text" maxlength="30" minlength="3" name="title" required/>
-                    <label for="title" >Title : </label>
+                    <label for="title">Title : </label>
                 </div>
                 <br>
 
@@ -113,7 +107,8 @@
     </div>
    
     <br><br><br><br><br>
-    <% include partials/footer.ejs %>
+  <% include partials/footer.ejs %>
+   <script>$("#div_footer").css('position' , 'fixed') ;</script>
     
 </body>
 
