@@ -73,10 +73,26 @@
 </div>
 <!-- Card -->
 
+
+
     <script>
 
 
+
+    function getDataObject(cardid)
+    {
+        dataobject = {  
+            usn : $(`[data-usnid=${cardid}]`)[0].textContent.trim() , 
+            name : $(`[data-nameid=${cardid}]`)[0].textContent.trim() , 
+            uid : $(`[data-uid=${cardid}]`)[0].textContent.trim() , 
+            desc : $(`[data-descid=${cardid}]`)[0].textContent.trim() ,
+        }
+
+        return dataobject ; 
+    }
+
     function initialize(){
+        
         // const adminuid = firebase.auth().user.uid ; 
         // let userinfo  ; 
 
@@ -96,17 +112,16 @@
         //             desc = pushid.desc ; 
         //         })
 
-            let name="natesh"  , uid = "388nklldkf328fd" , usn = "1si16cs066" , desc="fksdlfsdjf sdlkfsdklfkdslfsdlf sdfdjsf klsd fdsfdsf sdflskdf  ds fsdfsdklf ;sdkfsd" ; 
 
+            let name="natesh"  , uid = "388nklldkf328fd" , usn = "1si16cs066" , desc="fksdlfsdjf sdlkfsdklfkdslfsdlf sdfdjsf klsd fdsfdsf sdflskdf  ds fsdfsdklf ;sdkfsd" ; 
 
                 function addStudentCard(num = 1){
                     
-                    for(counter= 0 ; counter <num ; counter++)
+                    for(i = 0 ; i <num ; i++)
                     {
-    
                     let userrequest_panel = ` 
                         <!-- Accordion card -->
-                        <div class="card mb-4 userrequest_panel">
+                        <div class="card mb-4 userrequest_panel data-carid=${i}">
                             <!-- Card header -->
                             <div class="card-header p-0 z-depth-1" role="tab" id="heading30">
                                 <a data-toggle="collapse" data-parent="#accordionEx5" href="#collapse30" aria-expanded="true" aria-controls="collapse30">
@@ -126,8 +141,8 @@
                                     <h5 data-uid=${i}> User ID : ${uid}</h5>
                                     <p data-descid=${i} class="p-md-4 mb-0">${desc}</p>
     
-                                    <button class="btn btn-success btn_accept" >Accept</button>
-                                    <button class="btn btn-danger" btn_reject >Reject</button>
+                                    <button data-btnid=${i} class="btn btn-success btn_accept" >Accept</button>
+                                    <button data-btnid=${i} class="btn btn-danger btn_reject" >Reject</button>
                                 </div>
                             </div>
                         </div>
@@ -146,12 +161,31 @@
                     }        
 
                 addStudentCard(5) ; 
-        
                 // })
         // });
     }
 
     initialize() ; 
+
+
+    //bind all the events  : 
+    $('button.btn_accept').on('click' , event=>{
+        console.log('this' , event.target) ; 
+        let cardid  = $(event.target).attr('data-btnid') ; 
+        console.log(  getDataObject(cardid)) ; 
+    })
+
+
+    $('button.btn_reject').on('click' , event=>{
+        console.log('this' , event.target) ; 
+        console.log($(event.target).attr('data-btnid')) ; 
+
+        let cardid  = $(event.target).attr('data-btnid') ; 
+
+        console.log(  getDataObject(cardid)) ; 
+        
+ 
+    })
 
     </script>
 </body>
