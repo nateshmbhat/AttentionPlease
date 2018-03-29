@@ -1,6 +1,5 @@
 /// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";import { json } from "body-parser";import { request } from "https";import { config } from "firebase-functions";import { decode } from "punycode";import { firebase } from "@firebase/app";import { decode } from "punycode";import { urlencoded } from "body-parser";import { isValidFormat } from "@firebase/util";import { firebase } from "@firebase/app";import { database } from "firebase-admin";import { database } from "firebase-admin";import { firebase } from "@firebase/app";import { firebase } from "@firebase/app";import { urlencoded } from "body-parser";import { userInfo } from "os";import { userInfo } from "os";import { contains } from "@firebase/util";
 
-
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS
 
 
@@ -358,8 +357,7 @@ app.post('/createtopic'   , urlencodedParser , (req, res)=>{
 //Handles all the GET request routes
 function Handle_GET(app){
 
-    app.get('/allotseats' , (req ,res)=>{
-        //Todo add authentication
+    app.get('/allotseats' , (req ,res)=>{k
       res.render('expr.ejs') ;
     }) ;
 
@@ -412,17 +410,20 @@ function Handle_GET(app){
     })
 
     app.get('/displayprofile' , (req ,res)=>{
-        //Todo add authentication
-        res.render('displayprofile.ejs') ; 
+        utils.isAuthenticated(req , res)
+        .then(uid=>{console.log("authenticated : " , uid) ; res.render('displayprofile.ejs') ; })
+        .catch(error=>{res.render('login.ejs') ; })
     }) 
     
     app.get('/notifier' , (req ,res)=>{
-        //Todo add authentication
-        res.render('notifier.ejs') ; 
+        utils.isAuthenticated(req, res)
+        .then(uid=>{console.log("authenticated : " , uid) ; res.render('notifier.ejs') ; })
+        .catch(error=>res.render('login.ejs')) ; 
     }) 
 
     app.get('/assignrole' , (req ,res)=>{
-        //Todo add authentication
-        res.render('assignrole.ejs') ;
+        utils.isAuthenticated(req , res)
+        .then(uid => {console.log("authenticated : " , uid) ; res.render('assignrole.ejs') ;})
+        .catch(error=>{res.render('login.ejs') ; })
     })
 }

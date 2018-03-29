@@ -25,7 +25,7 @@ function HandleImage(image)
                 }
             }
 
-            admin.storage().bucket().upload( image.filename, options)
+            admin.storage().bucket().upload( image.path , options)
                 .then(file=>{
                 // console.log(file) ; 
                 file["0"].getSignedUrl( { action: 'read', expires: Date.now()+24*3600 } , (err, url)=>{
@@ -40,7 +40,8 @@ function HandleImage(image)
 
 
 
-app.post('/' ,  multer({ dest: "data/" , limits : { fileSize : 5242880 } }).single('image_file'),  (req , res)=>{
+
+app.post('/' ,  multer({ dest: os.tmpdir() , limits : { fileSize : 5242880 } }).single('image_file'),  (req , res)=>{
 
     console.log("req.body : " , req.body) ;
     console.log("req.file  : " , req.file) ; 
@@ -113,7 +114,7 @@ app.post('/' ,  multer({ dest: "data/" , limits : { fileSize : 5242880 } }).sing
                 for(let i =1 ; i<topics.length ;i++)
                 {
                     conditionString = `'${topics[i]}' in topics && '${userinfo.ccode}' in topics` ; 
-                    msg.sendToCondition(conditionString , payload , options)
+                    msg.sendToCondition(conditionString , payload , {priority : 'high'})
                     .then(msgid=>console.log(msgid , topics[i]))
                     .catch(err=>console.log(err)) ;
                 }
@@ -121,7 +122,7 @@ app.post('/' ,  multer({ dest: "data/" , limits : { fileSize : 5242880 } }).sing
             })
     
             .catch(err=>{console.log(err)
-                res.render('dashboard.ejs' , {error : err.message}  ) ;
+                res.render('login.ejs' , {error : err.message}  ) ;
             }) ;
         })
     })
@@ -129,6 +130,5 @@ app.post('/' ,  multer({ dest: "data/" , limits : { fileSize : 5242880 } }).sing
     })
     .catch(err=>{res.render('login.ejs' , {error : err}); return true; })
 }) ; 
-
 
 module.exports = app ; 
