@@ -98,40 +98,43 @@
 
             let name="natesh"  , uid = "388nklldkf328fd" , usn = "1si16cs066" , desc="fksdlfsdjf sdlkfsdklfkdslfsdlf sdfdjsf klsd fdsfdsf sdflskdf  ds fsdfsdklf ;sdkfsd" ; 
 
-            let userrequest_panel = ` 
-                <!-- Accordion card -->
-                <div class="card mb-4 userrequest_panel">
-                    <!-- Card header -->
-                    <div class="card-header p-0 z-depth-1" role="tab" id="heading30">
-                        <a data-toggle="collapse" data-parent="#accordionEx5" href="#collapse30" aria-expanded="true" aria-controls="collapse30">
-                            <i class="fa fa-cloud fa-2x p-3 mr-4 float-left black-text" aria-hidden="true"></i>
-                            <h4 class="text-uppercase white-text mb-0 py-3 ml-2 mt-1 justify-content-left" style="display:inline ; align-left ; float:left" >
-                                ${name}
-                            </h4>
-                            <h4 class="text-uppercase white-text mb-0 py-3 mt-1 mr-4 justify-content-right" style="display:inline;align:right;float:right;">
-                                ${usn}
-                            </h4>
-                        </a>
-                    </div>
-
-                    <!-- Card body -->
-                    <div id="collapse30" class="collapse show" role="tabpanel" aria-labelledby="heading30" data-parent="#accordionEx5">
-                        <div class="card-body rgba-black-light white-text z-depth-1">
-                            <h5> User ID : ${uid}</h5>
-                            <p class="p-md-4 mb-0">${desc}</p>
-
-                            <button class="btn btn-success">Accept</button>
-                            <button class="btn btn-danger">Reject</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Accordion card -->
-                ` ; 
 
                 function addStudentCard(num = 1){
+                    
                     for(counter= 0 ; counter <num ; counter++)
                     {
-
+    
+                    let userrequest_panel = ` 
+                        <!-- Accordion card -->
+                        <div class="card mb-4 userrequest_panel">
+                            <!-- Card header -->
+                            <div class="card-header p-0 z-depth-1" role="tab" id="heading30">
+                                <a data-toggle="collapse" data-parent="#accordionEx5" href="#collapse30" aria-expanded="true" aria-controls="collapse30">
+                                    <i class="fa fa-cloud fa-2x p-3 mr-4 float-left black-text" aria-hidden="true"></i>
+                                    <h4 data-nameid=${i} class="text-uppercase white-text mb-0 py-3 ml-2 mt-1 justify-content-left" style="display:inline ; align-left ; float:left" >
+                                        ${name}
+                                    </h4>
+                                    <h4 data-usnid=${i} class="text-uppercase white-text mb-0 py-3 mt-1 mr-4 justify-content-right" style="display:inline;align:right;float:right;">
+                                        ${usn}
+                                    </h4>
+                                </a>
+                            </div>
+    
+                            <!-- Card body -->
+                            <div id="collapse30" class="collapse show" role="tabpanel" aria-labelledby="heading30" data-parent="#accordionEx5">
+                                <div class="card-body rgba-black-light white-text z-depth-1">
+                                    <h5 data-uid=${i}> User ID : ${uid}</h5>
+                                    <p data-descid=${i} class="p-md-4 mb-0">${desc}</p>
+    
+                                    <button class="btn btn-success btn_accept" >Accept</button>
+                                    <button class="btn btn-danger" btn_reject >Reject</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Accordion card -->
+                        ` ; 
+    
+    
                         if($('.accordian_wrapper .userrequest_panel:last').html())
                             {
                                 console.log("Inside if part ") ; 
@@ -140,7 +143,6 @@
                             else 
                             { console.log("Else part running ! " ) ;  $('.accordian_wrapper').html(userrequest_panel) ; }
                         }
-
                     }        
 
                 addStudentCard(5) ; 
