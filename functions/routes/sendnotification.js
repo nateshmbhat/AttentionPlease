@@ -25,7 +25,7 @@ function HandleImage(image)
                 }
             }
 
-            admin.storage().bucket().upload( image.filename, options)
+            admin.storage().bucket().upload( image.path , options)
                 .then(file=>{
                 // console.log(file) ; 
                 file["0"].getSignedUrl( { action: 'read', expires: Date.now()+24*3600 } , (err, url)=>{
@@ -40,7 +40,8 @@ function HandleImage(image)
 
 
 
-app.post('/' ,  multer({ dest: "data/" , limits : { fileSize : 5242880 } }).single('image_file'),  (req , res)=>{
+
+app.post('/' ,  multer({ dest: os.tmpdir() , limits : { fileSize : 5242880 } }).single('image_file'),  (req , res)=>{
 
     console.log("req.body : " , req.body) ;
     console.log("req.file  : " , req.file) ; 
@@ -48,7 +49,7 @@ app.post('/' ,  multer({ dest: "data/" , limits : { fileSize : 5242880 } }).sing
     utils.isAuthenticated(req , res)
     .then(uid=>{
 
-    if(!utils.validatePostBody(req , res , ['topic' , 'title' ,'description']))
+    if(!utils.validatePostBody(req , res , ['topic' , 'title' ,'short_desc' , 'long_desc']))
     {
         res.status('200').json({error : 'Make sure you have specified all the required details below ! '}) ;
         return ;
@@ -70,16 +71,16 @@ app.post('/' ,  multer({ dest: "data/" , limits : { fileSize : 5242880 } }).sing
             payload = {
                 notification : {
                     title : req.body.title ,
-                    body : req.body.description
+                    body : req.body.short_desc
                 } ,
     
                 data : {
                     customid : customid_var ,
                     ccode : userinfo.ccode ,
-                    detail_desc : "",
+                    detail_desc : req.body.long_desc ,
                     image : image_link , 
                     links : "" ,
-                    one_line_desc : req.body.description,
+                    one_line_desc : req.body.short_desc , 
                     title : req.body.title ,
                     topics : JSON.stringify(req.body.topic)
                 } ,
@@ -103,17 +104,19 @@ app.post('/' ,  multer({ dest: "data/" , limits : { fileSize : 5242880 } }).sing
     
                 admin.database().ref(`/Colleges/${userinfo.ccode}/notifications/${primary_msgid}`).update({
                     title : req.body.title , 
-                    body : req.body.description ,
-                    college : userinfo.college ,
-                    state : userinfo.state , district:userinfo.district , topics : topics , ccode : utils.get_college_code(userinfo.state , userinfo.district , userinfo.college) , 
-                    image : image_link
+                    one_line_desc : req.body.short_desc,
+                    detail_desc : req.body.long_desc , 
+                    ccode : userinfo.ccode,
+                    topics : topics , 
+                    image : image_link , 
+                    thumb_image : image_link 
                 }) ;
     
     
                 for(let i =1 ; i<topics.length ;i++)
                 {
                     conditionString = `'${topics[i]}' in topics && '${userinfo.ccode}' in topics` ; 
-                    msg.sendToCondition(conditionString , payload , options)
+                    msg.sendToCondition(conditionString , payload , {priority : 'high'})
                     .then(msgid=>console.log(msgid , topics[i]))
                     .catch(err=>console.log(err)) ;
                 }
@@ -121,7 +124,7 @@ app.post('/' ,  multer({ dest: "data/" , limits : { fileSize : 5242880 } }).sing
             })
     
             .catch(err=>{console.log(err)
-                res.render('dashboard.ejs' , {error : err.message}  ) ;
+                res.render('login.ejs' , {error : err.message}  ) ;
             }) ;
         })
     })
@@ -129,6 +132,5 @@ app.post('/' ,  multer({ dest: "data/" , limits : { fileSize : 5242880 } }).sing
     })
     .catch(err=>{res.render('login.ejs' , {error : err}); return true; })
 }) ; 
-
 
 module.exports = app ; 
