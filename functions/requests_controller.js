@@ -299,7 +299,7 @@ app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (r
     var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
 
     var final={};
-    var temp=[];
+    var temp=new Array;
 
     for(i=0;dat[i]!=undefined;i++){
         for(j=0;j<headings.length;j++){
