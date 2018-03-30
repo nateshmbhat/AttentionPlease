@@ -38,13 +38,13 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 
 
-<br>
+
         <div class="container">
             <h1 class="animated zoomIn text-center">Time Table</h1>
             <div class="text-center">
-        <br><br>        <button type="button" class="btn btn-deep-purple waves-effect waves-dark" data-toggle="modal" id="btn_addTimeTable" data-target="#modaltimetable">Add Time Table </button>
+                <button type="button" class="btn btn-primary waves-effect waves-dark" data-toggle="modal" id="btn_addTimeTable" data-target="#modaltimetable">Add Time Table </button>
             </div>
-<br><br>
+
 
             <div class="card text-left|center|right">
               <img class="card-img-top" src="" alt="">
@@ -133,7 +133,7 @@
             ref = firebase.database().ref(`/Colleges/${userinfo.ccode}/timetables/${$('#select_year').val()}/${$('#select_branch').val()}/${$('#select_section').val()}`)
 
             ref.once('value' , snap=>
-            {
+            { 
                 dataArray = snap.val() ;
                 console.log(dataArray) ;
 
@@ -167,8 +167,9 @@
                 });
             });
 
-        });
-    }
+            });
+
+        }
 
 
         function saveTimeTable()
@@ -220,12 +221,10 @@
                  $("div.erroralert").fadeIn() ;
 
                  setTimeout( ()=>{$("div.erroralert").fadeOut() ;} , 5000)
-<<<<<<< HEAD
-=======
 
 
->>>>>>> 53698e35eaef7a4bdacca29ac42a7844f5eafd9d
              })
+
         }
 
 
