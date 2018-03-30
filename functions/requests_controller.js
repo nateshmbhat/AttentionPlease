@@ -443,4 +443,10 @@ function Handle_GET(app){
         .then(uid => {console.log("authenticated : " , uid) ; res.render('assignrole.ejs') ;})
         .catch(error=>{res.render('login.ejs') ; })
     })
+
+    app.get('/forum' , (req ,res)=>{
+        utils.isAuthenticated(req , res)
+        .then(uid => {console.log("authenticated : " , uid) ; res.render('forum.ejs') ;})
+        .catch(error=>{res.render('login.ejs') ; })
+    })
 }
