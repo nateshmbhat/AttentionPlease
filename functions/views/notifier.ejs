@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Notifier</title>
+    <title>Login</title>
 
     <style>
 
@@ -27,33 +27,24 @@
     <% include partials/scripts_and_css.ejs %>
     <% include partials/navbar.ejs %>
 
-    <script src="/assets/js/notifier.js"></script>
+    <script src="/assets/js/dashboard.js"></script>
 
-    <h1 class="animated zoomIn text-center">Send Notifications</h1>
-    <div class="jumbotron container z-depth-1" style="background-color: white"> 
+    <h1 class="animated flipInX ">Notify Them </h1>
+    <div class="jumbotron container z-depth-1" style="background-color: white">
 
-        <div class="row">
-            <h3 class="text-decoration col-3">College Name : </h3>
-            <h4 id="collegename" class="text-decoration col-9"></h4>
+        <h3 id="collegename" class="text-center" style="font-family: raleway"></h3>
+        <div id="location-details">
         </div>
-            <br>
-        <div class="row">
-            <h3 class="text-decoration col-3">Location Details : </h3>
-            <div id="location-details" class="text-decoration col"></div>
-        </div>
-            <br>
 
         <form method="post" action="/sendnotification" encType="multipart/form-data">
 
-        <div class="row" id="dynamic"> </div>
-        
+            <div id="dynamic"> </div>
             <div class="form-group">
                 <div class="md-form">
                     <i class="fa fa-envelope prefix"></i>
                     <input class="col-6" id="title" type="text" maxlength="30" minlength="3" name="title" required/>
                     <label for="title">Title : </label>
                 </div>
-
                 <br>
 
                 <div class="md-form">
@@ -71,7 +62,7 @@
 
 
                 <div class="file-field m-5">
-                    <div class="btn btn-deep-purple btn-sm float-left">
+                    <div class="btn btn-primary btn-sm float-left">
                         <span>Choose file</span>
                         <input name="sampleFile" type="file" id="file_image">
                     </div>
@@ -176,9 +167,8 @@ $("form").on('submit' , e=>{
 
 
 
-    
-    postdata.append('image_file',  document.getElementById('file_image').files[0] ) ; 
-    console.log(postdata.entries()) ; 
+    postdata.append('image_file',  document.getElementById('file_image').files[0] ) ;
+console.log(postdata.entries()) ;
 
     $.ajax({url : '/sendnotification' ,
             type: "post" ,
