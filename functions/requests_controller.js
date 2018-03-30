@@ -83,7 +83,6 @@ function Handle_POST(app){
 
 
 
-
     app.post("/getcolleges" , urlencodedParser , (req,res)=>{
        if(!utils.validatePostBody(req , res , ['state' , 'district'])) return ;
 
@@ -98,6 +97,7 @@ function Handle_POST(app){
 
         }
     })
+
 
 
     app.post('/updateprofile', urlencodedParser ,(req , res)=>{
@@ -137,8 +137,8 @@ function Handle_POST(app){
 
 
 
-    app.post('/putseats' , multer({dest : os.tmpdir() } ).single('seat_file') , (req , res)=>{
 
+    app.post('/putseats' , multer({dest : os.tmpdir() } ).single('seat_file') , (req , res)=>{
         console.log('req.body' , req.body) ;
         console.log('req.file' , req.file) ;
 
@@ -183,6 +183,8 @@ function Handle_POST(app){
         res.status(403).send("File not uploaded . Make sure that a valid spreadsheet file is selected ! ");
     }
     });
+
+
 
 
     app.post('/register' , urlencodedParser ,  (req , res)=>{
