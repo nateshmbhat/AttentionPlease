@@ -227,7 +227,7 @@ function Handle_POST(app){
                 }
             }
             catch(error){
-                res.render('index.ejs' ,{error : error.message } ) ; 
+                res.render('index.ejs' ,{error : error.message } ) ;
             }
         }) ;
 
@@ -294,7 +294,6 @@ app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (r
     result_file = req.file ;
     result_file_path  = req.file.path ;
     start = req.file.startrow ;
-
     //KARAN REST OF YOUR CODE : TODO
     var xlsx=require('xlsx');
     console.log(headings);
@@ -303,7 +302,7 @@ app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (r
     var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
 
     var final={};
-    var temp=[];
+    var temp=new Array;
 
     for(i=0;dat[i]!=undefined;i++){
         for(j=0;j<headings.length;j++){
@@ -311,6 +310,7 @@ app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (r
         }
         console.log('iteration'+i+' '+temp);
         final[dat[i][headings[0]]]=temp;
+        temp=new Array;
     }
     console.log(final);
 })  ;
