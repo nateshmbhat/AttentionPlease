@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -13,42 +13,42 @@
     <% include partials/navbar.ejs %>
 
 
+
+
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
 
     <div class="container">
-        <h1 class="text-decoration text-center animated zoomIn">Seat Allotment</h1>
-        <br>Add a spreadsheet file containing the seat allotment details. Example format will soon follow
-        <br><br>
-            <div class="view overlay">
-                <form method="post" action="/putseats">
-                    <div class="image-upload">
-                        <label for="file-input">
-                            <h4  class="btn btn-deep-purple">Browse Spreadsheet File</h4>
-                        </label>
-                        <input id="file-input"  type="file" name="seat_file" accept=".xml,.xlsx,.ods" hidden="true"/>
-                    </div>
-                        <label for="submit_seats">
-                            <h4  class="btn btn-deep-purple btn-sm">Submit</h4>
-                        </label>
+    <br>
+    <h1 class="text-decoration">Seat Allotment</h1>
+    <br>Add a spreadsheet file containing the seat allotment details...example format will soon follow
+    <br><br>
+    <div class="view overlay">
+      <form method="post" action="/putseats">
+                <div class="image-upload">
+                    <label for="file-input">
+                        <h4  class="btn btn-info">Browse Spreadsheet File</h4>
+                    </label>
+                    <input id="file-input"  type="file" name="seat_file" accept=".xml,.xlsx,.ods" hidden="true"/>
+                </div>
+                <label for="submit_seats">
+                    <h4  class="btn btn-info btn-sm">Submit</h4>
+                </label>
                 <% if(locals.error) {%>
-                        <div class="animated shake rounded alert alert-danger"   role="alert" id="erroralert">
-                            <h2 style="color:black;">Error : <%=error%></h2>
-                        </div>
+                    <div class="animated shake rounded alert alert-danger"   role="alert" id="erroralert"><h2 style="color:black;">Error : <%=error%></h2></div>
                 <%}%>
 
-                <% if(locals.success){%> 
-                        <div class="animated zoomIn rounded alert alert-success green" role="alert" id="successalert">
-                            <h2 style="color:black"><%=success%></h2>
-                        </div>
-                <%}%> 
-                        <input id="submit_seats" type="submit" hidden>
-                </form>
-            </div>
-    <br><br>
-    <!--Card-->
+                <% if(locals.success){%>
+                    <div class="animated zoomIn rounded alert alert-success green" role="alert" id="successalert"><h2 style="color:black"><%=success%></h2></div>
+                <%}%>
+                <input id="submit_seats" type="submit" hidden>
+      </form>
     </div>
 
-   <script>$("#div_footer").css('position' , 'fixed') ;</script>
+    <br><br>
+
+    <!--Card-->
+</div>
   <% include partials/footer.ejs %>
+   <script>$("#div_footer").css('position' , 'fixed') ;</script>
 </body>

@@ -294,29 +294,42 @@ app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (r
     result_file = req.file ;
     result_file_path  = req.file.path ;
     start = req.file.startrow ;
-    //KARAN REST OF YOUR CODE : TODO
-    var xlsx=require('xlsx');
-    console.log(headings);
-    var obj=xlsx.readFile(result_file_path);
-    var sh=obj.SheetNames;
-    var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
 
-    var final={};
-    var temp=new Array;
+    utils.isAuthenticated(req,res)
+    .then(uid=>{
+      admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
+          userinfo = snap.val() ;
 
-    for(i=0;dat[i]!=undefined;i++){
-        for(j=0;j<headings.length;j++){
-            temp[j]=dat[i][headings[j]];
-        }
-        console.log('iteration'+i+' '+temp);
-        final[dat[i][headings[0]]]=temp;
-        temp=new Array;
-    }
-    console.log(final);
-})  ;
+          //KARAN REST OF YOUR CODE : TODO
 
+          var xlsx=require('xlsx');
+          console.log(headings);
+          var obj=xlsx.readFile(result_file_path);
+          var sh=obj.SheetNames;
+          var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
+          var dt=new Date();
+          var cur_year=dt.getYear()+1900;
+          console.log(cur_year);
 
+          var final={};
+          var temp=new Array;
 
+          for(i=0;dat[i]!=undefined;i++){
+              for(j=0;j<headings.length;j++){
+                  temp[j]=dat[i][headings[j]];
+              }
+              final[dat[i][headings[0]]]=temp;
+              temp=new Array;
+          }
+          console.log(final);
+          let ref=admin.database().ref('/Colleges/'+userinfo.ccode+'/results/'+cur_year+'/'+semester+'/'+branch+'/data');
+          ref.update(final);
+          admin.database().ref(`/Colleges/${userinfo.ccode}/results/result_years`).push(`${cur_year}-${semester}-${branch}`) ;
+          ref=admin.database().ref('/Colleges/'+userinfo.ccode+'/results/'+cur_year+'/'+semester+'/'+branch+'/headings');
+          ref.update(headings);
+        })  ;
+      })
+})
 
 app.post('/createtopic'   , urlencodedParser , (req, res)=>{
     console.log(req.body) ;
@@ -354,6 +367,7 @@ app.post('/createtopic'   , urlencodedParser , (req, res)=>{
     .catch(err=>{console.log(err) ;res.render('index.ejs' , {error : err.message})}) ;
 })
 }
+
 
 
 

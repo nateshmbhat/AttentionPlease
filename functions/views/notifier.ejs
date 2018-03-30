@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Notifier</title>
+    <title>Login</title>
 
     <style>
 
@@ -27,7 +27,7 @@
     <% include partials/scripts_and_css.ejs %>
     <% include partials/navbar.ejs %>
 
-    <script src="/assets/js/notifier.js"></script>
+    <script src="/assets/js/dashboard.js"></script>
 
     <h1 class="animated flipInX ">Notify Them </h1>
     <div class="jumbotron container z-depth-1" style="background-color: white">
@@ -166,9 +166,8 @@ $("form").on('submit' , e=>{
 
 
 
-    
-    postdata.append('image_file',  document.getElementById('file_image').files[0] ) ; 
-    console.log(postdata.entries()) ; 
+    postdata.append('image_file',  document.getElementById('file_image').files[0] ) ;
+console.log(postdata.entries()) ;
 
     $.ajax({url : '/sendnotification' ,
             type: "post" ,
