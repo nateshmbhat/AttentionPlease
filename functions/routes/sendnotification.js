@@ -64,7 +64,6 @@ app.post('/' ,  multer({ dest: os.tmpdir() , limits : { fileSize : 5242880 } }).
         const msg = admin.messaging() ;
 
         image =  req.file ; 
-
         
         HandleImage(image).then(image_link=>{
             console.log("Image_link : " , image_link) ; 
@@ -113,7 +112,6 @@ app.post('/' ,  multer({ dest: os.tmpdir() , limits : { fileSize : 5242880 } }).
                     image : image_link , 
                     thumb_image : image_link 
                 }) ;
-    
     
                 for(let i =1 ; i<topics.length ;i++)
                 {

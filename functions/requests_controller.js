@@ -403,7 +403,7 @@ function Handle_GET(app){
         console.log("handling dashboard get ...") ;
         utils.isAuthenticated(req, res)
         .then(uid=>{ console.log("authenticated : ", uid) ;   res.render('dashboard.ejs')  ;
-            utils.get_userinfo({uid : uid}) ;
+            utils.get_userinfo({uid : uid}).then(userinfo=>console.log(userinfo) ) ;
         } )
         .catch(error=>res.render('login.ejs'))  ;
     })
