@@ -24,24 +24,24 @@
     <br>Add a spreadsheet file containing the seat allotment details...example format will soon follow
     <br><br>
     <div class="view overlay">
-      <form method="post" action="/putseats">
-                <div class="image-upload">
-                    <label for="file-input">
-                        <h4  class="btn btn-info">Browse Spreadsheet File</h4>
-                    </label>
-                    <input id="file-input"  type="file" name="seat_file" accept=".xml,.xlsx,.ods" hidden="true"/>
-                </div>
-                <label for="submit_seats">
-                    <h4  class="btn btn-info btn-sm">Submit</h4>
-                </label>
-                <% if(locals.error) {%>
-                    <div class="animated shake rounded alert alert-danger"   role="alert" id="erroralert"><h2 style="color:black;">Error : <%=error%></h2></div>
-                <%}%>
+      <form method="post" action="/putseats" enctype="multipart/form-data"
+        <div class="image-upload">
+            <label for="file-input">
+                <h4  class="btn btn-info">Browse Spreadsheet File</h4>
+            </label>
+            <input id="file-input"  type="file" name="seat_file" accept=".xml,.xlsx,.ods" hidden="true"/>
+        </div>
+        <label for="submit_seats">
+            <h4  class="btn btn-info btn-sm">Submit</h4>
+        </label>
+        <% if(locals.error) {%>
+            <div class="animated shake rounded alert alert-danger"   role="alert" id="erroralert"><h2 style="color:black;">Error : <%=error%></h2></div>
+        <%}%>
 
-                <% if(locals.success){%>
-                    <div class="animated zoomIn rounded alert alert-success green" role="alert" id="successalert"><h2 style="color:black"><%=success%></h2></div>
-                <%}%>
-                <input id="submit_seats" type="submit" hidden>
+        <% if(locals.success){%>
+            <div class="animated zoomIn rounded alert alert-success green" role="alert" id="successalert"><h2 style="color:black"><%=success%></h2></div>
+        <%}%>
+        <input id="submit_seats" type="submit" hidden>
       </form>
     </div>
 
