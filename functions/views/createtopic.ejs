@@ -17,7 +17,8 @@
     <h1 class="text-decoration animated zoomIn text-center">Create Topic</h1>
 
     <div class="container">
-    <form method="post">
+
+    <form method="post" action="/createtopic">
 
     <% if(locals.topicexists && locals.topicexists) {%>
     <h5 class="animated shake alert alert-danger">Specified Topic already exists ! </h5>
@@ -27,26 +28,7 @@
     <h5 class="animated zoomIn alert alert-success">Topic Successfully added :)</h5>
     <%}%>
 
-    <div class="form-group row">
-        <h4 class="col-4" for="inputState">State : </h4>
-        <select name="state" onselect="state_selection_changed()" class="col-4" id="select_state" required>
-            <option id="select_state_choose" selected disabled hidden>Choose...</option>
-        </select>
-    </div>
-
-    <div class="form-group row">
-        <h4 class="col-4" for="inputState">District : </h4>
-        <select class="col-4" id="select_district" name="district" required>
-            <option id="select_state_choose">Choose...</option>
-        </select>
-    </div>
-
-    <div class="form-group row">
-        <h4 class="col-2" for="college">College : </h4>
-        <input class="col-10" placeholder="Indian Institute of Technology" class="col-12" id= "select_college" type="text" required list="collegenameslist" name="college">
-        <datalist id="collegenameslist"> </datalist>
-    </div> 
-   
+  
     <div class="form-group row">
         <h4 class="col-2" >Topic Name : </h4>
         <input class="col-10" required name="topic" type="text" maxlength="15" minlength="2" placeholder="CSE" align="right"/> 
@@ -63,9 +45,6 @@
     </form>
 
    </div>
-
-
-   <script src="/assets/js/StateDistCollege.js"></script>
 
    <% include partials/footer.ejs %>
    <script>$("#div_footer").css('position' , 'fixed') ;</script>

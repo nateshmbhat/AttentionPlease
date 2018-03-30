@@ -351,7 +351,7 @@ app.post('/createtopic'   , urlencodedParser , (req, res)=>{
         })
 
     })
-    .catch(err=>{console.log(err) ;res.render('index.ejs')}) ;
+    .catch(err=>{console.log(err) ;res.render('index.ejs' , {error : err.message})}) ;
 })
 }
 
