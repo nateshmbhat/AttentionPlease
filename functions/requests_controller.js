@@ -71,7 +71,6 @@ function Handle_POST(app){
                 path = `/Colleges/${userinfo.ccode}/timetables/${req.body.year}/${req.body.branch}/${req.body.section}/` ;
                 console.log(path) ;
                 admin.database().ref(path).update(postdata) ;
-
             })
         })
 
@@ -145,7 +144,7 @@ function Handle_POST(app){
         file_path = req.file.path ;
         file_name = req.file.name ;
 
-        res.status(200).render('/allotseats.ejs' , {success : "Successfully got the file for furthur processing "}) ;
+        res.status(200).render('allotseats.ejs' , {success : "Successfully got the file for furthur processing "}) ;
 
         admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
             userinfo = snap.val() ;
@@ -427,10 +426,13 @@ function Handle_GET(app){
     })
 
     app.get('/displayprofile' , (req ,res)=>{
-        utils.isAuthenticated(req , res)
-        .then(uid=>{console.log("authenticated : " , uid) ; res.render('displayprofile.ejs') ; })
-        .catch(error=>{res.render('login.ejs') ; })
+        // utils.isAuthenticated(req , res)
+        // .then(uid=>{console.log("authenticated : " , uid) ; res.render('displayprofile.ejs') ; })
+        // .catch(error=>{res.render('login.ejs') ; })
+
+        res.render('displayprofile.ejs') ; 
     })
+
 
     app.get('/notifier' , (req ,res)=>{
         utils.isAuthenticated(req, res)
