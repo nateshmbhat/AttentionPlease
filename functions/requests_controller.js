@@ -294,7 +294,6 @@ app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (r
     result_file = req.file ;
     result_file_path  = req.file.path ;
     start = req.file.startrow ;
-
     //KARAN REST OF YOUR CODE : TODO
     var xlsx=require('xlsx');
     console.log(headings);
@@ -311,6 +310,7 @@ app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (r
         }
         console.log('iteration'+i+' '+temp);
         final[dat[i][headings[0]]]=temp;
+        temp=new Array;
     }
     console.log(final);
 })  ;
