@@ -128,52 +128,51 @@ function initialize(adminuid= undefined){
             let i = 0 ;  //used as a counter and identifier
             Object.getOwnPropertyNames(pushids).forEach(pushid=>{
 
-                console.log(`pushid-${i}`) ;
-
                 name = pushids[pushid].name ;
                 usn = pushids[pushid].usn ; 
                 uid = pushids[pushid].uid ; 
                 desc = pushids[pushid].desc ; 
 
 
-                    let userrequest_panel = ` 
-                        <!-- Accordion card -->
-                        <div class="card mb-4 userrequest_panel data-carid=${i}">
-                            <!-- Card header -->
-                            <div class="card-header p-0 z-depth-1" role="tab" id="heading30">
-                                <a data-toggle="collapse" data-parent="#accordionEx5" href="#collapse30" aria-expanded="true" aria-controls="collapse30">
-                                    <i class="fa fa-cloud fa-2x p-3 mr-4 float-left black-text" aria-hidden="true"></i>
-                                    <h4 data-nameid=${i} class="text-uppercase white-text mb-0 py-3 ml-2 mt-1 justify-content-left" style="display:inline ; align-left ; float:left" >
-                                        ${name}
-                                    </h4>
-                                    <h4 data-usnid=${i} class="text-uppercase white-text mb-0 py-3 mt-1 mr-4 justify-content-right" style="display:inline;align:right;float:right;">
-                                        ${usn}
-                                    </h4>
-                                </a>
-                            </div>
-    
-                            <!-- Card body -->
-                            <div id="collapse30" class="collapse show" role="tabpanel" aria-labelledby="heading30" data-parent="#accordionEx5">
-                                <div class="card-body rgba-black-light white-text z-depth-1">
-                                    <h5 data-uid=${i}> User ID : ${uid}</h5>
-                                    <p data-descid=${i} class="p-md-4 mb-0">${desc}</p>
-    
-                                    <button data-btnid=${i} class="btn btn-success btn_accept" >Accept</button>
-                                    <button data-btnid=${i} class="btn btn-danger btn_reject" >Reject</button>
-                                </div>
+                let userrequest_panel = ` 
+                    <!-- Accordion card -->
+                    <div class="card mb-4 userrequest_panel data-carid=${i}">
+                        <!-- Card header -->
+                        <div class="card-header p-0 z-depth-1" role="tab" id="heading30">
+                            <a data-toggle="collapse" data-parent="#accordionEx5" href="#collapse30" aria-expanded="true" aria-controls="collapse30">
+                                <i class="fa fa-cloud fa-2x p-3 mr-4 float-left black-text" aria-hidden="true"></i>
+                                <h4 data-nameid=${i} class="text-uppercase white-text mb-0 py-3 ml-2 mt-1 justify-content-left" style="display:inline ; align-left ; float:left" >
+                                    ${name}
+                                </h4>
+                                <h4 data-usnid=${i} class="text-uppercase white-text mb-0 py-3 mt-1 mr-4 justify-content-right" style="display:inline;align:right;float:right;">
+                                    ${usn}
+                                </h4>
+                            </a>
+                        </div>
+
+                        <!-- Card body -->
+                        <div id="collapse30" class="collapse show" role="tabpanel" aria-labelledby="heading30" data-parent="#accordionEx5">
+                            <div class="card-body rgba-black-light white-text z-depth-1">
+                                <h5>User ID : </h5><h5 data-uid=${i}> ${uid}</h5>
+                                <p data-descid=${i} class="p-md-4 mb-0">${desc}</p>
+
+                                <button data-btnid=${i} class="btn btn-success btn_accept" >Accept</button>
+                                <button data-btnid=${i} class="btn btn-danger btn_reject" >Reject</button>
                             </div>
                         </div>
-                        <!-- Accordion card -->
-                        ` ; 
-    
-    
-                        if($('.accordian_wrapper .userrequest_panel:last').html())
-                            {
-                                console.log("Inside if part ") ; 
-                                $('.accordian_wrapper .userrequest_panel:last').after(userrequest_panel) ; 
-                            }
-                            else 
-                            { console.log("Else part running ! " ) ;  $('.accordian_wrapper').html(userrequest_panel) ; }
+                    </div>
+                    <!-- Accordion card -->
+                    ` ; 
+
+
+                if($('.accordian_wrapper .userrequest_panel:last').html())
+                    {
+                        $('.accordian_wrapper .userrequest_panel:last').after(userrequest_panel) ; 
+                    }
+                    else 
+                    { 
+                         $('.accordian_wrapper').html(userrequest_panel) ; 
+                    }
 
 
                 //INCREMENT THE COUNTER ; 
@@ -194,7 +193,21 @@ function EventBinders(){
     $('button.btn_accept').on('click' , event=>{
         console.log('this' , event.target) ; 
         let cardid  = $(event.target).attr('data-btnid') ; 
+        
         console.log(  getDataObject(cardid)) ; 
+
+        $.ajax({
+                type : "post" , 
+                method:"post", 
+                url : "/acceptAdminRequest" , 
+                data : getDataObject(cardid) , 
+                success:resp=>{
+                    console.log(resp) ; 
+                } , 
+                error: err=>{
+                    console.log(err) ;
+                }
+            }) ; 
     })
 
 
@@ -204,6 +217,7 @@ function EventBinders(){
 
         let cardid  = $(event.target).attr('data-btnid') ; 
 
+        
         console.log(  getDataObject(cardid)) ; 
 
     })
