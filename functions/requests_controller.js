@@ -98,7 +98,7 @@ function Handle_POST(app){
 
 
     app.post("/acceptAdminRequest" , urlencodedParser , (req, res)=>{
-        console.log(req.body) ; 
+        console.log(req.body) ;
     }) ;
 
 
@@ -114,7 +114,7 @@ function Handle_POST(app){
             admin.auth().updateUser(uid , {
                 displayName : req.body.name ,
                 email : req.body.email ,
-            }) 
+            })
             .then(user=>{
                 console.log('request body is ') ; console.log(req.body) ;
                 let ref = admin.database().ref('/adminusers/' + user.uid) ;
@@ -323,7 +323,11 @@ app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (r
               }
               final[dat[i][headings[0]]]=temp;
               temp=new Array;
+
           }
+
+          
+
           console.log(final);
           let ref=admin.database().ref('/Colleges/'+userinfo.ccode+'/results/'+cur_year+'/'+semester+'/'+branch+'/data');
           ref.update(final);
