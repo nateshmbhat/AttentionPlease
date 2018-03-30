@@ -98,6 +98,7 @@ function Handle_POST(app){
     app.post("/acceptAdminRequest" , urlencodedParser , (req, res)=>{
         if(!utils.validatePostBody(req,  res, ['uid' , 'name' , 'usn']))
             {res.send('Invalid Post request ! Required Fields not provided .') ; }
+
         utils.isAuthenticated(req ,res).then(uid=>{
             utils.get_userinfo({type_of_user:'admin' , uid:uid}).then(userinfo=>{
 
@@ -335,7 +336,6 @@ app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (r
           userinfo = snap.val() ;
 
           //KARAN REST OF YOUR CODE : TODO
-
           var xlsx=require('xlsx');
           console.log(headings);
           var obj=xlsx.readFile(result_file_path);
@@ -364,6 +364,10 @@ app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (r
         })  ;
       })
 })
+
+
+
+
 
 app.post('/createtopic'   , urlencodedParser , (req, res)=>{
     console.log(req.body) ;
@@ -453,7 +457,8 @@ function Handle_GET(app){
     app.get("/dashboard" , (req, res)=>{
         console.log("handling dashboard get ...") ;
         utils.isAuthenticated(req, res)
-        .then(uid=>{ console.log("authenticated : ", uid) ;   res.render('dashboard.ejs')  ;
+        .then(uid=>{ 
+            console.log("authenticated : ", uid) ;   res.render('dashboard.ejs')  ;
             utils.get_userinfo({uid : uid}).then(userinfo=>console.log(userinfo) ) ;
         })
         .catch(error=>res.render('login.ejs'))  ;
@@ -470,7 +475,13 @@ function Handle_GET(app){
     app.get('/notifier' , (req ,res)=>{
         utils.isAuthenticated(req, res)
         .then(uid=>{console.log("authenticated : " , uid) ; res.render('notifier.ejs') ; })
-        .catch(error=>res.render('login.ejs')) ;
+        .catch(error=>{
+            if(error.uid){
+                //he is a subadmin 
+                console.log("Subadmin logged in : ") ; 
+            }
+            console.log("isAuthentic catch : " , error) ;  res.render('login.ejs')
+        }) ;
     })
 
     app.get('/assignrole' , (req ,res)=>{

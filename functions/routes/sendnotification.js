@@ -106,7 +106,7 @@ app.post('/' ,  multer({ dest: os.tmpdir() , limits : { fileSize : 5242880 } }).
     
                 res.status(200).json({success : "Notification sent successfully ! " })
     
-                admin.database().ref(`/Colleges/${userinfo.ccode}/notifications/${uniqid()}`).update({
+                admin.database().ref(`/Colleges/${userinfo.ccode}/notifications/${Date.now()}`).update({
                     title : req.body.title , 
                     one_line_desc : req.body.short_desc,
                     detail_desc : req.body.long_desc , 

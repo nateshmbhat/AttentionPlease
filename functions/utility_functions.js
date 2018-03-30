@@ -24,6 +24,7 @@ function isAuthenticated(req , res)
     {
         admin.auth().verifyIdToken(req.cookies['__session']).then(decodedtoken=>{
             if(decodedtoken.uid){
+
                 admin.database().ref('/adminusers/' + decodedtoken.uid).once('value' , snap=>{
                     console.log('snap.val()' , snap.val()) ; 
                     if(snap.val())
@@ -31,10 +32,28 @@ function isAuthenticated(req , res)
                         resolve(decodedtoken.uid) ;
                     }
                     else{
-                        console.log("Only College administrators can sign in : ")
-                        reject("Only College administrators can sign in : ") ;
+                        //check if he is a subadmin
+                        admin.database().ref(`/users/${decodedtoken.uid}`).once('value' , userinfo=>{
+
+                            admin.database().ref(`/Colleges/${userinfo.val().ccode}/subadmins/${decodedtoken.uid}`).once('value', userinfo_checking=>{
+                               
+                                if(userinfo_checking.val())
+                                { 
+                                    //User is a subadmin
+                                    console.log("subadmin logging in  ") ; 
+                                    reject({uid : decodedtoken.uid , type_of_user : 'subadmin'}) ; 
+                                }
+                                else{
+                                    console.log("Only College administrators can sign in : ")
+                                    reject("Only College administrators can sign in : ") ;
+                                }
+                            })
+                     })
                     }
                 }) ;
+
+
+
                 console.log("User is signed in : " , decodedtoken.uid)  ;
                 // resolve(decodedtoken.uid) ;
             }
