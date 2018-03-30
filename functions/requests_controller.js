@@ -349,7 +349,7 @@ app.post('/createtopic'   , urlencodedParser , (req, res)=>{
 //Handles all the GET request routes
 function Handle_GET(app){
 
-    app.get('/allotseats' , (req ,res)=>{k
+    app.get('/allotseats' , (req ,res)=>{
       res.render('allotseats.ejs') ;
     }) ;
 
