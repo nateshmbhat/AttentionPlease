@@ -105,11 +105,11 @@ function Handle_POST(app){
                 admin.database().ref(`/Colleges/${userinfo.ccode}/adminrequests`).orderByChild('uid').equalTo(req.body.uid).limitToFirst(1).once('value' , getpushiddata=>{
                     let pushid = Object.getOwnPropertyNames(getpushiddata.val())[0]
 
-                admin.database().ref(`/Colleges/${userinfo.ccode}/adminrequests/${pushid}`).set({}) ; 
+                admin.database().ref(`/Colleges/${userinfo.ccode}/adminrequests/${pushid}`).set({}) ;
 
-                } ) ; 
+                } ) ;
 
-                admin.database().ref(`/Colleges/${userinfo.ccode}/subadmins/${req.body.uid}/usn`).set(req.body.usn) ; 
+                admin.database().ref(`/Colleges/${userinfo.ccode}/subadmins/${req.body.uid}/usn`).set(req.body.usn) ;
             })
         })
     }) ;
@@ -125,9 +125,9 @@ function Handle_POST(app){
                 admin.database().ref(`/Colleges/${userinfo.ccode}/adminrequests`).orderByChild('uid').equalTo(req.body.uid).limitToFirst(1).once('value' , getpushiddata=>{
                     let pushid = Object.getOwnPropertyNames(getpushiddata.val())[0]
 
-                admin.database().ref(`/Colleges/${userinfo.ccode}/adminrequests/${pushid}`).set({}) ; 
+                admin.database().ref(`/Colleges/${userinfo.ccode}/adminrequests/${pushid}`).set({}) ;
 
-                } ) ; 
+                } ) ;
             }) ;
         });
     }) ;
@@ -175,6 +175,14 @@ function Handle_POST(app){
     app.post('/putseats' , multer({dest : os.tmpdir() } ).single('seat_file') , (req , res)=>{
         console.log('req.body' , req.body) ;
         console.log('req.file' , req.file) ;
+        if(!req.file){
+          res.render('allotseats.ejs',{nofile : true});
+          return;
+        }
+        if(req.file.mimetype!='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'){
+          res.render('allotseats.ejs',{error : true});
+          return;
+        }
         var xlsx=require('xlsx');
         file_path = req.file.path ;
         file_name = req.file.name ;
@@ -184,7 +192,6 @@ function Handle_POST(app){
         .then(uid=>{
           admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
               userinfo = snap.val() ;
-
 
               var obj=xlsx.readFile(file_path);
               var sh=obj.SheetNames;
@@ -212,10 +219,7 @@ function Handle_POST(app){
               }
               admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final)  ;
           }) ;
-    if(!req.file)
-    {
-        res.status(403).send("File not uploaded . Make sure that a valid spreadsheet file is selected ! ");
-    }
+          res.render('allotseats.ejs',{success : true});
     });
   })
 
@@ -420,7 +424,7 @@ function Handle_GET(app){
     }) ;
 
     app.get('/results' , (req,res)=>{
-        utils.isAuthenticated(req ,res).then(uid=>{res.render('results.ejs') ; }).catch(err=>res.render('login.ejs' ) ); 
+        utils.isAuthenticated(req ,res).then(uid=>{res.render('results.ejs') ; }).catch(err=>res.render('login.ejs' ) );
     }) ;
 
     app.get('/' , (req , res)=>{
@@ -460,7 +464,7 @@ function Handle_GET(app){
     app.get("/dashboard" , (req, res)=>{
         console.log("handling dashboard get ...") ;
         utils.isAuthenticated(req, res)
-        .then(uid=>{ 
+        .then(uid=>{
             console.log("authenticated : ", uid) ;   res.render('dashboard.ejs')  ;
             utils.get_userinfo({uid : uid}).then(userinfo=>console.log(userinfo) ) ;
         })
@@ -480,8 +484,8 @@ function Handle_GET(app){
         .then(uid=>{console.log("authenticated : " , uid) ; res.render('notifier.ejs') ; })
         .catch(error=>{
             if(error.uid){
-                //he is a subadmin 
-                console.log("Subadmin logged in : ") ; 
+                //he is a subadmin
+                console.log("Subadmin logged in : ") ;
             }
             console.log("isAuthentic catch : " , error) ;  res.render('login.ejs')
         }) ;
