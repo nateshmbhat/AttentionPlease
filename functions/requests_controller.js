@@ -138,6 +138,7 @@ function Handle_POST(app){
     
     
     app.post('/putseats' , multer({dest : os.tmpdir() } ).single('seat_file') , (req , res)=>{
+
         console.log('req.body' , req.body) ; 
         console.log('req.file' , req.file) ;
         
@@ -349,7 +350,7 @@ app.post('/createtopic'   , urlencodedParser , (req, res)=>{
 //Handles all the GET request routes
 function Handle_GET(app){
 
-    app.get('/allotseats' , (req ,res)=>{k
+    app.get('/allotseats' , (req ,res)=>{
       res.render('allotseats.ejs') ;
     }) ;
 
