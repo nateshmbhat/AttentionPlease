@@ -168,7 +168,7 @@ $("form").on('submit' , e=>{
 
     
     postdata.append('image_file',  document.getElementById('file_image').files[0] ) ; 
-console.log(postdata.entries()) ; 
+    console.log(postdata.entries()) ; 
 
     $.ajax({url : '/sendnotification' , 
             type: "post" , 
