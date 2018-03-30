@@ -135,40 +135,49 @@ function Handle_POST(app){
         }) ;
     })
 
-    
-    
+
+
     app.post('/putseats' , multer({dest : os.tmpdir() } ).single('seat_file') , (req , res)=>{
+<<<<<<< HEAD
+
         console.log('req.body' , req.body) ; 
+=======
+        console.log('req.body' , req.body) ;
+>>>>>>> 53698e35eaef7a4bdacca29ac42a7844f5eafd9d
         console.log('req.file' , req.file) ;
-        
-        file_path = req.file.path ; 
-        file_name = req.file.name ; 
+
+        file_path = req.file.path ;
+        file_name = req.file.name ;
 
         res.status(200).render('/allotseats.ejs' , {success : "Successfully got the file for furthur processing "}) ;
-        
+
         admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
             userinfo = snap.val() ;
 
-            var obj=xlsx.readFile(file_path);
+
+            var obj=xlsx.readFile(`file_path`);
             var sh=obj.SheetNames;
             var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
 
-            var final={};
-            var temp=[];
-            var subs={};
-            for(i=0;dat[i]!=undefined;i++){
+            // console.log(dat);
 
-                //final[dat[i].USN]=temp;
-                for(j=0;dat[i]['sub'+j]!=undefined;j++){
-                subs['subname']=dat[i]['sub'+j];
+            var final={};
+            var temp=new Array();
+
+            for(i=0;dat[i]!=undefined;i++){
+              temp = [] ;
+              for(j=0;dat[i]['sub'+j]!=undefined;j++){
+                subs = new Object() ;
+                subs['name']=dat[i]['Name'];
+                subs['subject']=dat[i]['sub'+j];
+                subs['block']=dat[i]['block'+j];
                 subs['date']=dat[i]['date'+j];
                 subs['time']=dat[i]['time'+j];
                 subs['room']=dat[i]['room'+j];
                 subs['seat']=dat[i]['seatno'+j];
-                temp[j]=subs;
-                subs={};
-                }
-                temp=[];
+                temp.push(subs) ;
+              }
+              final[dat[i]['USN']]=temp;
             }
             admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final)  ;
         }) ;

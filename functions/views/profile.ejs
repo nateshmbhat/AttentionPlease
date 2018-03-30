@@ -22,7 +22,7 @@
     <% include partials/scripts_and_css.ejs %>
     <% include partials/navbar.ejs %>
     <div class="container">
-    
+
 <br><br>
 
 <!--Card-->
@@ -73,7 +73,7 @@
 
         <hr>
 
-    
+
 
     <dl class="form-group mt-5">
         <label for="user_profile_location"><h4>Location Info : </h4></label>
@@ -109,28 +109,28 @@
                     <input type="text" id="inputMDEx" class="form-control">
                     <label for="inputMDEx"><i class="fa fa-facebook"></i> link</label>
                 </div>
-            </div> 
+            </div>
 
         <div class="col">
             <div class="md-form">
                 <input type="text" id="inputMDEx" class="form-control">
                 <label for="inputMDEx"><i class="fa fa-twitter pr-1"></i>  link</label>
             </div>
-        </div>      
+        </div>
 
         <div class="col">
             <div class="md-form">
                 <input type="text" id="inputMDEx" class="form-control">
                 <label for="inputMDEx"><i class="fa fa-linkedin pr-1"></i> link</label>
             </div>
-        </div> 
+        </div>
 
         <div class="col">
             <div class="md-form">
                 <input type="text" id="inputMDEx" class="form-control">
                 <label for="inputMDEx"><i class="fa fa-github pr-1"></i> link</label>
             </div>
-        </div>      
+        </div>
     </div>
 
 <br>
@@ -201,16 +201,16 @@ init_user()
     {
         userinfo = snap.val() ;
         firebase.database().ref(`/Colleges/${userinfo.ccode}/topics/`).once('value' , shot=>{
-            topics = shot.val() ; 
+            topics = shot.val() ;
             console.log(userinfo , topics) ;
             userinfo.name = user_global.displayName  ;
             userinfo.email = user_global.email ;
-            
+
             Object.getOwnPropertyNames(topics).forEach(ele=>{
-                $("#topics_subscribed").append(`<button class="list-group-item waves-effect font-small">${topics[ele].title}</button>`) ; 
+                $("#topics_subscribed").append(`<button class="list-group-item waves-effect font-small">${topics[ele].title}</button>`) ;
             })
-            $("#email").val(userinfo.email) ; 
-            $("#name").val(userinfo.name) ;  
+            $("#email").val(userinfo.email) ;
+            $("#name").val(userinfo.name) ;
             $('#biodata').html(userinfo.biodata) ;
             $('#select_college').val(userinfo.college);
             $('#select_state').val(userinfo.state);
