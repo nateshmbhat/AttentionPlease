@@ -33,7 +33,11 @@ unsetcookie = ()=>Cookies.remove('__session' , {
 window.onload= function()
 {
   //Handle logout
+<<<<<<< HEAD
+  $(".button_logout").on('click' , ()=>{
+=======
   $("#nav_logout").click(()=>{
+>>>>>>> 29b54351923834d703c9469717bc53d90ac67d50
     console.log("Nav button clicked  ! ") ;
     firebase.auth().signOut() ;            
     unsetcookie() ;
