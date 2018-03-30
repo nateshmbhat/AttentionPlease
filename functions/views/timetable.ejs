@@ -120,15 +120,35 @@
 
               </div>
             </div>
-
         </div>
 <script>
 
 
-        function getTimeTable()
+
+    
+function getTimeTableStarter(){
+
+    firebase.auth().onAuthStateChanged(user=>{
+
+        console.log("running auth state changed ! ") ;
+
+        if(!user) {
+            window.location="/"; 
+            return ;
+        } 
+
+        getTimeTable(user.uid) ; 
+    }) ;
+}    
+
+
+
+        function getTimeTable(userid)
         {
-            firebase.ref(`/adminusers/${firebase.auth().getUid()}`).once('value' , adminsnap=>{
+            firebase.database().ref(`/adminusers/${userid}`).once('value' , adminsnap=>{
             userinfo = adminsnap.val() ;
+
+            console.log("userinfo : " , userinfo) ; 
 
             ref = firebase.database().ref(`/Colleges/${userinfo.ccode}/timetables/${$('#select_year').val()}/${$('#select_branch').val()}/${$('#select_section').val()}`)
 
@@ -302,7 +322,7 @@
             }
 
             initialize();
-            getTimeTable() ;
+            getTimeTableStarter() ;
 
             //DEBUG
             // $('#btn_addTimeTable').click() ;

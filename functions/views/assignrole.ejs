@@ -87,38 +87,48 @@
             uid : $(`[data-uid=${cardid}]`)[0].textContent.trim() , 
             desc : $(`[data-descid=${cardid}]`)[0].textContent.trim() ,
         }
-
         return dataobject ; 
     }
 
-    function initialize(){
+
+
+function initialize(){
+    
+    firebase.auth().onAuthStateChanged(user=>{
+        console.log("running auth state changed ! ") ;
+
+        if(!user) {
+            window.location="/"; 
+            return ;
+        }
+
+        adminuid = user.uid ;
+
+    }) ; 
+
         
-        // const adminuid = firebase.auth().user.uid ; 
-        // let userinfo  ; 
+    const adminuid = firebase.auth().getUid() ; 
+    console.log("adminuid : " ,adminuid) ; 
+    let userinfo , name, usn, uid , desc ; 
 
-        // firebase.database().ref(`/adminusers/${adminuid}`).once('value' , snap=>{
+    firebase.database().ref(`/adminusers/${adminuid}`).once('value' , snap=>{
 
-        //     userinfo = snap.val() ; 
+        userinfo = snap.val() ; 
+        console.log(userinfo) ; 
 
-        //     firebase.database().ref(`/Colleges/${userinfo.ccode}/adminrequests`).once('value' , snap=>{
-        //         pushids = snap.val() ; 
+        firebase.database().ref(`/Colleges/${userinfo.ccode}/adminrequests`).once('value' , snap=>{
+            pushids = snap.val() ; 
 
-        //         console.log("admin requests : "  , data); 
+            console.log("admin requests : "  , pushids ); 
 
-        //         Object.getOwnPropertyNames(pushids).forEach(pushid=>{
-        //             name = pushid.name ;
-        //             usn = pushid.usn ; 
-        //             uid = pushid.uid ; 
-        //             desc = pushid.desc ; 
-        //         })
+            let i = 0 ;  //used as a counter and identifier
+            Object.getOwnPropertyNames(pushids).forEach(pushid=>{
+                name = pushid.name ;
+                usn = pushid.usn ; 
+                uid = pushid.uid ; 
+                desc = pushid.desc ; 
 
 
-            let name="natesh"  , uid = "388nklldkf328fd" , usn = "1si16cs066" , desc="fksdlfsdjf sdlkfsdklfkdslfsdlf sdfdjsf klsd fdsfdsf sdflskdf  ds fsdfsdklf ;sdkfsd" ; 
-
-                function addStudentCard(num = 1){
-                    
-                    for(i = 0 ; i <num ; i++)
-                    {
                     let userrequest_panel = ` 
                         <!-- Accordion card -->
                         <div class="card mb-4 userrequest_panel data-carid=${i}">
@@ -157,13 +167,16 @@
                             }
                             else 
                             { console.log("Else part running ! " ) ;  $('.accordian_wrapper').html(userrequest_panel) ; }
-                        }
-                    }        
 
-                addStudentCard(5) ; 
-                // })
-        // });
-    }
+
+                //INCREMENT THE COUNTER ; 
+                    i++  ;
+                // caution !
+            }) ; 
+
+        })
+    })
+}
 
     initialize() ; 
 
