@@ -54,6 +54,11 @@ app.post('/' ,  multer({ dest: os.tmpdir() , limits : { fileSize : 5242880 } }).
         res.status('200').json({error : 'Make sure you have specified all the required details below ! '}) ;
         return ;
     }
+    if(req.body.topic=='')
+    {
+        res.status('200').json({error : 'Make sure you have specified all the required details below ! '}) ;
+        return ;
+    }
     
     let image_file = "", image_link=""  ; 
     
