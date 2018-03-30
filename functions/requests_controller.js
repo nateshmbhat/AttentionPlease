@@ -91,15 +91,46 @@ function Handle_POST(app){
 
            res.status(400) ;
            res.send(error) ;
-
         }
     })
 
 
-
     app.post("/acceptAdminRequest" , urlencodedParser , (req, res)=>{
-        console.log(req.body) ; 
+        if(!utils.validatePostBody(req,  res, ['uid' , 'name' , 'usn']))
+            {res.send('Invalid Post request ! Required Fields not provided .') ; }
+        utils.isAuthenticated(req ,res).then(uid=>{
+            utils.get_userinfo({type_of_user:'admin' , uid:uid}).then(userinfo=>{
+
+                admin.database().ref(`/Colleges/${userinfo.ccode}/adminrequests`).orderByChild('uid').equalTo(req.body.uid).limitToFirst(1).once('value' , getpushiddata=>{
+                    let pushid = Object.getOwnPropertyNames(getpushiddata.val())[0]
+
+                admin.database().ref(`/Colleges/${userinfo.ccode}/adminrequests/${pushid}`).set({}) ; 
+
+                } ) ; 
+
+                admin.database().ref(`/Colleges/${userinfo.ccode}/subadmins/${req.body.uid}/usn`).set(req.body.usn) ; 
+            })
+        })
     }) ;
+
+
+
+    app.post("/rejectAdminRequest" , urlencodedParser , (req, res)=>{
+        if(!utils.validatePostBody(req,  res, ['uid' , 'name' , 'usn']))
+            {res.send('Invalid Post request ! Required Fields not provided .') ; }
+            utils.isAuthenticated(req ,res).then(uid=>{
+                utils.get_userinfo({type_of_user:'admin' , uid:uid}).then(userinfo=>{
+
+                admin.database().ref(`/Colleges/${userinfo.ccode}/adminrequests`).orderByChild('uid').equalTo(req.body.uid).limitToFirst(1).once('value' , getpushiddata=>{
+                    let pushid = Object.getOwnPropertyNames(getpushiddata.val())[0]
+
+                admin.database().ref(`/Colleges/${userinfo.ccode}/adminrequests/${pushid}`).set({}) ; 
+
+                } ) ; 
+            }) ;
+        });
+    }) ;
+
 
 
 
@@ -378,12 +409,11 @@ app.post('/createtopic'   , urlencodedParser , (req, res)=>{
 function Handle_GET(app){
 
     app.get('/allotseats' , (req ,res)=>{
-      res.render('allotseats.ejs') ;
+        utils.isAuthenticated(req , res).then(uid=>res.render('allotseats.ejs' ) ).catch(err=>res.render('login.ejs')) ;
     }) ;
 
     app.get('/results' , (req,res)=>{
-        //Todo add authentication
-      res.render('results.ejs') ;
+        utils.isAuthenticated(req ,res).then(uid=>{res.render('results.ejs') ; }).catch(err=>res.render('login.ejs' ) ); 
     }) ;
 
     app.get('/' , (req , res)=>{
@@ -425,16 +455,15 @@ function Handle_GET(app){
         utils.isAuthenticated(req, res)
         .then(uid=>{ console.log("authenticated : ", uid) ;   res.render('dashboard.ejs')  ;
             utils.get_userinfo({uid : uid}).then(userinfo=>console.log(userinfo) ) ;
-        } )
+        })
         .catch(error=>res.render('login.ejs'))  ;
     })
 
     app.get('/displayprofile' , (req ,res)=>{
-        // utils.isAuthenticated(req , res)
-        // .then(uid=>{console.log("authenticated : " , uid) ; res.render('displayprofile.ejs') ; })
-        // .catch(error=>{res.render('login.ejs') ; })
+        utils.isAuthenticated(req , res)
+        .then(uid=>{console.log("authenticated : " , uid) ; res.render('displayprofile.ejs') ; })
+        .catch(error=>{res.render('login.ejs') ; })
 
-        res.render('displayprofile.ejs') ;
     })
 
 

@@ -54,7 +54,7 @@
 
 
 <!-- Card -->
-<div class="card card-image" style="background-image: url(https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20%2814%29.jpg);">
+<div class="card card-image" style="background-image: url(https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20%2814%29.jpg);bgproperty:fixed;">
 
     <!-- Content -->
     <div class="rgba-black-strong py-5 px-4">
@@ -70,14 +70,12 @@
         </div>
     </div>
     <!-- Content -->
+
 </div>
 <!-- Card -->
 
 
-
     <script>
-
-
 
     function getDataObject(cardid)
     {
@@ -99,7 +97,7 @@ function initializeStarter(){
             window.location="/"; 
             return ;
         }
-        
+        console.log(user.uid) ; 
         initialize(user.uid) ; 
     }) ; 
 }
@@ -121,11 +119,20 @@ function initialize(adminuid= undefined){
         console.log(userinfo) ; 
 
         firebase.database().ref(`/Colleges/${userinfo.ccode}/adminrequests`).once('value' , snap=>{
+            console.log('snap' , snap) ; 
             pushids = snap.val() ; 
+
+            if(!pushids){
+                console.log("No requests for now ! ") ;             
+                return ; 
+            }
+
+
 
             console.log("admin requests : "  , pushids ); 
 
             let i = 0 ;  //used as a counter and identifier
+
             Object.getOwnPropertyNames(pushids).forEach(pushid=>{
 
                 name = pushids[pushid].name ;
@@ -133,10 +140,9 @@ function initialize(adminuid= undefined){
                 uid = pushids[pushid].uid ; 
                 desc = pushids[pushid].desc ; 
 
-
                 let userrequest_panel = ` 
                     <!-- Accordion card -->
-                    <div class="card mb-4 userrequest_panel data-carid=${i}">
+                    <div class="card mb-4 userrequest_panel" data-cardid=${i}>
                         <!-- Card header -->
                         <div class="card-header p-0 z-depth-1" role="tab" id="heading30">
                             <a data-toggle="collapse" data-parent="#accordionEx5" href="#collapse30" aria-expanded="true" aria-controls="collapse30">
@@ -145,7 +151,7 @@ function initialize(adminuid= undefined){
                                     ${name}
                                 </h4>
                                 <h4 data-usnid=${i} class="text-uppercase white-text mb-0 py-3 mt-1 mr-4 justify-content-right" style="display:inline;align:right;float:right;">
-                                    ${usn}
+                                        ${usn}
                                 </h4>
                             </a>
                         </div>
@@ -165,7 +171,7 @@ function initialize(adminuid= undefined){
                     ` ; 
 
 
-                if($('.accordian_wrapper .userrequest_panel:last').html())
+                    if($('.accordian_wrapper .userrequest_panel:last').html())
                     {
                         $('.accordian_wrapper .userrequest_panel:last').after(userrequest_panel) ; 
                     }
@@ -174,12 +180,9 @@ function initialize(adminuid= undefined){
                          $('.accordian_wrapper').html(userrequest_panel) ; 
                     }
 
-
                 //INCREMENT THE COUNTER ; 
                     i++  ;
                 // caution !
-
-                
             }) ; 
             
             EventBinders() ; 
@@ -187,8 +190,9 @@ function initialize(adminuid= undefined){
     })
 }
 
-function EventBinders(){
 
+
+function EventBinders(){
     //bind all the events  : 
     $('button.btn_accept').on('click' , event=>{
         console.log('this' , event.target) ; 
@@ -202,12 +206,16 @@ function EventBinders(){
                 url : "/acceptAdminRequest" , 
                 data : getDataObject(cardid) , 
                 success:resp=>{
-                    console.log(resp) ; 
-                } , 
+                    console.log("response : " , resp) ; 
+               } , 
                 error: err=>{
                     console.log(err) ;
                 }
-            }) ; 
+            }) ;
+        
+        $(`[data-usnid=${cardid}]`).html('ACCEPTED') ; 
+        setTimeout(()=> $(`[data-cardid=${cardid}]`).fadeOut() , 300) ; 
+         
     })
 
 
@@ -216,9 +224,24 @@ function EventBinders(){
         console.log($(event.target).attr('data-btnid')) ; 
 
         let cardid  = $(event.target).attr('data-btnid') ; 
-
         
         console.log(  getDataObject(cardid)) ; 
+
+        $.ajax({
+                type : "post" , 
+                method:"post", 
+                url : "/rejectAdminRequest" , 
+                data : getDataObject(cardid) , 
+                success:resp=>{
+                    console.log("response : " , resp) ; 
+               } , 
+                error: err=>{
+                    console.log(err) ;
+                }
+            }) ;
+        
+        $(`[data-usnid=${cardid}]`).html('REJECTED ! ') ; 
+        setTimeout(()=> $(`[data-cardid=${cardid}]`).fadeOut() , 300) ; 
 
     })
 }    
