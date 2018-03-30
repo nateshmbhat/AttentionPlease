@@ -167,14 +167,9 @@ $("form").on('submit' , e=>{
 
 
 
-<<<<<<< HEAD
-    postdata.append('image_file',  document.getElementById('file_image').files[0] ) ;
-console.log(postdata.entries()) ;
-=======
     
     postdata.append('image_file',  document.getElementById('file_image').files[0] ) ; 
     console.log(postdata.entries()) ; 
->>>>>>> 3c700ce3827865f1712929765840d5667cbe481f
 
     $.ajax({url : '/sendnotification' ,
             type: "post" ,
