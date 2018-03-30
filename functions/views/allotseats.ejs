@@ -6,6 +6,28 @@
     <title>Seat Allotment</title>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/styles.css">
+
+    <style type="text/css">
+        .accordion.accordion-5 .card {
+  border: 0;
+  background-color: transparent; }
+  .accordion.accordion-5 .card .card-header {
+    border: 0;
+    background-color: #f44336;
+    -webkit-transition: .3s;
+    transition: .3s; }
+    .accordion.accordion-5 .card .card-header:hover {
+      -webkit-transition: .3s;
+      transition: .3s;
+      background-color: #455a64; }
+    .accordion.accordion-5 .card .card-header .fa {
+      background-color: #fff;
+      border-top-left-radius: 3px; }
+  .accordion.accordion-5 .card .card-body {
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px; }
+    </style>
+
 </head>
 <body background="assets/images/bg1.jpg">
 
@@ -20,19 +42,19 @@
 
     <div class="container">
     <br>
-    <h1 class="text-decoration">Seat Allotment</h1>
-    <br>Add a spreadsheet file containing the seat allotment details...example format will soon follow
-    <br><br>
+    <h1 class="text-decoration animated zoomIn text-center">Seat Allotment</h1>
+    <br><h4 class="text-decoration text-center">Add a spreadsheet file containing the seat allotment details...example format will soon follow</h4>
+    <br><center>
     <div class="view overlay">
       <form method="post" action="/putseats" enctype="multipart/form-data"
         <div class="image-upload">
             <label for="file-input">
-                <h4  class="btn btn-info">Browse Spreadsheet File</h4>
+                <h4  class="btn btn-info btn-md align-center">Browse Spreadsheet File</h4>
             </label>
             <input id="file-input"  type="file" name="seat_file" accept=".xml,.xlsx,.ods" hidden="true"/>
         </div>
         <label for="submit_seats">
-            <h4  class="btn btn-info btn-sm">Submit</h4>
+            <h4  class="btn btn-info btn-md">Submit</h4>
         </label>
         <% if(locals.error) {%>
             <div class="animated shake rounded alert alert-danger"   role="alert" id="erroralert"><h2 style="color:black;">Error : <%=error%></h2></div>
