@@ -91,23 +91,27 @@
     }
 
 
-
-function initialize(){
-    
+function initializeStarter(){
     firebase.auth().onAuthStateChanged(user=>{
         console.log("running auth state changed ! ") ;
-
+    
         if(!user) {
             window.location="/"; 
             return ;
         }
-
-        adminuid = user.uid ;
-
-    }) ; 
-
         
-    const adminuid = firebase.auth().getUid() ; 
+        initialize(user.uid) ; 
+    }) ; 
+}
+
+
+
+function initialize(adminuid= undefined){
+    
+    if(!adminuid){
+        window.location = '/' ; 
+    }
+
     console.log("adminuid : " ,adminuid) ; 
     let userinfo , name, usn, uid , desc ; 
 
@@ -123,10 +127,13 @@ function initialize(){
 
             let i = 0 ;  //used as a counter and identifier
             Object.getOwnPropertyNames(pushids).forEach(pushid=>{
-                name = pushid.name ;
-                usn = pushid.usn ; 
-                uid = pushid.uid ; 
-                desc = pushid.desc ; 
+
+                console.log(`pushid-${i}`) ;
+
+                name = pushids[pushid].name ;
+                usn = pushids[pushid].usn ; 
+                uid = pushids[pushid].uid ; 
+                desc = pushids[pushid].desc ; 
 
 
                     let userrequest_panel = ` 
@@ -172,14 +179,16 @@ function initialize(){
                 //INCREMENT THE COUNTER ; 
                     i++  ;
                 // caution !
-            }) ; 
 
+                
+            }) ; 
+            
+            EventBinders() ; 
         })
     })
 }
 
-    initialize() ; 
-
+function EventBinders(){
 
     //bind all the events  : 
     $('button.btn_accept').on('click' , event=>{
@@ -196,9 +205,12 @@ function initialize(){
         let cardid  = $(event.target).attr('data-btnid') ; 
 
         console.log(  getDataObject(cardid)) ; 
-        
- 
+
     })
+}    
+
+
+    initializeStarter() ; 
 
     </script>
 </body>
