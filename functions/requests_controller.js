@@ -138,12 +138,7 @@ function Handle_POST(app){
 
 
     app.post('/putseats' , multer({dest : os.tmpdir() } ).single('seat_file') , (req , res)=>{
-<<<<<<< HEAD
-
-        console.log('req.body' , req.body) ; 
-=======
         console.log('req.body' , req.body) ;
->>>>>>> 53698e35eaef7a4bdacca29ac42a7844f5eafd9d
         console.log('req.file' , req.file) ;
 
         file_path = req.file.path ;
