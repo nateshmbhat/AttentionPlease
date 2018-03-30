@@ -218,7 +218,7 @@ function Handle_POST(app){
         district = req.body.district,
         college = req.body.college;
 
-        admin.database().ref(`/Colleges/${get_college_code(state , district , college)}/admin/`).once('value', snap => {
+        admin.database().ref(`/Colleges/${utils.get_college_code(state , district , college)}/admin/`).once('value', snap => {
             admininfo = snap.val();
             if (!admininfo) {
                     throw Error('Warning ! An admin already exists for the specified college. This incident will be reported.'
@@ -403,7 +403,7 @@ function Handle_GET(app){
         console.log("handling dashboard get ...") ;
         utils.isAuthenticated(req, res)
         .then(uid=>{ console.log("authenticated : ", uid) ;   res.render('dashboard.ejs')  ;
-            utils.get_userinfo({uid : uid}) ;
+            utils.get_userinfo({uid : uid}).then(userinfo=>console.log(userinfo) ) ;
         } )
         .catch(error=>res.render('login.ejs'))  ;
     })
