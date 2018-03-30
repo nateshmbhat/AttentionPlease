@@ -97,6 +97,12 @@ function Handle_POST(app){
 
 
 
+    app.post("/acceptAdminRequest" , urlencodedParser , (req, res)=>{
+        console.log(req.body) ; 
+    }) ;
+
+
+
     app.post('/updateprofile', urlencodedParser ,(req , res)=>{
         console.log(req.body) ;
         utils.isAuthenticated(req , res)
@@ -108,9 +114,8 @@ function Handle_POST(app){
             admin.auth().updateUser(uid , {
                 displayName : req.body.name ,
                 email : req.body.email ,
-            })
+            }) 
             .then(user=>{
-
                 console.log('request body is ') ; console.log(req.body) ;
                 let ref = admin.database().ref('/adminusers/' + user.uid) ;
                 ref.update({
