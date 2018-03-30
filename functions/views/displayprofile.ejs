@@ -205,17 +205,6 @@
    <script>
 
    let user_global ;
-
-   function getformdata(){
-       form = {} ;
-       $('form').serializeArray().forEach(ele=>{
-           form[ele.name] = ele.value ;
-       })
-       return form ;
-   }
-
-
-
    function init_user(){
        return new Promise((resolve , reject)=>{
            user_global = firebase.auth().currentUser ;
@@ -237,24 +226,24 @@
    init_user()
    .then(user=>{
        ref = firebase.database().ref('/adminusers/' + user_global.uid) ;
+       console.log(ref);
+
        ref.once('value', snap=>
        {
            userinfo = snap.val() ;
-           firebase.database().ref(`/Colleges/${userinfo.ccode}/topics/`).once('value' , shot=>{
-               topics = shot.val() ;
-               console.log(userinfo , topics) ;
-               userinfo.name = user_global.displayName  ;
-               userinfo.email = user_global.email ;
+           //console.log(userinfo , topics) ;
+           userinfo.name = user_global.displayName  ;
+           userinfo.email = user_global.email ;
 
-               Object.getOwnPropertyNames(topics).forEach(ele=>{
-                   $("#topics_subscribed").append(`<button class="list-group-item waves-effect font-small">${topics[ele].title}</button>`) ;
-               })
+           Object.getOwnPropertyNames(topics).forEach(ele=>{
+               $("#topics_subscribed").append(`<button class="list-group-item waves-effect font-small">${topics[ele].title}</button>`) ;
+           })
                $("#email").val(userinfo.email) ;
                $("#name").val(userinfo.name) ;
                $('#biodata').html(userinfo.biodata) ;
-               $('#college').val('COLLEGE : '+userinfo.college);
-               $('#state').val('STATE'+userinfo.state);
-               $('#district').val('DISTRICT'+userinfo.district) ;
+               $('h3#college').html('COLLEGE : jammu'+userinfo.college);
+               $('h3#state').html('STATE'+userinfo.state);
+               $('h3#district').html('DISTRICT'+userinfo.district) ;
            }) ;
        })
    })
