@@ -315,14 +315,14 @@ app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (r
           console.log(cur_year);
 
           var final={};
-          var temp=new Array;
+          var temp=new Array();
 
           for(i=0;dat[i]!=undefined;i++){
               for(j=0;j<headings.length;j++){
                   temp[j]=dat[i][headings[j]];
               }
               final[dat[i][headings[0]]]=temp;
-              temp=new Array;
+              temp=new Array();
           }
           console.log(final);
           let ref=admin.database().ref('/Colleges/'+userinfo.ccode+'/results/'+cur_year+'/'+semester+'/'+branch+'/data');
@@ -391,7 +391,7 @@ function Handle_GET(app){
     })
 
     app.get('/createtopic' , (req , res)=>{
-        utils.isAuthenticated(req , res).then(uid=>res.render('createtopic.ejs')).catch(err=>res.render('login.ejs')) ;
+        utils.isAuthenticated(req , res).then(uid=>res.render('createtopic.ejs' ) ).catch(err=>res.render('login.ejs')) ;
     })
 
     app.get('/profile' , (req , res)=>{
