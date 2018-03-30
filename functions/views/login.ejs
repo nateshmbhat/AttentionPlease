@@ -5,23 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Login</title>
 
-<!-- JQUERY AND BOOTSTRAP --> 
+<!-- JQUERY AND BOOTSTRAP -->
 
 <% include partials/scripts_and_css.ejs %>
 
         <style>
-        
+
 
         h1{
             font-size:500% ;
             font-family: Georgia, 'Times New Roman', Times, serif;
-            text-align: center ; 
+            text-align: center ;
             padding:10px 0 ;
         }
 
         label{
-            font-weight: bold ; 
-            font-family: caladea , Georgia, 'Times New Roman', Times, serif ; 
+            font-weight: bold ;
+            font-family: caladea , Georgia, 'Times New Roman', Times, serif ;
             font-size:200% ;
         }
     </style>
@@ -36,12 +36,12 @@
     <h1>Login</h1>
    <div class="container text-center">
        <form method="post"  autocomplete="on">
-               
+
                 <div class="form-group">
                     <label class="col-4">Email : </label>
                     <input type="email" name="email" autocomplete="email" class="col-3" placeholder="email@example.com " required />
                 </div>
-                
+
             <div class="form-group">
                 <label class="col-4">Password : </label>
                 <input class="col-3" type="password" autocomplete="current-password" minlength="6" name="password" placeholder="Enter Password : " required/>
@@ -67,7 +67,7 @@
 
 
         <div class="text-center">
-            <a href="/register" class="font-bold" style="color:black">New User ? Register here</a>
+            <a href="/" class="font-bold" style="color:black">New User ? Register here</a>
             <br>
             <a  href="#" class="font-bold" style="color:black">Forgot Password !</a>
         </div>
@@ -75,20 +75,20 @@
     </div>
 
  <% include partials/footer.ejs %>
-    
+
 <script>
 
 $("#div_footer").css('position' , 'absolute') ;
 
-    
+
 
 
 
     //SUBMIT HANDLER
     $("form").bind("submit" , function(event){
         console.log("running submit handler ! ") ;
-        formdata = {} ; 
-        $("form").serializeArray().forEach(ele=>formdata[ele.name]=ele.value) ; 
+        formdata = {} ;
+        $("form").serializeArray().forEach(ele=>formdata[ele.name]=ele.value) ;
 
         firebase.auth().signInWithEmailAndPassword(formdata.email , formdata.password)
         .then(user=>{
@@ -96,19 +96,19 @@ $("#div_footer").css('position' , 'absolute') ;
                 console.log("running auth state changed ! ") ;
 
                 if(!user) {
-                    console.log("User logged out !") ; 
-                    return ; 
-                }   
+                    console.log("User logged out !") ;
+                    return ;
+                }
 
                 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION) ;
-                //user is logged in 
+                //user is logged in
                 setcookie(()=>{
                     setInterval(setcookie , 3500) ;
                     window.location = "dashboard"  ;
                 })
 
                 })
-        })        
+        })
         .catch(error=>{
             $("#erroralert").replaceWith($("#erroralert").clone());
             $("#erroralert").html(`<h5 class="animated  p-2">${error.message}</h5>`) ;
@@ -119,7 +119,7 @@ $("#div_footer").css('position' , 'absolute') ;
     })
 
 
-    
+
 </script>
 </body>
 </html>
