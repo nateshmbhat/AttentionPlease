@@ -220,9 +220,14 @@ function Handle_POST(app){
 
         admin.database().ref(`/Colleges/${utils.get_college_code(state , district , college)}/admin/`).once('value', snap => {
             admininfo = snap.val();
-            if (!admininfo) {
-                    throw Error('Warning ! An admin already exists for the specified college. This incident will be reported.'
-                );
+            try{
+                if (admininfo) {
+                        throw Error('Warning ! An admin already exists for the specified college. This incident will be reported.'
+                    );
+                }
+            }
+            catch(error){
+                res.render('index.ejs' ,{error : error.message } ) ; 
             }
         }) ;
 
