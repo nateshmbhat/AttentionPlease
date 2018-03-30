@@ -191,7 +191,7 @@ function Handle_POST(app){
         flag_valid = 0 ;
     try{
         if(!utils.validatePostBody(req , res , ['state' , 'district' , 'college' , 'email' , 'password' , 'name'  , 'phone']))
-        {throw Error("Invalid Post request ! ") ;}
+        {res.render('index.ejs' , {error : "Invalid Post request ! " }) ;}
 
         if(Object.getOwnPropertyNames(state_dist_colleges).indexOf(req.body.state)>=0){
             if(Object.getOwnPropertyNames(state_dist_colleges[req.body.state]).indexOf(req.body.district)>=0)
@@ -201,7 +201,7 @@ function Handle_POST(app){
                     flag_valid = 1 ;
                 }
                 else{
-                    throw Error("Invalid College Entry . Please make sure that you have selected one of the colleges in the provided list itself.") ;
+                    res.render('index.ejs' , {error : "Invalid College Entry . Please make sure that you have selected one of the colleges in the provided list itself." }) ;
                 }
             }
         }
@@ -209,7 +209,7 @@ function Handle_POST(app){
         if(!flag_valid)
         {
             //CANCEL registration by sending the error !
-            throw Error("Invalid Location Details ! ") ;
+            res.render('index.ejs' , {error : "Invalid Location Details ! " }) ;
         }
 
 
@@ -269,7 +269,6 @@ function Handle_POST(app){
             console.log(error)
         }) ;
     }
-
     catch(error)
     { /// TODO : Send the error alert to the client with the error
         res.status(400) ;

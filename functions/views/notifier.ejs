@@ -26,19 +26,6 @@
 
     <% include partials/scripts_and_css.ejs %>
     <% include partials/navbar.ejs %>
-<<<<<<< HEAD
-   
-    <script src="/assets/js/notifier.js"></script>       
-    
-    <div class="container">
-        <h2 class="animated zoomIn text-decoration text-center font-weight-normal" style="font-size: 60px">Send Notification</h2>
-            
-            <div class="jumbotron container z-depth-1" style="background-color: white">
-                
-                <div class="row">
-                    <h3 class="text-decoration container col-3">College Name : </h3>
-                    <h4 id="collegename" class="text-decoration col-9"></h4>
-=======
 
     <script src="/assets/js/notifier.js"></script>
 
@@ -57,7 +44,6 @@
                     <i class="fa fa-envelope prefix"></i>
                     <input class="col-6" id="title" type="text" maxlength="30" minlength="3" name="title" required/>
                     <label for="title">Title : </label>
->>>>>>> bc542e24c01386a800f087756026df6b82a4fdad
                 </div>
                 <br>
                 <div class="row">
@@ -111,15 +97,6 @@
                             </div>
                         </div>
                     </div>
-<<<<<<< HEAD
-        
-                <div class="form-group"> </div>
-                <!-- circle icon  -->
-                <div class="text-center text-align-center">
-                    <div id="loader_circle" class="preloader-wrapper big active" hidden> <div class="spinner-layer spinner-blue"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-red"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-yellow"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-green"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="   circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> </div>
-                </div>    
-            
-=======
                 </div>
 
             </div>
@@ -133,7 +110,6 @@
                 <div id="loader_circle" class="preloader-wrapper big active" hidden> <div class="spinner-layer spinner-blue"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-red"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-yellow"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-green"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> </div>
             </div>
 
->>>>>>> bc542e24c01386a800f087756026df6b82a4fdad
             <div class="animated shake hoverable rounded alert alert-danger"  hidden role="alert" id="erroralert"><h2 style="color:black;"></h2></div>
 
             <div class="animated zoomIn hoverable rounded alert alert-success " hidden role="alert" id="successalert"><h2 style="color:black"></h2></div>
@@ -144,13 +120,10 @@
         </div>
    </div>
 
-<<<<<<< HEAD
-=======
         </form>
 
     </div>
 
->>>>>>> bc542e24c01386a800f087756026df6b82a4fdad
     <br><br><br><br><br>
   <% include partials/footer.ejs %>
    <script>$("#div_footer").css('position' , 'fixed') ;</script>
@@ -212,14 +185,9 @@ $("form").on('submit' , e=>{
 
 
 
-<<<<<<< HEAD
-    postdata.append('image_file',  document.getElementById('file_image').files[0] ) ;
-console.log(postdata.entries()) ;
-=======
     
     postdata.append('image_file',  document.getElementById('file_image').files[0] ) ; 
     console.log(postdata.entries()) ; 
->>>>>>> 3c700ce3827865f1712929765840d5667cbe481f
 
     $.ajax({url : '/sendnotification' ,
             type: "post" ,
