@@ -140,48 +140,49 @@ function Handle_POST(app){
     app.post('/putseats' , multer({dest : os.tmpdir() } ).single('seat_file') , (req , res)=>{
         console.log('req.body' , req.body) ;
         console.log('req.file' , req.file) ;
-
+        var xlsx=require('xlsx');
         file_path = req.file.path ;
         file_name = req.file.name ;
 
-        res.status(200).render('allotseats.ejs' , {success : "Successfully got the file for furthur processing "}) ;
+        //res.status(200).render('allotseats.ejs' , {success : "Successfully got the file for furthur processing "}) ;
+        utils.isAuthenticated(req,res)
+        .then(uid=>{
+          admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
+              userinfo = snap.val() ;
 
-        admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
-            userinfo = snap.val() ;
 
+              var obj=xlsx.readFile(file_path);
+              var sh=obj.SheetNames;
+              var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
 
-            var obj=xlsx.readFile(`file_path`);
-            var sh=obj.SheetNames;
-            var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
+              // console.log(dat);
 
-            // console.log(dat);
+              var final={};
+              var temp=new Array();
 
-            var final={};
-            var temp=new Array();
-
-            for(i=0;dat[i]!=undefined;i++){
-              temp = [] ;
-              for(j=0;dat[i]['sub'+j]!=undefined;j++){
-                subs = new Object() ;
-                subs['name']=dat[i]['Name'];
-                subs['subject']=dat[i]['sub'+j];
-                subs['block']=dat[i]['block'+j];
-                subs['date']=dat[i]['date'+j];
-                subs['time']=dat[i]['time'+j];
-                subs['room']=dat[i]['room'+j];
-                subs['seat']=dat[i]['seatno'+j];
-                temp.push(subs) ;
+              for(i=0;dat[i]!=undefined;i++){
+                temp = [] ;
+                for(j=0;dat[i]['sub'+j]!=undefined;j++){
+                  subs = new Object() ;
+                  subs['name']=dat[i]['Name'];
+                  subs['subject']=dat[i]['sub'+j];
+                  subs['block']=dat[i]['block'+j];
+                  subs['date']=dat[i]['date'+j];
+                  subs['time']=dat[i]['time'+j];
+                  subs['room']=dat[i]['room'+j];
+                  subs['seat']=dat[i]['seatno'+j];
+                  temp.push(subs) ;
+                }
+                final[dat[i]['USN']]=temp;
               }
-              final[dat[i]['USN']]=temp;
-            }
-            admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final)  ;
-        }) ;
-
+              admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final)  ;
+          }) ;
     if(!req.file)
     {
         res.status(403).send("File not uploaded . Make sure that a valid spreadsheet file is selected ! ");
     }
     });
+  })
 
 
 
@@ -430,7 +431,7 @@ function Handle_GET(app){
         // .then(uid=>{console.log("authenticated : " , uid) ; res.render('displayprofile.ejs') ; })
         // .catch(error=>{res.render('login.ejs') ; })
 
-        res.render('displayprofile.ejs') ; 
+        res.render('displayprofile.ejs') ;
     })
 
 
