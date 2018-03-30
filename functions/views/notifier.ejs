@@ -5,27 +5,28 @@
     <title>Notifier</title>
 
     <style>
-         
+
         h1{
             font-size:500% !important ;
-            font-family: raleway , georgia, 'times new roman', times, serif !important ; 
-            text-align: center ; 
+            font-family: raleway , georgia, 'times new roman', times, serif !important ;
+            text-align: center ;
             padding:10px 0 ;
-        } 
+        }
 
         h3{
             color:black !important;
-            font-family:raleway , caladea , lora  , cambria  !important; 
+            font-family:raleway , caladea , lora  , cambria  !important;
         }
-        
+
     </style>
 </head>
 
 <body background="assets/images/bg1.jpg">
     <div class="gtco-loader"></div>
-    
+
     <% include partials/scripts_and_css.ejs %>
     <% include partials/navbar.ejs %>
+<<<<<<< HEAD
    
     <script src="/assets/js/notifier.js"></script>       
     
@@ -37,6 +38,26 @@
                 <div class="row">
                     <h3 class="text-decoration container col-3">College Name : </h3>
                     <h4 id="collegename" class="text-decoration col-9"></h4>
+=======
+
+    <script src="/assets/js/notifier.js"></script>
+
+    <h1 class="animated flipInX ">Notify Them </h1>
+    <div class="jumbotron container z-depth-1" style="background-color: white">
+
+        <h3 id="collegename" class="text-center" style="font-family: raleway"></h3>
+        <div id="location-details">
+        </div>
+
+        <form method="post" action="/sendnotification" encType="multipart/form-data">
+
+            <div id="dynamic"> </div>
+            <div class="form-group">
+                <div class="md-form">
+                    <i class="fa fa-envelope prefix"></i>
+                    <input class="col-6" id="title" type="text" maxlength="30" minlength="3" name="title" required/>
+                    <label for="title">Title : </label>
+>>>>>>> bc542e24c01386a800f087756026df6b82a4fdad
                 </div>
                 <br>
                 <div class="row">
@@ -90,6 +111,7 @@
                             </div>
                         </div>
                     </div>
+<<<<<<< HEAD
         
                 <div class="form-group"> </div>
                 <!-- circle icon  -->
@@ -97,6 +119,21 @@
                     <div id="loader_circle" class="preloader-wrapper big active" hidden> <div class="spinner-layer spinner-blue"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-red"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-yellow"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-green"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="   circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> </div>
                 </div>    
             
+=======
+                </div>
+
+            </div>
+
+
+            <div class="form-group"> </div>
+
+
+            <!-- circle icon  -->
+            <div class="text-center text-align-center">
+                <div id="loader_circle" class="preloader-wrapper big active" hidden> <div class="spinner-layer spinner-blue"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-red"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-yellow"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-green"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> </div>
+            </div>
+
+>>>>>>> bc542e24c01386a800f087756026df6b82a4fdad
             <div class="animated shake hoverable rounded alert alert-danger"  hidden role="alert" id="erroralert"><h2 style="color:black;"></h2></div>
 
             <div class="animated zoomIn hoverable rounded alert alert-success " hidden role="alert" id="successalert"><h2 style="color:black"></h2></div>
@@ -107,22 +144,29 @@
         </div>
    </div>
 
+<<<<<<< HEAD
+=======
+        </form>
+
+    </div>
+
+>>>>>>> bc542e24c01386a800f087756026df6b82a4fdad
     <br><br><br><br><br>
   <% include partials/footer.ejs %>
    <script>$("#div_footer").css('position' , 'fixed') ;</script>
-    
+
 </body>
 
 
 <script>
 
-    function initialize() { 
+    function initialize() {
         $("#file_image").change(function() {
             readURL(this);
         });
      }
 
-     initialize() ; 
+     initialize() ;
 
 
     function readURL(input) {
@@ -138,15 +182,15 @@
         }
     }
 
-    
+
     function fadeElementAfter(querystring , time=3000 ){
        setTimeout(()=>{
-           $("button[type=submit]").attr("disabled" , true) ; 
+           $("button[type=submit]").attr("disabled" , true) ;
            $(querystring).fadeOut(()=>{
-                $(querystring).attr("hidden" , true) ; 
-                $(querystring).show() ; 
-           $("button[type=submit]").removeAttr("disabled") ; 
-           }) ; 
+                $(querystring).attr("hidden" , true) ;
+                $(querystring).show() ;
+           $("button[type=submit]").removeAttr("disabled") ;
+           }) ;
        } , time ) ;
     }
 
@@ -154,63 +198,69 @@
 $("form").on('submit' , e=>{
     e.preventDefault() ;
     $('button[type=submit]').hide() ;
-    $("#loader_circle").removeAttr("hidden") ; 
+    $("#loader_circle").removeAttr("hidden") ;
 
-    postdata = new FormData() ; 
+    postdata = new FormData() ;
 
-    $('form').serializeArray().map(ele=> { if(ele.name!='topic') postdata.append(ele.name , ele.value) }) ; 
-    
-    topicslist = [] ; 
+    $('form').serializeArray().map(ele=> { if(ele.name!='topic') postdata.append(ele.name , ele.value) }) ;
+
+    topicslist = [] ;
     $("input:checkbox[name=topic]:checked").each(function(){
         topicslist.push($(this).val());
     });
-    postdata.append('topic' , topicslist) ; 
+    postdata.append('topic' , topicslist) ;
 
 
+
+<<<<<<< HEAD
+    postdata.append('image_file',  document.getElementById('file_image').files[0] ) ;
+console.log(postdata.entries()) ;
+=======
     
     postdata.append('image_file',  document.getElementById('file_image').files[0] ) ; 
-console.log(postdata.entries()) ; 
+    console.log(postdata.entries()) ; 
+>>>>>>> 3c700ce3827865f1712929765840d5667cbe481f
 
-    $.ajax({url : '/sendnotification' , 
-            type: "post" , 
-            method:'post' , 
-            cache: false , 
-            contentType:false , 
+    $.ajax({url : '/sendnotification' ,
+            type: "post" ,
+            method:'post' ,
+            cache: false ,
+            contentType:false ,
             data : postdata ,
-            processData:false, 
+            processData:false,
             success:  (data , status , jqxhr_obj)=>{
             if(data.success)
             {
                 console.log('success') ;
                 $('#successalert').html(`<h3 class="text-center">${data.success}</h3>`)
-                $('#successalert').replaceWith($("#successalert").clone().removeAttr('hidden')) ; 
-                document.querySelector("form").reset() ; 
-                fadeElementAfter("#successalert" , 5000) ; 
+                $('#successalert').replaceWith($("#successalert").clone().removeAttr('hidden')) ;
+                document.querySelector("form").reset() ;
+                fadeElementAfter("#successalert" , 5000) ;
             }
             else{
-                console.log('error') ; 
+                console.log('error') ;
                 $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
-                $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden')) ; 
-                fadeElementAfter("#erroralert" , 4000) ; 
+                $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden')) ;
+                fadeElementAfter("#erroralert" , 4000) ;
             }
 
-            $('button[type=submit]').show() ; 
+            $('button[type=submit]').show() ;
 
-            $("#loader_circle").attr('hidden' , true) ; 
-        } , 
+            $("#loader_circle").attr('hidden' , true) ;
+        } ,
 
 
         error : (jqXHR, textStatus, errorThrown )=>{
-                console.log(jqXHR , textStatus , errorThrown) ; 
+                console.log(jqXHR , textStatus , errorThrown) ;
                 $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
-                $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden')) ; 
-                fadeElementAfter("#erroralert" , 4000) ; 
+                $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden')) ;
+                fadeElementAfter("#erroralert" , 4000) ;
         }
-        
-    }) ; 
+
+    }) ;
 
 
-    
+
 })
 
 
