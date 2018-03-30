@@ -144,7 +144,7 @@ function Handle_POST(app){
         file_path = req.file.path ;
         file_name = req.file.name ;
 
-        res.status(200).render('/allotseats.ejs' , {success : "Successfully got the file for furthur processing "}) ;
+        res.status(200).render('allotseats.ejs' , {success : "Successfully got the file for furthur processing "}) ;
 
         admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
             userinfo = snap.val() ;
