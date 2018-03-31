@@ -15,6 +15,9 @@
     <% include partials/navbar.ejs %>
 <div class="container">
     <h1 class="text-decoration animated zoomIn text-center">Placement Portal</h1>
+    <div class="animated shake rounded alert alert-danger"   role="alert" id="erroralert" hidden><h2 style="color:black;">All input fields must be specified!</h2></div>
+      <div class="animated zoomIn rounded alert alert-success" role="alert" id="successalert" hidden><h2 style="color:black">Placement specifications uploaded!</h2></div>
+
 
 
     <!-- Card -->
@@ -25,12 +28,14 @@
             <h2 class="card-title pt-2"><strong>Set a placement specification </strong></h2>
             <br>
             <div class="md-form form-lg">
-                <input type="text" id="inputMDEx-comp" class="form-control form-control-lg">
-                <label for="inputLGEx" >Name Of Company</label>
+
+
+                <input type="text" id="comp" class="form-control form-control-lg" style="font-color : white">
+                <label for="comp" >Name Of Company</label>
             </div>
             <div class="md-form form-lg">
-                <input type="text" id="inputMDEx-cgpa" class="form-control form-control-lg">
-                <label for="inputLGEx" >Minimum required CGPA</label>
+                <input type="text" id="cgpa" class="form-control form-control-lg">
+                <label for="cgpa" >Minimum required CGPA</label>
             </div>
             <br>
             <h3 class="text-decoration">Preferred Branch</h3>
@@ -63,8 +68,7 @@
    <% include partials/footer.ejs %>
    <script>$("#div_footer").css('position' , 'fixed') ;</script>
    <script>
-      var comp=$('#inputMDEx-comp').val();
-      var cgpa=$('#inputMDEx-cgpa').val();
+
       let branch
       $('#btn-submit').click(function(){
 
@@ -76,17 +80,19 @@
         })
         console.log(branch);
         var obj=new Object();
-        obj['name']=comp;
-        obj['cgpa']=cgpa;
-        obj['branch']=branch;
-        console.log(obj);
-        var ref=firebase.database().ref('/companies');
-        var obj=new Object();
-        obj['name']=comp;
+        var comp=$('#comp').val();
+        var cgpa=$('#cgpa').val();
+        if(comp == undefined || cgpa == undefined){
+          $('#erroralert').attr('hidden', false);
+          return;
+        }
+        var ref=firebase.database().ref(`/Colleges/${firebase.auth().getUid().ccode}/Companies/${comp}`);
         obj['cgpa']=cgpa;
         obj['branch']=branch;
         console.log(obj);
         ref.update(obj);
+        $('#successalert').attr('hidden', false);
+        return;
       })
 
 
