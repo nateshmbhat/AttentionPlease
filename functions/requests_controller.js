@@ -1,4 +1,5 @@
 import { urlencoded } from "body-parser";
+import { setTimeout } from "timers";
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS
 
@@ -100,6 +101,7 @@ function Handle_POST(app){
 
 
     app.post(`/acceptLibrary` , urlencodedParser , (req , res)=>{
+
         console.log(req.body) ; 
         
         if(!validatePostBody(req , res , ['bookid' , 'usn' , 'email' , 'timeleft' ]))
@@ -108,9 +110,18 @@ function Handle_POST(app){
 
         utils.isAuthenticated(req , res).then(uid=>{
         utils.get_userinfo({type_of_user : 'admin' , uid:uid}).then(userinfo=>{
-            admin.database().ref(`/Colleges/${userinfo.ccode}/library/${req.body.bookid}`)
-        })
 
+            admin.database().ref(`/Colleges/${userinfo.ccode}/library/${req.body.bookid}`).set({
+                usn : req.body.usn , 
+                email : req.body.email ,
+                time : req.body.timeleft , 
+                timestamp : Date.now()
+            })
+
+        setTimeout(({email : req.body.email , usn : req.body.usn ,bookid :  req.body.bookid}), req.body.timeleft) ;
+
+
+        })
             
         })
     }) ; 
