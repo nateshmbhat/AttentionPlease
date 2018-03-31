@@ -25,11 +25,11 @@
             <h2 class="card-title pt-2"><strong>Set a placement specification </strong></h2>
             <br>
             <div class="md-form form-lg">
-                <input type="text" id="inputMDEx" class="form-control form-control-lg">
+                <input type="text" id="inputMDEx-comp" class="form-control form-control-lg">
                 <label for="inputLGEx" >Name Of Company</label>
             </div>
             <div class="md-form form-lg">
-                <input type="text" id="inputMDEx" class="form-control form-control-lg">
+                <input type="text" id="inputMDEx-cgpa" class="form-control form-control-lg">
                 <label for="inputLGEx" >Minimum required CGPA</label>
             </div>
             <br>
@@ -37,24 +37,24 @@
             <br>
             <div class="row">
               <div class="form-check col">
-                  <input type="checkbox" class="filled-in form-check-input" id="checkbox105" checked="checked">
-                  <label class="form-check-label" for="checkbox105">CSE</label>
+                  <input type="checkbox" class="filled-in form-check-input" id="cse" checked="checked">
+                  <label class="form-check-label" for="cse">CSE</label>
                 </div>
                 <div class="form-check col">
-                  <input type="checkbox" class="filled-in form-check-input" id="checkbox106" checked="checked">
-                  <label class="form-check-label" for="checkbox106">ISE</label>
+                  <input type="checkbox" class="filled-in form-check-input" id="ise" checked="checked">
+                  <label class="form-check-label" for="ise">ISE</label>
                 </div>
                 <div class="form-check col">
-                  <input type="checkbox" class="filled-in form-check-input" id="checkbox107" checked="checked">
-                  <label class="form-check-label" for="checkbox107">EC</label>
+                  <input type="checkbox" class="filled-in form-check-input" id="ec" checked="checked">
+                  <label class="form-check-label" for="ec">EC</label>
                 </div>
                 <div class="form-check col">
-                  <input type="checkbox" class="filled-in form-check-input" id="checkbox108" checked="checkhttps://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20%2814%29ed">
-                  <label class="form-check-label" for="checkbox108">MECH</label>
+                  <input type="checkbox" class="filled-in form-check-input" id="mech" checked="checkhttps://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20%2814%29ed">
+                  <label class="form-check-label" for="mech">MECH</label>
                 </div>
               </div>
               <br>
-            <a class="btn btn-deep-purple"><i class="fa fa-clone left"></i> Submit</a>
+            <a class="btn btn-deep-purple" id="btn-submit"><i class="fa fa-clone left"></i> Submit</a>
     </div>
     <!-- Content -->
 </div>
@@ -62,6 +62,35 @@
 </div>
    <% include partials/footer.ejs %>
    <script>$("#div_footer").css('position' , 'fixed') ;</script>
+   <script>
+      var comp=$('#inputMDEx-comp').val();
+      var cgpa=$('#inputMDEx-cgpa').val();
+      let branch
+      $('#btn-submit').click(function(){
+
+        branch = new Array() ;
+        ['cse','ise','ec','mech'].forEach(ele=>{
+          if($(`#${ele}`).val()=='on'){
+            branch.push(ele);
+          }
+        })
+        console.log(branch);
+        var obj=new Object();
+        obj['name']=comp;
+        obj['cgpa']=cgpa;
+        obj['branch']=branch;
+        console.log(obj);
+        var ref=firebase.database().ref('/companies');
+        var obj=new Object();
+        obj['name']=comp;
+        obj['cgpa']=cgpa;
+        obj['branch']=branch;
+        console.log(obj);
+        ref.update(obj);
+      })
+
+
+   </script>
 
 </body>
 </html>
