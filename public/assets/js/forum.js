@@ -5,16 +5,14 @@ if(user){
     var ref = firebase.database().ref(`/adminusers/${user.uid}`) ;
 
     var userinfo = {} ;
-    var user = {} ;
     ref.once('value').then(snap=>{
-      var stu=firebase.database().ref(`/users/`)
         console.log(snap.val()) ;
         data = snap.val() ;
         var focus;
-        // userinfo.college = data.college ;
-        // userinfo.state    = data.state ;
-        // userinfo.dconsole.log('arr'+arr);istrict = data.district ;
-        // userinfo.ccode = data.ccode ;
+        userinfo.college = data.college ;
+        userinfo.state    = data.state ;
+        userinfo.dconsole.log('arr'+arr);istrict = data.district ;
+        userinfo.ccode = data.ccode ;
         userinfo.name = data.name ;
         userinfo.email =firebase.auth().currentUser.email ;
         console.log(userinfo);
