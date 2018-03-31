@@ -1,3 +1,4 @@
+
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS
 
 const app = require("express")() ;
@@ -17,6 +18,9 @@ const route_sendnotification = require("./routes/sendnotification") ;
 const utils = require("./utility_functions") ;
 const os= require("os") ;
 const multer = require("multer") ;
+const spawn = require("child_process").spawn;
+const pythonShell = require("python-shell") ; 
+
 
 
 admin.initializeApp({
@@ -96,30 +100,37 @@ function Handle_POST(app){
 
 
 
-    app.post(`/acceptLibrary` , urlencodedParser , (req , res)=>{
+    app.post(`/submitbook` , urlencodedParser , (req , res)=>{
 
         console.log(req.body) ;
 
-        if(!validatePostBody(req , res , ['bookid' , 'usn' , 'email' , 'timeleft' ]))
+        if(!utils.validatePostBody(req , res , ['bookid' , 'usn' , 'email' , 'timeleft' ]))
             {res.send('Invalid Request ! Make sure all the required fields are specified ') ; return ;  }
 
-        utils.isAuthenticated(req , res).then(uid=>{
-        utils.get_userinfo({type_of_user : 'admin' , uid:uid}).then(userinfo=>{
+            utils.isAuthenticated(req , res).then(uid=>{
+            utils.get_userinfo({type_of_user : 'admin' , uid:uid}).then(userinfo=>{
+                console.log("this is running !") ; 
 
-            admin.database().ref(`/Colleges/${userinfo.ccode}/library/${req.body.bookid}`).set({
-                usn : req.body.usn ,
-                email : req.body.email ,
-                time : req.body.timeleft ,
-                timestamp : Date.now()
-            })
+                admin.database().ref(`/Colleges/${userinfo.ccode}/library/${req.body.bookid}`).set({
+                    usn : req.body.usn ,
+                    email : req.body.email ,
+                    time : req.body.timeleft ,
+                    timestamp : Date.now()
+                }).then(()=>{
 
-        setTimeout(({email : req.body.email , usn : req.body.usn ,bookid :  req.body.bookid}), req.body.timeleft) ;
+                    let body  = req.body ; 
+                    res.render('library.ejs') ;
+    
+                    console.log("email : " , body.email , " bookid : " , body.bookid) ; 
 
-
+                    var pythonProcess = spawn('python3' , ["data/mailer.py" , body.email , `The book with the id ${req.body.bookid} has to be returned to college. USN of student who took the book : ${req.body.usn}`]) ; 
+                });    
         })
 
         })
-    }) ;
+        .catch(err=>{res.render('login.ejs'); })
+
+    });
 
 
 
@@ -197,6 +208,15 @@ function Handle_POST(app){
             console.log(err) ;
         }) ;
     })
+
+
+
+    app.get('/library'  , urlencodedParser , (req , res)=>{
+        utils.isAuthenticated(req , res).then(uid=>{
+            res.render('library.ejs' ) ; 
+        })
+
+    }) ; 
 
 
 

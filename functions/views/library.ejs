@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library</title>
@@ -10,7 +9,9 @@
 </head>
 
 <body background="assets/images/bg1.jpg">
+
     <div class="gtco-loader"></div>
+
     <% include partials/scripts_and_css.ejs %>
     <% include partials/navbar.ejs %>
 
@@ -18,28 +19,33 @@
 
     <div class="container">
 
-    <form method="post" action="/createtopic">
+      
+      <form method="post" action="/submitbook">
+            <div class="md-form">
+                  <input type="text" name="bookid" id="bookid" class="form-control">
+                  <label for="bookid" >Book ID</label>
+            </div>
 
 
-    <div class="md-form">
-          <input type="text" id="form1" class="form-control">
-          <label for="form1" >Book ID</label>
-    </div>
+            <div class="md-form">
+                  <input type="text" id="usn" name="usn"  class="form-control">
+                  <label for="usn" >USN</label>
+            </div>
 
-    <div class="md-form">
-          <input type="text" id="form1" class="form-control">
-          <label for="form1" >USN</label>
-    </div>
+            <div class="md-form">
+                  <input type="text" name="email" id="email" class="form-control">
+                  <label for="email" >Email</label>
+            </div>
 
-    <div class="md-form">
-          <input type="text" id="form1" class="form-control">
-          <label for="form1" >No.Of Days</label>
-    </div>
 
-    <br>
-    <div class="form-group text-center"><button type="submit" class="btn btn-deep-purple">Submit</button></div>
+            <div class="md-form">
+                  <input id="timeleft" type="number" name="timeleft" class="form-control">
+                  <label for="timeleft" >No.Of Days</label>
+            </div>
 
-    </form>
+            <br>
+            <div class="form-group text-center"><button type="submit" class="btn btn-deep-purple">Submit</button></div>
+      </form>
 
    </div>
 
