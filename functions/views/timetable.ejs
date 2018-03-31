@@ -124,9 +124,9 @@
         </div>
 <script>
 
-let global_uid ; 
+let global_uid ;
 
-    
+
 function getTimeTableStarter(){
 
     firebase.auth().onAuthStateChanged(user=>{
@@ -134,30 +134,30 @@ function getTimeTableStarter(){
         console.log("running auth state changed ! ") ;
 
         if(!user) {
-            window.location="/"; 
+            window.location="/";
             return ;
-        } 
+        }
 
-        global_uid = user.uid ; 
-        getTimeTable() ; 
+        global_uid = user.uid ;
+        getTimeTable() ;
     }) ;
-}    
+}
 
 
 
         function getTimeTable()
         {
             userid = global_uid
-            console.log('userid' , userid) ; 
+            console.log('userid' , userid) ;
             firebase.database().ref(`/adminusers/${userid}`).once('value' , adminsnap=>{
             userinfo = adminsnap.val() ;
 
-            console.log("userinfo : " , userinfo) ; 
+            console.log("userinfo : " , userinfo) ;
 
             ref = firebase.database().ref(`/Colleges/${userinfo.ccode}/timetables/${$('#select_year').val()}/${$('#select_branch').val()}/${$('#select_section').val()}`)
 
             ref.once('value' , snap=>
-            { 
+            {
                 dataArray = snap.val() ;
                 console.log(dataArray) ;
 
@@ -310,7 +310,7 @@ function getTimeTableStarter(){
                 }) ;
                 $("#select_section").on('change' , getTimeTable);
                 $("#select_year").on('change' , getTimeTable );
-                $("#select_branch").on('change' , getTimeTable ) ; 
+                $("#select_branch").on('change' , getTimeTable ) ;
 
 
                 //set the SEction list

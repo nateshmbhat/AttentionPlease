@@ -265,8 +265,9 @@ function Handle_POST(app){
                   temp.push(subs) ;
                 }
                 final[dat[i]['USN']]=temp;
+                console.log(final);
               }
-              admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final)  ;
+              admin.database().ref(`/Colleges/${userinfo.ccode}/Seat/`).update(final)  ;
           }) ;
           res.render('allotseats.ejs',{success : true});
     });
@@ -487,6 +488,10 @@ function Handle_GET(app){
 
     app.get('/createtopic' , (req , res)=>{
         utils.isAuthenticated(req , res).then(uid=>res.render('createtopic.ejs' ) ).catch(err=>res.render('login.ejs')) ;
+    })
+
+    app.get('/placements' , (req , res)=>{
+        utils.isAuthenticated(req , res).then(uid=>res.render('placements.ejs' ) ).catch(err=>res.render('login.ejs')) ;
     })
 
     app.get('/profile' , (req , res)=>{
