@@ -1,3 +1,5 @@
+import { urlencoded } from "body-parser";
+
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS
 
 
@@ -92,7 +94,28 @@ function Handle_POST(app){
            res.status(400) ;
            res.send(error) ;
         }
-    })
+    });
+
+
+
+
+    app.post(`/acceptLibrary` , urlencodedParser , (req , res)=>{
+        console.log(req.body) ; 
+        
+        if(!validatePostBody(req , res , ['bookid' , 'usn' , 'email' , 'timeleft' ]))
+            {res.send('Invalid Request ! Make sure all the required fields are specified ') ; return ;  }
+        
+
+        utils.isAuthenticated(req , res).then(uid=>{
+        utils.get_userinfo({type_of_user : 'admin' , uid:uid}).then(userinfo=>{
+            admin.database().ref(`/Colleges/${userinfo.ccode}/library/${req.body.bookid}`)
+        })
+
+            
+        })
+    }) ; 
+
+    
 
 
     app.post("/acceptAdminRequest" , urlencodedParser , (req, res)=>{
