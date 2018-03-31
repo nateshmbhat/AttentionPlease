@@ -85,6 +85,7 @@ if(user){
 else {
     console.log("No user is signed in !") ;
     unsetcookie() ;
+    window.location="/login" ;
 }
 
 
