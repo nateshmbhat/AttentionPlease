@@ -91,8 +91,8 @@
                     <input type="file" accept=".xlsx,.odt,.xls" name="result_file" id="result_file">
                 </div>
 
-                <div class="alert text-center animated shake alert-danger erroralert" hidden> </div>
-                <div class="alert text-center animated zoomIn alert-success successalert" hidden> </div>
+                <div class="mt-2 mb-2alert text-center animated shake alert-danger erroralert" hidden> </div>
+                <div class="alert mt-2 mb-2 text-center animated zoomIn alert-success successalert" hidden> </div>
 
                 <button type="button" title="Add Row" class=" hoverable btn btn-warning waves-effect waves-light rounded" id="btn_addRow">
                     <i class="fa fa-plus"></i>
@@ -102,6 +102,9 @@
                     <i class="fa fa-minus white-text"></i>
                 </button>
 
+                <div class="animated shake hoverable rounded alert alert-danger"  hidden role="alert" id="erroralert"><h2 style="color:black;"></h2></div>
+
+                <div class="animated zoomIn hoverable rounded alert alert-success " hidden role="alert" id="successalert"><h2 style="color:black"></h2></div>
 
                 <button class="btn btn-success hoverable waves-effect waves-light" type="submit" id="btn_saveTimeTable">Upload results</button>
 
@@ -114,6 +117,19 @@
 
 
 <script>
+
+function fadeElementAfter(querystring , time=3000 ){
+       setTimeout(()=>{
+           $("button[type=submit]").attr("disabled" , true) ;
+           $(querystring).fadeOut(()=>{
+                $(querystring).attr("hidden" , true) ;
+                $(querystring).show() ;
+           $("button[type=submit]").removeAttr("disabled") ;
+           }) ;
+       } , time ) ;
+    }
+
+
 
 function saveTimeTable() {
     colsArray = []; //final data that needs to be stored in database

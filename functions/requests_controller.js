@@ -278,6 +278,7 @@ function Handle_POST(app){
             displayName: req.body.name,
             disabled: false
         })
+
         .then((user)=>{
                 console.log("\nUser created with ID : " + user.uid) ;
 
@@ -290,6 +291,7 @@ function Handle_POST(app){
                     district : req.body.district ,
                     college : req.body.college ,
                 };
+
                 //Set the collegeID for the user object corresponding to the selected college name
 
                 userinfo.ccode = utils.get_college_code(userinfo.state , userinfo.district , userinfo.college) ;
@@ -309,6 +311,7 @@ function Handle_POST(app){
             console.log(error)
         }) ;
     }
+    
     catch(error)
     { /// TODO : Send the error alert to the client with the error
         res.status(400) ;
@@ -364,6 +367,8 @@ app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (r
           admin.database().ref(`/Colleges/${userinfo.ccode}/results/result_years`).push(`${cur_year}-${semester}-${branch}`) ;
           ref=admin.database().ref('/Colleges/'+userinfo.ccode+'/results/'+cur_year+'/'+semester+'/'+branch+'/headings');
           ref.update(headings);
+
+          res.json({success: "Results successfully added to database"}) ; 
         })  ;
       })
 })
