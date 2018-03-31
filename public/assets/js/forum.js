@@ -10,6 +10,7 @@ if(user){
       var stu=firebase.database().ref(`/users/`)
         console.log(snap.val()) ;
         data = snap.val() ;
+        var focus;
         // userinfo.college = data.college ;
         // userinfo.state    = data.state ;
         // userinfo.dconsole.log('arr'+arr);istrict = data.district ;
@@ -18,13 +19,13 @@ if(user){
         userinfo.email =firebase.auth().currentUser.email ;
         console.log(userinfo);
         var ques=firebase.database().ref(`/Colleges/${userinfo.ccode}/forum`);
-        //arr=Object.getOwnPropertyNames(obj);
         ques.once('value').then(shot=>{
           var quo=new Array();
           var user=new Array();
 
 
-          var focus=shot.val();
+          focus=shot.val();
+          arr=new Array();
           arr=Object.getOwnPropertyNames(focus);
 
           console.log('arr'+arr);
