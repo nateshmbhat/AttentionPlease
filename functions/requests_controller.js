@@ -1,8 +1,4 @@
-import { urlencoded } from "body-parser";
-import { setTimeout } from "timers";
-
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS
-
 
 const app = require("express")() ;
 const bodyparser = require("body-parser") ;
