@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body background="assets/images/bg1.jpg">
+    <div class="gtco-loader"></div>
+    <% include partials/scripts_and_css.ejs %>
+    <% include partials/navbar.ejs %>
+
+    <h1 class="text-decoration animated zoomIn text-center">Library</h1>
+
+    <div class="container">
+
+    <form method="post" action="/createtopic">
+
+
+    <div class="md-form">
+          <input type="text" id="form1" class="form-control">
+          <label for="form1" >Book ID</label>
+    </div>
+
+    <div class="md-form">
+          <input type="text" id="form1" class="form-control">
+          <label for="form1" >USN</label>
+    </div>
+
+    <div class="md-form">
+          <input type="text" id="form1" class="form-control">
+          <label for="form1" >No.Of Days</label>
+    </div>
+
+    <br>
+    <div class="form-group text-center"><button type="submit" class="btn btn-deep-purple">Submit</button></div>
+
+    </form>
+
+   </div>
+
+   <% include partials/footer.ejs %>
+   <script>$("#div_footer").css('position' , 'fixed') ;</script>
+
+</body>
+</html>

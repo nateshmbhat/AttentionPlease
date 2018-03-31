@@ -483,6 +483,10 @@ function Handle_GET(app){
         res.redirect('/') ;
     })
 
+    app.get('/library' , (req,res)=>{
+      res.render('library.ejs');
+    })
+
     app.get('/index.html' , (req,res)=>{
         res.redirect('/') ;
     })
