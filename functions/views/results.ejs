@@ -18,7 +18,26 @@
 
         }
 
+        .accordion.accordion-5 .card {
+    border: 0;
+    background-color: transparent; }
+    .accordion.accordion-5 .card .card-header {
+    border: 0;
+    background-color: #f44336;
+    -webkit-transition: .3s;
+    transition: .3s; }
+    .accordion.accordion-5 .card .card-header:hover {
+      -webkit-transition: .3s;
+      transition: .3s;
+      background-color: #455a64; }
+    .accordion.accordion-5 .card .card-header .fa {
+      background-color: #fff;
+      border-top-left-radius: 3px; }
+    .accordion.accordion-5 .card .card-body {
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px; }
     </style>
+
 </head>
 
 
@@ -27,199 +46,227 @@
     <% include partials/scripts_and_css.ejs %>
     <% include partials/navbar.ejs %>
 
-        <script src="assets/js/footable.js"></script>
-        <!-- Compiled and minified CSS -->
-
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
-
-        <!-- Compiled and minified JavaScript -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 
 
-        <div class="container">
-            <h1 class="text-center">Results</h1>
-            <div class="text-center">
-                <button type="button" class="btn btn-primary waves-effect waves-dark" data-toggle="modal" id="btn_addResult" data-target="#modaltimetable">Add New Result </button>
-            </div>
 
 
-            <div id="addNewTimeTable" class="mt-5" hidden>
 
-                <div class="input-field col s2">
-                    <div class="row">
-                        <h5 >Select Semester and Branch : </h5>
-                        <select class="ml-5 text-center font-bold" id="select_sem" >
-                            <option  value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option  value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                        </select>
-                        <select class="ml-5 text-center font-bold"  id="select_branch" >
-                            <option value="CSE">CSE</option>
-                            <option value="ISE">ISE</option>
-                            <option value="EC">EC</option>
-                            <option value="TE">TE</option>
-                            <option value="MECH">MECH</option>
-                            <option value="BIOTECH">BIOTECH</option>
-                            <option value="CHEMICAL">CHEMICAL</option>
-                        </select>
+    <!-- Card -->
+  <div class="card card-image" style="background-image: url(assets/images/allotseats.jpg);">
 
-                    </div>
+    <!-- Content -->
+    <div class="text-white text-center align-items-center rgba-black-strong py-5 px-4">
+
+              <center>
+                <div class="view overlay">
+
+                          <script src="assets/js/footable.js"></script>
+                          <!-- Compiled and minified CSS -->
+
+                          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+
+                          <!-- Compiled and minified JavaScript -->
+                          <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
+
+                          <div class="container">
+                              <h1 class="text-center">Results</h1>
+                              <div class="text-center">
+                                  <button type="button" class="btn btn-primary waves-effect waves-dark" data-toggle="modal" id="btn_addResult" data-target="#modaltimetable">Add New Result </button>
+                              </div>
+
+
+                              <div id="addNewTimeTable" class="mt-5" hidden>
+
+                                  <div class="input-field col s2">
+                                      <div class="row">
+                                          <h5 >Select Semester and Branch : </h5>
+                                          <select class="ml-5 text-center font-bold" id="select_sem" >
+                                              <option  value="1">1</option>
+                                              <option value="2">2</option>
+                                              <option value="3">3</option>
+                                              <option value="4">4</option>
+                                              <option  value="5">5</option>
+                                              <option value="6">6</option>
+                                              <option value="7">7</option>
+                                              <option value="8">8</option>
+                                          </select>
+                                          <select class="ml-5 text-center font-bold"  id="select_branch" >
+                                              <option value="CSE">CSE</option>
+                                              <option value="ISE">ISE</option>
+                                              <option value="EC">EC</option>
+                                              <option value="TE">TE</option>
+                                              <option value="MECH">MECH</option>
+                                              <option value="BIOTECH">BIOTECH</option>
+                                              <option value="CHEMICAL">CHEMICAL</option>
+                                          </select>
+
+                                      </div>
+                                  </div>
+
+                                  <h5>Enter the Column Headings:</h5>
+                                  <div id="column_headings">
+                                    <input type="text" class="col_heading"></input>
+                                  </div>
+
+                                  <div class="row">
+                                    <div class="col-5 mt-3">
+                                      Enter the row number from which the data starts :
+                                    </div>
+
+                                    <div class="col-2">
+                                      <input type=number id="startrow" min="0">
+                                    </div>
+                                  </div>
+
+                                  <div class="h-4 mb-4">
+                                      <h4 class="h4">Select the Spreadsheet file containing the results :  </h4>
+                                      <input type="file" accept=".xlsx,.odt,.xls" name="result_file" id="result_file">
+                                  </div>
+
+                                  <div class="mt-2 mb-2alert text-center animated shake alert-danger erroralert" hidden> </div>
+                                  <div class="alert mt-2 mb-2 text-center animated zoomIn alert-success successalert" hidden> </div>
+
+                                  <button type="button" title="Add Row" class=" hoverable btn btn-warning waves-effect waves-light rounded" id="btn_addRow">
+                                      <i class="fa fa-plus"></i>
+                                  </button>
+
+                                  <button title="Remove Row" class="hoverable btn btn-danger waves-effect waves-light rounded" id="btn_delRow">
+                                      <i class="fa fa-minus white-text"></i>
+                                  </button>
+
+                                  <div class="animated shake hoverable rounded alert alert-danger"  hidden role="alert" id="erroralert"><h2 style="color:black;"></h2></div>
+
+                                  <div class="animated zoomIn hoverable rounded alert alert-success " hidden role="alert" id="successalert"><h2 style="color:black"></h2></div>
+
+                                  <button class="btn btn-success hoverable waves-effect waves-light" type="submit" id="btn_saveTimeTable">Upload results</button>
+
+                                  <div class="m-5"> </div>
+
+                                  <!-- <button class="btn btn-info hoverable waves-effect waves-light"  id="btn_tester">TEST</button> -->
+
+                              </div>
+                          </div>
+
+
+                  <script>
+
+                  function fadeElementAfter(querystring , time=3000 ){
+                         setTimeout(()=>{
+                             $("button[type=submit]").attr("disabled" , true) ;
+                             $(querystring).fadeOut(()=>{
+                                  $(querystring).attr("hidden" , true) ;
+                                  $(querystring).show() ;
+                             $("button[type=submit]").removeAttr("disabled") ;
+                             }) ;
+                         } , time ) ;
+                      }
+
+
+
+                  function saveTimeTable() {
+                      colsArray = []; //final data that needs to be stored in database
+
+                      cols = $("input.col_heading") ;
+                      for(let i =0 ; i<cols.length ; i++)
+                      {
+                          colsArray.push(cols[i].value) ; console.log(cols[i])  ;
+                      }
+
+                      postdata = new FormData();
+                      postdata.append('headings', colsArray);
+                      postdata.append('branch', $('#select_branch').val());
+                      postdata.append('sem', $('#select_sem').val());
+                      postdata.append('result_file', document.getElementById("result_file").files[0]);
+
+                      console.log(colsArray);
+
+                      $.ajax({
+                          url: '/putresults',
+                          type: "post",
+                          method: 'post',
+                          cache: false,
+                          contentType: false,
+                          data: postdata,
+                          processData: false,
+                          success: (data, status, jqxhr_obj) => {
+                              if (data.success) {
+                                  console.log('success');
+                                  $('#successalert').html(`<h3 class="text-center">${data.success}</h3>`)
+                                  $('#successalert').replaceWith($("#successalert").clone().removeAttr('hidden'));
+                                  document.querySelector("form").reset();
+                                  fadeElementAfter("#successalert", 5000);
+                              } else {
+                                  console.log('error');
+                                  $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
+                                  var temp=[];         $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden'));
+                                  fadeElementAfter("#erroralert", 4000);
+                              }
+
+                              $('button[type=submit]').show();
+
+                              // $("#loader_circle").attr('hidden', true);
+                          },
+
+
+                          error: (jqXHR, textStatus, errorThrown) => {
+                              console.log(jqXHR, textStatus, errorThrown);
+                              $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
+                              $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden'));
+                              fadeElementAfter("#erroralert", 4000);
+                          }
+
+                      });
+                  }
+
+                  function addRow(n = 1) {
+                      let row = `<input type="text" class="col_heading"> `
+                      for(i=0 ; i<n ;i++)
+                          $('input.col_heading:last').after(row) ;
+                  }
+
+                      function initialize() {
+                          // jQuery('[data-toggle="tooltip"]').tooltip()
+                          // $(".days").addClass("text-center").addClass("hoverable");
+
+                          //Event handlers
+
+                          $("#btn_addResult").on('click', event => {
+                              $("#addNewTimeTable").fadeIn().removeAttr("hidden").fadeIn();
+                          })
+
+                          $("#btn_saveTimeTable").on('click', saveTimeTable);
+
+                          $("#btn_addRow").on('click', e => {
+                              addRow();
+                          });
+
+                          $("#btn_delRow").on('click', e => {
+                              $("#column_headings input:last").remove();
+                          });
+
+                          $('select').material_select();
+                          addRow(3);
+                      }
+                              initialize();
+                              //DEBUG
+                              // $('#btn_addTimeTable').click() ;
+
+                      </script>
+
                 </div>
-
-                <h5>Enter the Column Headings:</h5>
-                <div id="column_headings">
-                  <input type="text" class="col_heading"></input>
-                </div>
-
-                <div class="row">
-                  <div class="col-5 mt-3">
-                    Enter the row number from which the data starts :
-                  </div>
-
-                  <div class="col-2">
-                    <input type=number id="startrow" min="0">
-                  </div>
-                </div>
-
-                <div class="h-4 mb-4">
-                    <h4 class="h4">Select the Spreadsheet file containing the results :  </h4>
-                    <input type="file" accept=".xlsx,.odt,.xls" name="result_file" id="result_file">
-                </div>
-
-                <div class="mt-2 mb-2alert text-center animated shake alert-danger erroralert" hidden> </div>
-                <div class="alert mt-2 mb-2 text-center animated zoomIn alert-success successalert" hidden> </div>
-
-                <button type="button" title="Add Row" class=" hoverable btn btn-warning waves-effect waves-light rounded" id="btn_addRow">
-                    <i class="fa fa-plus"></i>
-                </button>
-
-                <button title="Remove Row" class="hoverable btn btn-danger waves-effect waves-light rounded" id="btn_delRow">
-                    <i class="fa fa-minus white-text"></i>
-                </button>
-
-                <div class="animated shake hoverable rounded alert alert-danger"  hidden role="alert" id="erroralert"><h2 style="color:black;"></h2></div>
-
-                <div class="animated zoomIn hoverable rounded alert alert-success " hidden role="alert" id="successalert"><h2 style="color:black"></h2></div>
-
-                <button class="btn btn-success hoverable waves-effect waves-light" type="submit" id="btn_saveTimeTable">Upload results</button>
-
-                <div class="m-5"> </div>
-
-                <!-- <button class="btn btn-info hoverable waves-effect waves-light"  id="btn_tester">TEST</button> -->
-
-            </div>
-        </div>
+              </div>
 
 
-<script>
+    <!-- Content -->
 
-function fadeElementAfter(querystring , time=3000 ){
-       setTimeout(()=>{
-           $("button[type=submit]").attr("disabled" , true) ;
-           $(querystring).fadeOut(()=>{
-                $(querystring).attr("hidden" , true) ;
-                $(querystring).show() ;
-           $("button[type=submit]").removeAttr("disabled") ;
-           }) ;
-       } , time ) ;
-    }
+  </div>
+  <!-- Card -->
 
 
 
-function saveTimeTable() {
-    colsArray = []; //final data that needs to be stored in database
-
-    cols = $("input.col_heading") ;
-    for(let i =0 ; i<cols.length ; i++)
-    {
-        colsArray.push(cols[i].value) ; console.log(cols[i])  ;
-    }
-
-    postdata = new FormData();
-    postdata.append('headings', colsArray);
-    postdata.append('branch', $('#select_branch').val());
-    postdata.append('sem', $('#select_sem').val());
-    postdata.append('result_file', document.getElementById("result_file").files[0]);
-
-    console.log(colsArray);
-
-    $.ajax({
-        url: '/putresults',
-        type: "post",
-        method: 'post',
-        cache: false,
-        contentType: false,
-        data: postdata,
-        processData: false,
-        success: (data, status, jqxhr_obj) => {
-            if (data.success) {
-                console.log('success');
-                $('#successalert').html(`<h3 class="text-center">${data.success}</h3>`)
-                $('#successalert').replaceWith($("#successalert").clone().removeAttr('hidden'));
-                document.querySelector("form").reset();
-                fadeElementAfter("#successalert", 5000);
-            } else {
-                console.log('error');
-                $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
-                var temp=[];         $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden'));
-                fadeElementAfter("#erroralert", 4000);
-            }
-
-            $('button[type=submit]').show();
-
-            // $("#loader_circle").attr('hidden', true);
-        },
 
 
-        error: (jqXHR, textStatus, errorThrown) => {
-            console.log(jqXHR, textStatus, errorThrown);
-            $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
-            $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden'));
-            fadeElementAfter("#erroralert", 4000);
-        }
-
-    });
-}
-
-function addRow(n = 1) {
-    let row = `<input type="text" class="col_heading"> `
-    for(i=0 ; i<n ;i++)
-        $('input.col_heading:last').after(row) ;
-}
-
-    function initialize() {
-        // jQuery('[data-toggle="tooltip"]').tooltip()
-        // $(".days").addClass("text-center").addClass("hoverable");
-
-        //Event handlers
-
-        $("#btn_addResult").on('click', event => {
-            $("#addNewTimeTable").fadeIn().removeAttr("hidden").fadeIn();
-        })
-
-        $("#btn_saveTimeTable").on('click', saveTimeTable);
-
-        $("#btn_addRow").on('click', e => {
-            addRow();
-        });
-
-        $("#btn_delRow").on('click', e => {
-            $("#column_headings input:last").remove();
-        });
-
-        $('select').material_select();
-        addRow(3);
-    }
-            initialize();
-            //DEBUG
-            // $('#btn_addTimeTable').click() ;
-
-    </script>
 
   <% include partials/footer.ejs %>
    <script>$("#div_footer").css('position' , 'fixed') ;</script>

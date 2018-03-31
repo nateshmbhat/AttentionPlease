@@ -15,45 +15,41 @@
     <% include partials/scripts_and_css.ejs %>
     <% include partials/navbar.ejs %>
 
-    <h1 class="text-decoration animated zoomIn text-center">Library</h1>
 
 
 
-    <div class="container">
 
-      
-      <div class="card">
-      <form class="m-3" method="post" action="/submitbook">
-
-            <div class="md-form">
-                  <input type="text" name="bookid" id="bookid" class="form-control">
-                  <label for="bookid" >Book ID</label>
-            </div>
-
-
-            <div class="md-form">
-                  <input type="text" id="usn" name="usn"  class="form-control">
-                  <label for="usn" >USN</label>
-            </div>
-
-            <div class="md-form">
-                  <input type="text" name="email" id="email" class="form-control">
-                  <label for="email" >Email</label>
-            </div>
-
-
-            <div class="md-form">
-                  <input id="timeleft" type="number" name="timeleft" class="form-control">
-                  <label for="timeleft" >No.Of Days</label>
-            </div>
-
-            <br>
-            <div class="form-group text-center"><button type="submit" class="btn btn-deep-purple">Submit</button></div>
-      </form>
-
-      </div>
-
+   <!-- Card -->
+ <div class="card card-image" style="background-image: url(assets/images/librarybg.jpg);">
+   <!-- Content -->
+   <div class="text-white text-center align-items-center rgba-black-strong py-5 px-4">
+     <h1 class="text-decoration animated zoomIn text-center">Library</h1>
+     <div class="container">
+        <form class="m-3" method="post" action="/submitbook">
+             <div class="md-form">
+                   <input type="text" name="bookid" id="bookid" class="form-control" style="color:white">
+                   <label for="bookid" style="color:white">Book ID</label>
+             </div>
+             <div class="md-form">
+                   <input type="text" id="usn" name="usn"  class="form-control" style="color:white">
+                   <label for="usn"  style="color:white">USN</label>
+             </div>
+             <div class="md-form">
+                   <input type="text" name="email" id="email" class="form-control" style="color:white">
+                   <label for="email"  style="color:white">Email</label>
+             </div>
+             <div class="md-form">
+                   <input id="timeleft" type="number" name="timeleft" class="form-control" style="color:white">
+                   <label for="timeleft"  style="color:white">No.Of Days</label>
+             <br>
+             <div class="form-group text-center"><button type="submit" class="btn btn-deep-purple btn-lg">Submit</button></div>
+       </form>
+       </div>
+    </div>
    </div>
+   <!-- Content -->
+ </div>
+ <!-- Card -->
 
    <% include partials/footer.ejs %>
    <script>$("#div_footer").css('position' , 'fixed') ;</script>

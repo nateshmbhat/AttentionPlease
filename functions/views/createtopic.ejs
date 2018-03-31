@@ -37,12 +37,11 @@
     <% include partials/scripts_and_css.ejs %>
     <% include partials/navbar.ejs %>
 
-    <div class="container">
 
-    <h1 class="text-decoration animated zoomIn text-center">Create Topic</h1>
 
     <div class="card card-image" style="background-image: url(assets/images/timetablebg.jpg);">
       <div class="text-white text-center align-items-center rgba-black-strong py-5 px-4">
+        <h1 class="text-decoration animated zoomIn text-center">Create Topic</h1>
 
     <form method="post" action="/createtopic">
 
@@ -65,7 +64,6 @@
         <textarea class="col-10" required name="desc" type="text" maxlength="200" minlength="2" id="desc"> </textarea>
     </div>
 
-    <br>
     <div class="form-group text-center"><button type="submit" class="btn btn-deep-purple">Create</button></div>
 
     </form>
