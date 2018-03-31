@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placements</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body background="assets/images/bg1.jpg">
+    <div class="gtco-loader"></div>
+    <% include partials/scripts_and_css.ejs %>
+    <% include partials/navbar.ejs %>
+
+    <h1 class="text-decoration animated zoomIn text-center">Placement Portal</h1>
+
+
+    <!-- Card -->
+<div class="card card-image" style="background-image: url(assets/images/placementbg.jpg);">
+
+    <!-- Content -->
+    <div class="text-white text-center align-items-center rgba-black-strong py-5 px-4">
+            <h2 class="card-title pt-2"><strong>Set a placement specification </strong></h2>
+            <br>
+            <div class="md-form form-lg">
+                <input type="text" id="inputMDEx" class="form-control form-control-lg">
+                <label for="inputLGEx" >Name Of Company</label>
+            </div>
+            <div class="md-form form-lg">
+                <input type="text" id="inputMDEx" class="form-control form-control-lg">
+                <label for="inputLGEx" >Minimum required CGPA</label>
+            </div>
+            <br>
+            <h3 class="text-decoration">Preferred Branch</h3>
+            <br>
+            <div class="row">
+              <div class="form-check col">
+                  <input type="checkbox" class="filled-in form-check-input" id="checkbox105" checked="checked">
+                  <label class="form-check-label" for="checkbox105">CSE</label>
+                </div>
+                <div class="form-check col">
+                  <input type="checkbox" class="filled-in form-check-input" id="checkbox106" checked="checked">
+                  <label class="form-check-label" for="checkbox106">ISE</label>
+                </div>
+                <div class="form-check col">
+                  <input type="checkbox" class="filled-in form-check-input" id="checkbox107" checked="checked">
+                  <label class="form-check-label" for="checkbox107">EC</label>
+                </div>
+                <div class="form-check col">
+                  <input type="checkbox" class="filled-in form-check-input" id="checkbox108" checked="checkhttps://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20%2814%29ed">
+                  <label class="form-check-label" for="checkbox108">MECH</label>
+                </div>
+              </div>
+              <br>
+            <a class="btn btn-deep-purple"><i class="fa fa-clone left"></i> Submit</a>
+    </div>
+    <!-- Content -->
+</div>
+<!-- Card -->
+
+   <% include partials/footer.ejs %>
+   <script>$("#div_footer").css('position' , 'fixed') ;</script>
+
+</body>
+</html>
