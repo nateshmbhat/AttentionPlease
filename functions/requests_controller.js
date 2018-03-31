@@ -164,7 +164,7 @@ function Handle_POST(app){
 
                     let body  = req.body ; 
                     res.render('library.ejs') ;
-                    sendMail( body.email , "Library Notifier" , `The book with ID ${req.bookid} has been linked with your USN ${req.usn}.` , body.usn ) ; 
+                    sendMail( body.email , "Library Notifier" , `The book with ID ${body.bookid} has been linked with your USN ${body.usn}.` , body.usn ) ; 
 
                });    
             })
