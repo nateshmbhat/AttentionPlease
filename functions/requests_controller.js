@@ -1,6 +1,5 @@
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS
 
-
 const app = require("express")() ;
 const bodyparser = require("body-parser") ;
 const session = require("express-session") ;
@@ -92,7 +91,38 @@ function Handle_POST(app){
            res.status(400) ;
            res.send(error) ;
         }
-    })
+    });
+
+
+
+
+    app.post(`/acceptLibrary` , urlencodedParser , (req , res)=>{
+
+        console.log(req.body) ;
+
+        if(!validatePostBody(req , res , ['bookid' , 'usn' , 'email' , 'timeleft' ]))
+            {res.send('Invalid Request ! Make sure all the required fields are specified ') ; return ;  }
+
+
+        utils.isAuthenticated(req , res).then(uid=>{
+        utils.get_userinfo({type_of_user : 'admin' , uid:uid}).then(userinfo=>{
+
+            admin.database().ref(`/Colleges/${userinfo.ccode}/library/${req.body.bookid}`).set({
+                usn : req.body.usn ,
+                email : req.body.email ,
+                time : req.body.timeleft ,
+                timestamp : Date.now()
+            })
+
+        setTimeout(({email : req.body.email , usn : req.body.usn ,bookid :  req.body.bookid}), req.body.timeleft) ;
+
+
+        })
+
+        })
+    }) ;
+
+
 
 
     app.post("/acceptAdminRequest" , urlencodedParser , (req, res)=>{
@@ -282,6 +312,7 @@ function Handle_POST(app){
             displayName: req.body.name,
             disabled: false
         })
+
         .then((user)=>{
                 console.log("\nUser created with ID : " + user.uid) ;
 
@@ -294,6 +325,7 @@ function Handle_POST(app){
                     district : req.body.district ,
                     college : req.body.college ,
                 };
+
                 //Set the collegeID for the user object corresponding to the selected college name
 
                 userinfo.ccode = utils.get_college_code(userinfo.state , userinfo.district , userinfo.college) ;
@@ -313,6 +345,7 @@ function Handle_POST(app){
             console.log(error)
         }) ;
     }
+
     catch(error)
     { /// TODO : Send the error alert to the client with the error
         res.status(400) ;
@@ -368,6 +401,8 @@ app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (r
           admin.database().ref(`/Colleges/${userinfo.ccode}/results/result_years`).push(`${cur_year}-${semester}-${branch}`) ;
           ref=admin.database().ref('/Colleges/'+userinfo.ccode+'/results/'+cur_year+'/'+semester+'/'+branch+'/headings');
           ref.update(headings);
+
+          res.json({success: "Results successfully added to database"}) ;
         })  ;
       })
 })
