@@ -103,7 +103,6 @@ function Handle_POST(app){
         if(!validatePostBody(req , res , ['bookid' , 'usn' , 'email' , 'timeleft' ]))
             {res.send('Invalid Request ! Make sure all the required fields are specified ') ; return ;  }
 
-
         utils.isAuthenticated(req , res).then(uid=>{
         utils.get_userinfo({type_of_user : 'admin' , uid:uid}).then(userinfo=>{
 

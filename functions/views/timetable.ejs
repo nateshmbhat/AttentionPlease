@@ -124,7 +124,7 @@
         </div>
 <script>
 
-
+let global_uid ; 
 
     
 function getTimeTableStarter(){
@@ -138,14 +138,17 @@ function getTimeTableStarter(){
             return ;
         } 
 
-        getTimeTable(user.uid) ; 
+        global_uid = user.uid ; 
+        getTimeTable() ; 
     }) ;
 }    
 
 
 
-        function getTimeTable(userid)
+        function getTimeTable()
         {
+            userid = global_uid
+            console.log('userid' , userid) ; 
             firebase.database().ref(`/adminusers/${userid}`).once('value' , adminsnap=>{
             userinfo = adminsnap.val() ;
 
@@ -305,9 +308,9 @@ function getTimeTableStarter(){
                 $("#btn_delRow").on('click' , e=>{
                     $("#timetable_body tr:last").remove() ;
                 }) ;
-                $("#select_section").on('change' , getTimeTable );
+                $("#select_section").on('change' , getTimeTable);
                 $("#select_year").on('change' , getTimeTable );
-                $("#select_branch").on('change' , getTimeTable )
+                $("#select_branch").on('change' , getTimeTable ) ; 
 
 
                 //set the SEction list
