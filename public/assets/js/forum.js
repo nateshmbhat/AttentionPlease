@@ -48,7 +48,7 @@ if(user){
                   <div class="card-body rgba-black-light white-text z-depth-1">
                       <div class="md-form">
                            <i class="fa fa-pencil prefix"></i>
-                           <textarea type="text" name="answer" id="answerfield${i}" class="form-control md-textarea" rows="3"></textarea>
+                           <textarea type="text" name="answer" id="answerfield${i}" class="form-control md-textarea" rows="3" style="color:white"></textarea>
                            <label for="textareaPrefix">Write Answer</label>
                       </div>
                   </div>
