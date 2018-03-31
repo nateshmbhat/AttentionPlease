@@ -39,39 +39,60 @@
 
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    
-    <div class="container" style="background-image: url(assets/images/allotseatsbg.jpg);">
+
+    <div class="container">
     <br>
     <h1 class="text-decoration animated zoomIn text-center">Seat Allotment</h1>
-    <br><h4 class="text-decoration text-center">Add a spreadsheet file containing the seat allotment details...example format will soon follow</h4>
-    <br><center>
-    <div class="view overlay">
-      <form method="post" action="/putseats" enctype="multipart/form-data"
-        <div class="image-upload">
-            <label for="file-input">
-                <h4  class="btn btn-info btn-md align-center">Browse Spreadsheet File</h4>
-            </label>
-            <% if(locals.error) {%>
-                <div class="animated shake rounded alert alert-danger"   role="alert" id="erroralert"><h2 style="color:black;">Input file should be a spreadsheet document!</h2></div>
-            <%}%>
 
-            <% if(locals.success){%>
-                <div class="animated zoomIn rounded alert alert-success" role="alert" id="successalert"><h2 style="color:black">Seats successfully alloted!</h2></div>
-            <%}%>
 
-            <% if(locals.nofile) {%>
-                <div class="animated shake rounded alert alert-danger"   role="alert" id="erroralert"><h2 style="color:black;">No file was given as input!</h2></div> <%}%>
-            <input id="file-input"  type="file" name="seat_file" accept=".xml,.xlsx,.ods" hidden="true"/>
-        </div>
-        <label for="submit_seats">
-            <h4  class="btn btn-info btn-md">Submit</h4>
-        </label>
 
-        <input id="submit_seats" type="submit" hidden>
-      </form>
+
+    <!-- Card -->
+  <div class="card card-image" style="background-image: url(assets/images/allotseats.jpg);">
+
+    <!-- Content -->
+    <div class="text-white text-center align-items-center rgba-black-strong py-5 px-4">
+
+              <br><h4 class="text-decoration text-center">Add a spreadsheet file containing the seat allotment details...example format will soon follow</h4>
+                <br><center>
+                <div class="view overlay">
+                  <form method="post" action="/putseats" enctype="multipart/form-data"
+                    <div class="image-upload">
+                        <label for="file-input">
+                            <h4  class="btn btn-info btn-md align-center">Browse Spreadsheet File</h4>
+                        </label>
+                        <% if(locals.error) {%>
+                            <div class="animated shake rounded alert alert-danger"   role="alert" id="erroralert"><h2 style="color:black;">Input file should be a spreadsheet document!</h2></div>
+                        <%}%>
+
+                        <% if(locals.success){%>
+                            <div class="animated zoomIn rounded alert alert-success" role="alert" id="successalert"><h2 style="color:black">Seats successfully alloted!</h2></div>
+                        <%}%>
+
+                        <% if(locals.nofile) {%>
+                            <div class="animated shake rounded alert alert-danger"   role="alert" id="erroralert"><h2 style="color:black;">No file was given as input!</h2></div> <%}%>
+                        <input id="file-input"  type="file" name="seat_file" accept=".xml,.xlsx,.ods" hidden="true"/>
+                    </div>
+                    <label for="submit_seats">
+                        <h4  class="btn btn-info btn-md">Submit</h4>
+                    </label>
+
+                    <input id="submit_seats" type="submit" hidden>
+                  </form>
+                </div>
+              </div>
+                <br><br>
+
+
     </div>
+    <!-- Content -->
 
-    <br><br>
+  </div>
+  <!-- Card -->
+
+
+
+
 
     <!--Card-->
 </div>
