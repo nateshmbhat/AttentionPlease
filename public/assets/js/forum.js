@@ -4,7 +4,7 @@ firebase.auth().onAuthStateChanged(function(user){
 if(user){
     var ref = firebase.database().ref(`/adminusers/${user.uid}`).once('value' , snap=>{
 
-        var userinfo = snap.val()  ; 
+        var userinfo = snap.val()  ;
         // userinfo.college = data.college ;
         // userinfo.state    = data.state ;
         // userinfo.dconsole.log('pushids'+pushids);istrict = data.district ;
@@ -28,10 +28,10 @@ if(user){
           for(i=0;i<pushids.length;i++){
             console.log(focus[pushids[i]]);
             quo[i]=focus[pushids[i]].question;
-            user.push(focus[pushids[i]].uid) ; 
+            user.push(focus[pushids[i]].uid) ;
             console.log(quo);
         }
-        console.log(user) ; 
+        console.log(user) ;
 
         for(i=0;i<pushids.length;i++){
           $('div#accordionEx5 div.card:last').after(`
@@ -57,20 +57,20 @@ if(user){
           `)
         }
 
-        $(".btn_submit_response").attr('hidden' ,false) ; 
+        $(".btn_submit_response").attr('hidden' ,false) ;
         $('.btn_submit_response').on('click' , event=>{
 
         for(let i =0 ; i<pushids.length ; i++)
         {
-            console.log("------------"+i+ "--------------") ; 
-            console.log( $(`#h4_question${i}`).attr(`data-pushid${i}`)) ; 
+            console.log("------------"+i+ "--------------") ;
+            console.log( $(`#h4_question${i}`).attr(`data-pushid${i}`)) ;
 
-            console.log($(`#answerfield${i}`).val() )  ; 
-            console.log("------------"+i+ "--------------") ; 
+            console.log($(`#answerfield${i}`).val() )  ;
+            console.log("------------"+i+ "--------------") ;
 
-            firebase.database().ref(`/Colleges/${userinfo.ccode}/forum/${pushids[i]}`).update({answer : $(`#answerfield${i}`).val() }) ; 
+            firebase.database().ref(`/Colleges/${userinfo.ccode}/forum/${pushids[i]}`).update({answer : $(`#answerfield${i}`).val() }) ;
         }
-            
+
         })
       })
 

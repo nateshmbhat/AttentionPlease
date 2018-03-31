@@ -98,19 +98,19 @@ function Handle_POST(app){
 
     app.post(`/acceptLibrary` , urlencodedParser , (req , res)=>{
 
-        console.log(req.body) ; 
-        
+        console.log(req.body) ;
+
         if(!validatePostBody(req , res , ['bookid' , 'usn' , 'email' , 'timeleft' ]))
             {res.send('Invalid Request ! Make sure all the required fields are specified ') ; return ;  }
-        
+
 
         utils.isAuthenticated(req , res).then(uid=>{
         utils.get_userinfo({type_of_user : 'admin' , uid:uid}).then(userinfo=>{
 
             admin.database().ref(`/Colleges/${userinfo.ccode}/library/${req.body.bookid}`).set({
-                usn : req.body.usn , 
+                usn : req.body.usn ,
                 email : req.body.email ,
-                time : req.body.timeleft , 
+                time : req.body.timeleft ,
                 timestamp : Date.now()
             })
 
@@ -118,11 +118,11 @@ function Handle_POST(app){
 
 
         })
-            
-        })
-    }) ; 
 
-    
+        })
+    }) ;
+
+
 
 
     app.post("/acceptAdminRequest" , urlencodedParser , (req, res)=>{
@@ -345,7 +345,7 @@ function Handle_POST(app){
             console.log(error)
         }) ;
     }
-    
+
     catch(error)
     { /// TODO : Send the error alert to the client with the error
         res.status(400) ;
@@ -402,7 +402,7 @@ app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (r
           ref=admin.database().ref('/Colleges/'+userinfo.ccode+'/results/'+cur_year+'/'+semester+'/'+branch+'/headings');
           ref.update(headings);
 
-          res.json({success: "Results successfully added to database"}) ; 
+          res.json({success: "Results successfully added to database"}) ;
         })  ;
       })
 })
