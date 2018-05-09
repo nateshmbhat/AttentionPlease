@@ -1,0 +1,5 @@
+1. Canteen
+2. Library
+3. study
+4. teacher suggestions
+5. fee payment

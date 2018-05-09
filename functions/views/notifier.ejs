@@ -1,0 +1,216 @@
+<html >
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Notifier</title>
+
+    <style>
+
+        h1{
+            font-size:500% !important ;
+            font-family: raleway , georgia, 'times new roman', times, serif !important ;
+            text-align: center ;
+            padding:10px 0 ;
+        }
+
+        h3{
+            color:black !important;
+            font-family:raleway , caladea , lora  , cambria  !important;
+        }
+
+    </style>
+</head>
+
+<body background="assets/images/bg1.jpg">
+    <div class="gtco-loader"></div>
+
+    <% include partials/scripts_and_css.ejs %>
+    <% include partials/navbar.ejs %>
+
+    <script src="/assets/js/notifier.js"></script>
+
+    <h1 class="animated flipInX ">Notify Them </h1>
+    <div class="jumbotron container z-depth-1" style="background-color: white">
+
+        <h3 id="collegename" class="text-center" style="font-family: raleway"></h3>
+        <div id="location-details">
+        </div>
+
+        <form method="post" action="/sendnotification" encType="multipart/form-data">
+
+            <div id="dynamic"> </div>
+            <div class="form-group">
+                <div class="md-form">
+                    <i class="fa fa-envelope prefix"></i>
+                    <input class="col-6" id="title" type="text" maxlength="30" minlength="3" name="title" required/>
+                    <label for="title">Title : </label>
+                </div>
+                <br>
+
+                <div class="md-form">
+                    <i class="fa fa-page prefix"></i>
+                    <textarea rows="2" type="text" id="textareaPrefix" maxlength="120" name="short_desc" class="form-control md-textarea" rows="3"></textarea>
+                    <label for="textareaPrefix">Short Description : </label>
+                </div>
+
+
+                <div class="md-form mt-3 mb-3">
+                    <i class="fa fa-pencil prefix"></i>
+                    <textarea type="text" id="textareaPrefix" maxlength="1000" name="long_desc" class="form-control md-textarea" rows="3"></textarea>
+                    <label for="textareaPrefix">Long Description : </label>
+                </div>
+
+
+                <div class="file-field m-5">
+                    <div class="btn btn-primary btn-sm float-left">
+                        <span>Choose file</span>
+                        <input name="sampleFile" type="file" id="file_image">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate"  type="text" placeholder="Upload your file">
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row text-center justify-content-center">
+                        <div class="col-10">
+                            <div class="view overlay hoverable z-depth-1">
+                                    <img class="img-fluid rounded" id="preview_image">
+                                    <a>
+                                        <div class="mask waves-effect rgba-dark-slight"></div>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="form-group"> </div>
+
+
+            <!-- circle icon  -->
+            <div class="text-center text-align-center">
+                <div id="loader_circle" class="preloader-wrapper big active" hidden> <div class="spinner-layer spinner-blue"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-red"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-yellow"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> <div class="spinner-layer spinner-green"> <div class="circle-clipper left"> <div class="circle"></div> </div> <div class="gap-patch"> <div class="circle"></div> </div> <div class="circle-clipper right"> <div class="circle"></div> </div> </div> </div>
+            </div>
+
+            <div class="animated shake hoverable rounded alert alert-danger"  hidden role="alert" id="erroralert"><h2 style="color:black;"></h2></div>
+
+            <div class="animated zoomIn hoverable rounded alert alert-success " hidden role="alert" id="successalert"><h2 style="color:black"></h2></div>
+
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-lg rounded btn-dark-green waves-effect waves-light">Notify</button>
+            </div>
+
+        </form>
+
+    </div>
+
+    <br><br><br><br><br>
+  <% include partials/footer.ejs %>
+   <script>$("#div_footer").css('position' , 'fixed') ;</script>
+
+</body>
+
+
+<script>
+    function initialize() {
+        $("#file_image").change(function() {
+            readURL(this);
+        });
+     }
+
+     initialize() ;
+
+
+    function readURL(input) {
+
+        if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+            $('#preview_image').attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+
+    function fadeElementAfter(querystring , time=3000 ){
+       setTimeout(()=>{
+           $("button[type=submit]").attr("disabled" , true) ;
+           $(querystring).fadeOut(()=>{
+                $(querystring).attr("hidden" , true) ;
+                $(querystring).show() ;
+           $("button[type=submit]").removeAttr("disabled") ;
+           }) ;
+       } , time ) ;
+    }
+
+
+$("form").on('submit' , e=>{
+    e.preventDefault() ;
+    $('button[type=submit]').hide() ;
+    $("#loader_circle").removeAttr("hidden") ;
+
+    postdata = new FormData() ;
+
+    $('form').serializeArray().map(ele=> { if(ele.name!='topic') postdata.append(ele.name , ele.value) }) ;
+
+    topicslist = [] ;
+    $("input:checkbox[name=topic]:checked").each(function(){
+        topicslist.push($(this).val());
+    });
+    postdata.append('topic' , topicslist) ;
+
+
+
+    postdata.append('image_file',  document.getElementById('file_image').files[0] ) ;
+console.log(postdata.entries()) ;
+
+    $.ajax({url : '/sendnotification' ,
+            type: "post" ,
+            method:'post' ,
+            cache: false ,
+            contentType:false ,
+            data : postdata ,
+            processData:false,
+            success:  (data , status , jqxhr_obj)=>{
+            if(data.success)
+            {
+                console.log('success') ;
+                $('#successalert').html(`<h3 class="text-center">${data.success}</h3>`)
+                $('#successalert').replaceWith($("#successalert").clone().removeAttr('hidden')) ;
+                document.querySelector("form").reset() ;
+                fadeElementAfter("#successalert" , 5000) ;
+            }
+            else{
+                console.log('error') ;
+                $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
+                $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden')) ;
+                fadeElementAfter("#erroralert" , 4000) ;
+            }
+
+            $('button[type=submit]').show() ;
+
+            $("#loader_circle").attr('hidden' , true) ;
+        } ,
+
+
+        error : (jqXHR, textStatus, errorThrown )=>{
+                console.log(jqXHR , textStatus , errorThrown) ;
+                $('#erroralert').html(`<h3 class="text-center">${data.error}</h3>`)
+                $('#erroralert').replaceWith($("#erroralert").clone().removeAttr('hidden')) ;
+                fadeElementAfter("#erroralert" , 4000) ;
+        }
+
+    }) ;
+
+
+
+})
+
+
+</script>
+</html>

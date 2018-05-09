@@ -7,6 +7,29 @@
     <title>Create Topics</title>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/styles.css">
+
+    <style type="text/css">
+        .accordion.accordion-5 .card {
+  border: 0;
+  background-color: transparent; }
+  .accordion.accordion-5 .card .card-header {
+    border: 0;
+    background-color: #f44336;
+    -webkit-transition: .3s;
+    transition: .3s; }
+    .accordion.accordion-5 .card .card-header:hover {
+      -webkit-transition: .3s;
+      transition: .3s;
+      background-color: #455a64; }
+    .accordion.accordion-5 .card .card-header .fa {
+      background-color: #fff;
+      border-top-left-radius: 3px; }
+  .accordion.accordion-5 .card .card-body {
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px; }
+    </style>
+
+
 </head>
 
 <body background="assets/images/bg1.jpg">
@@ -14,59 +37,40 @@
     <% include partials/scripts_and_css.ejs %>
     <% include partials/navbar.ejs %>
 
-    <h1 class="text-decoration">Create Topic</h1>
 
-    <div class="container">
-    <form method="post">
+
+    <div class="card card-image" style="background-image: url(assets/images/timetablebg.jpg);">
+      <div class="text-white text-center align-items-center rgba-black-strong py-5 px-4">
+        <h1 class="text-decoration animated zoomIn text-center">Create Topic</h1>
+
+    <form method="post" action="/createtopic">
 
     <% if(locals.topicexists && locals.topicexists) {%>
-    <h5 class="animated shake alert alert-danger">Specified Topic already exists ! </h5>
+        <h5 class="animated shake alert alert-danger">Specified Topic already exists ! </h5>
     <%}%>
 
     <% if(locals.success && locals.success) {%>
-    <h5 class="animated zoomIn alert alert-success">Topic Successfully added :)</h5>
+        <h5 class="animated zoomIn alert alert-success">Topic Successfully added :)</h5>
     <%}%>
 
-    <div class="form-group">
-        <label class="col-4" for="inputState">State : </label>
-        <select name="state" onselect="state_selection_changed()" class="col-4" id="select_state" required>
-            <option id="select_state_choose" selected disabled hidden>Choose...</option>
-        </select>
+
+    <div class="form-group row">
+        <h4 class="col-2" >Topic Name : </h4>
+        <input class="col-10" required name="topic" type="text" maxlength="15" minlength="2" placeholder="CSE" align="right"/>
     </div>
 
-    <div class="form-group">
-        <label class="col-4" for="inputState">District : </label>
-        <select class="col-4" id="select_district" name="district" required>
-            <option id="select_state_choose">Choose...</option>
-        </select>
+    <div class="form-group row">
+        <h4 for="desc" class="col-2"> Topic Description : </h4>
+        <textarea class="col-10" required name="desc" type="text" maxlength="200" minlength="2" id="desc"> </textarea>
     </div>
 
-    <div class="form-group ">
-        <label class="col-4" for="college">College : </label>
-        <input placeholder="Indian Institute of Technology" class="col-12" id= "select_college" type="text" required list="collegenameslist" name="college">
-        <datalist id="collegenameslist"> </datalist>
-    </div> 
-   
-    <div class="form-group ">
-        <label class="col-4" >Topic Name : </label>
-        <input required name="topic" type="text" maxlength="15" minlength="2" placeholder="CSE"/> 
-    </div>  
-
-    <div class="form-group">
-        <label for="desc" class="col-4"> Topic Description : </label>
-        <textarea required name="desc" type="text" maxlength="200" minlength="2" id="desc" > </textarea>
-    </div> 
-
-    <br> 
-    <div class="form-group text-center"><button type="submit" class="btn btn-primary ">Create</button></div>
+    <div class="form-group text-center"><button type="submit" class="btn btn-deep-purple">Create</button></div>
 
     </form>
 
    </div>
-
-
-   <script src="/assets/js/StateDistCollege.js"></script>
-
+ </div>
+</div>
    <% include partials/footer.ejs %>
    <script>$("#div_footer").css('position' , 'fixed') ;</script>
 

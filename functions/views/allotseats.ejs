@@ -1,30 +1,95 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seat Allotment</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+
+    <style type="text/css">
+        .accordion.accordion-5 .card {
+  border: 0;
+  background-color: transparent; }
+  .accordion.accordion-5 .card .card-header {
+    border: 0;
+    background-color: #f44336;
+    -webkit-transition: .3s;
+    transition: .3s; }
+    .accordion.accordion-5 .card .card-header:hover {
+      -webkit-transition: .3s;
+      transition: .3s;
+      background-color: #455a64; }
+    .accordion.accordion-5 .card .card-header .fa {
+      background-color: #fff;
+      border-top-left-radius: 3px; }
+  .accordion.accordion-5 .card .card-body {
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px; }
+    </style>
+
 </head>
+<body background="assets/images/bg1.jpg">
+
+    <% include partials/scripts_and_css.ejs %>
+    <% include partials/navbar.ejs %>
 
 
-<body>
-  <div class="gtco-loader"></div>
-  <% include partials/scripts_and_css.ejs %>
 
-  <div class="container">
-    <form ref='uploadForm' id='uploadForm' action='/putseats' method='post' encType="multipart/form-data">
-        <i class="fa fa-file" ></i>
-        <input type="file" name="sampleFile"  class="mdb-skin file"/>
-        <span><i class="fa fa-cloud"> </i></span><input type='submit' value='Upload' class="btn btn-primary btn-block btn-mdb" />
 
-        <input type="text" name="name" placeholder="Name : ">
-    </form>     
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+
+
+
+
+
+    <!-- Card -->
+  <div class="card card-image" style="background-image: url(assets/images/allotseats.jpg);">
+
+    <!-- Content -->
+    <div class="text-white text-center align-items-center rgba-black-strong py-5 px-4">
+
+      <h1 class="text-decoration animated zoomIn text-center">Seat Allotment</h1>
+              <br><h4 class="text-decoration text-center">Add a spreadsheet file containing the seat allotment details...example format will soon follow</h4>
+                <br><center>
+                <div class="view overlay">
+                  <form method="post" action="/putseats" enctype="multipart/form-data"
+                    <div class="image-upload">
+                        <label for="file-input">
+                            <h4  class="btn btn-info btn-md align-center">Browse Spreadsheet File</h4>
+                        </label>
+                        <% if(locals.error) {%>
+                            <div class="animated shake rounded alert alert-danger"   role="alert" id="erroralert"><h2 style="color:black;">Input file should be a spreadsheet document!</h2></div>
+                        <%}%>
+
+                        <% if(locals.success){%>
+                            <div class="animated zoomIn rounded alert alert-success" role="alert" id="successalert"><h2 style="color:black">Seats successfully alloted!</h2></div>
+                        <%}%>
+
+                        <% if(locals.nofile) {%>
+                            <div class="animated shake rounded alert alert-danger"   role="alert" id="erroralert"><h2 style="color:black;">No file was given as input!</h2></div> <%}%>
+                        <input id="file-input"  type="file" name="seat_file" accept=".xml,.xlsx,.ods" hidden="true"/>
+                    </div>
+                    <label for="submit_seats">
+                        <h4  class="btn btn-info btn-md">Submit</h4>
+                    </label>
+
+                    <input id="submit_seats" type="submit" hidden>
+                  </form>
+                </div>
+              </div>
+                <br><br>
+
+
+    </div>
+    <!-- Content -->
 
   </div>
+  <!-- Card -->
+
+    <!--Card-->
 </div>
   <% include partials/footer.ejs %>
    <script>$("#div_footer").css('position' , 'fixed') ;</script>
 </body>
-
-</html>

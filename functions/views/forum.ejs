@@ -1,0 +1,78 @@
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum Page</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <style type="text/css">
+        .accordion.accordion-5 .card {
+  border: 0;
+  background-color: transparent; }
+  .accordion.accordion-5 .card .card-header {
+    border: 0;
+    background-color: #f44336;
+    -webkit-transition: .3s;
+    transition: .3s; }
+    .accordion.accordion-5 .card .card-header:hover {
+      -webkit-transition: .3s;
+      transition: .3s;
+      background-color: #455a64; }
+    .accordion.accordion-5 .card .card-header .fa {
+      background-color: #fff;
+      border-top-left-radius: 3px; }
+  .accordion.accordion-5 .card .card-body {
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px; }
+    </style>
+</head>
+<body background="assets/images/bg1.jpg">
+
+    <% include partials/scripts_and_css.ejs %>
+    <% include partials/navbar.ejs %>
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+
+    <div class="container">
+    <br>
+        <h1 class="text-decoration text-center animated zoomIn">Forum Page</h1>
+
+
+<!-- Card -->
+<div class="card card-image" style="background-image: url(assets/images/bgforum.jpg);">
+
+    <!-- Content -->
+    <div class="rgba-black-strong py-5 px-4">
+        <div class="row d-flex justify-content-center ">
+            <div class="col-md-10 col-xl-8">
+
+                <!--Accordion wrapper-->
+                <div class="accordion accordion-5" id="accordionEx5" role="tablist" aria-multiselectable="true">
+                  <div class="card"><!--dummy data--></div>
+                    <!-- Accordion card -->
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="alert alert-success animated zoomIn" hidden id="alert-success"></div>
+        
+        <div class="text-center center">
+            <button class="btn btn-success btn_submit_response btn-lg hoverable" hidden> Submit Responses </button>
+        </div>
+
+    </div>
+    <!-- Content -->
+</div>
+<!-- Card -->
+</div>
+
+
+
+    <script src="/assets/js/forum.js"></script>
+     <% include partials/footer.ejs %>
+   <script>$("#div_footer").css('position' , 'fixed') ;</script>
+</body>

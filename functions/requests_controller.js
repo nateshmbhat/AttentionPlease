@@ -1,8 +1,5 @@
-/// <reference path=".\node_modules\@types\express\index.d.ts" />import { urlencoded } from "body-parser";import { FirebaseDatabase } from "@firebase/database-types";import { registerDatabase } from "@firebase/database";import { urlencoded } from "express";import { request } from "https";import { json } from "body-parser";import { request } from "https";import { config } from "firebase-functions";import { decode } from "punycode";import { firebase } from "@firebase/app";import { decode } from "punycode";import { urlencoded } from "body-parser";import { isValidFormat } from "@firebase/util";import { firebase } from "@firebase/app";import { database } from "firebase-admin";import { database } from "firebase-admin";import { firebase } from "@firebase/app";import { firebase } from "@firebase/app";import { urlencoded } from "body-parser";import { userInfo } from "os";import { userInfo } from "os";import { contains } from "@firebase/util";
-
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ALL IMPORTS
-
 
 const app = require("express")() ;
 const bodyparser = require("body-parser") ;
@@ -17,8 +14,12 @@ const serviceAccount = require("./service account key/AttentionPlease-d86a646ccc
 const express_fileupload = require("express-fileupload") ;
 const gcs = require("@google-cloud/storage")() ;
 const uniqid = require("uniqid" ) ;
-const route_sendnotification = require("./routes/sendnotification") ; 
-const utils = require("./utility_functions") ; 
+const route_sendnotification = require("./routes/sendnotification") ;
+const utils = require("./utility_functions") ;
+const os= require("os") ;
+const multer = require("multer") ;
+const spawn = require("child_process").spawn;
+
 
 
 admin.initializeApp({
@@ -26,8 +27,6 @@ admin.initializeApp({
   databaseURL: "https://attentionplease-24589.firebaseio.com/" ,
   storageBucket : "attentionplease-24589.appspot.com"
 });
-
-
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  End of IMPORTS
 
 
@@ -44,7 +43,7 @@ module.exports = function HandleRequests(app){
 //Handles all POST requests
 function Handle_POST(app){
 
-    app.use('/sendnotification', route_sendnotification) ; 
+    app.use('/sendnotification', route_sendnotification) ;
 
     app.post("/createtimetable" , urlencodedParser ,  (req , res)=>{
 
@@ -72,19 +71,14 @@ function Handle_POST(app){
                 path = `/Colleges/${userinfo.ccode}/timetables/${req.body.year}/${req.body.branch}/${req.body.section}/` ;
                 console.log(path) ;
                 admin.database().ref(path).update(postdata) ;
-
             })
         })
 
-        .catch(error=>{console.log(error.message ) ;
+        .catch(error=>{console.log(error.message) ;
             res.status(400) ;
             res.send(error.message) ;
     }) ;
 });
-
-
-
-    
 
 
 
@@ -99,9 +93,128 @@ function Handle_POST(app){
 
            res.status(400) ;
            res.send(error) ;
-
         }
-    })
+    });
+
+    
+
+
+
+    function sendMail(toaddr , subject , body , usn)
+    {
+        const nodemailer = require('nodemailer');
+
+        // Generate test SMTP service account from ethereal.email
+        // Only needed if you don't have a real mail account for testing
+        nodemailer.createTestAccount((err, account) => {
+            // create reusable transporter object using the default SMTP transport
+            let transporter = nodemailer.createTransport({
+                host: 'smtp.gmail.com',
+                port: 587,
+                secure: false, // true for 465, false for other ports
+                auth: {
+                    user: 'notifytosit@gmail.com', // generated ethereal user
+                    pass: 'workisworship_sit' // generated ethereal password
+                }
+            });
+
+            // setup email data with unicode symbols
+            let mailOptions = {
+                from: '"COSMOS" <notifytosit@gmail.com>', // sender address
+                to: `<${toaddr}>`, // list of receivers
+                subject: subject, // Subject line
+                text : body , 
+                html: `<b>${body}</b>` // html body
+            };
+
+            // send mail with defined transport object
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    return console.log(error);
+                }
+                console.log('Message sent: %s', info.messageId);
+                // Preview only available when sending through an Ethereal account
+                console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+                // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+                // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+            });
+        });
+    }
+
+
+
+    app.post(`/submitbook` , urlencodedParser , (req , res)=>{
+
+        console.log(req.body) ;
+
+        if(!utils.validatePostBody(req , res , ['bookid' , 'usn' , 'email' , 'timeleft' ]))
+            {res.send('Invalid Request ! Make sure all the required fields are specified ') ; return ;  }
+
+            utils.isAuthenticated(req , res).then(uid=>{
+            utils.get_userinfo({type_of_user : 'admin' , uid:uid}).then(userinfo=>{
+                console.log("this is running !") ; 
+
+                admin.database().ref(`/Colleges/${userinfo.ccode}/library/${req.body.bookid}`).set({
+                    usn : req.body.usn ,
+                    email : req.body.email ,
+                    time : req.body.timeleft ,
+                    timestamp : Date.now()
+                }).then(()=>{
+
+                    let body  = req.body ; 
+                    res.render('library.ejs') ;
+                    sendMail( body.email , "Library Notifier" , `The book with ID ${body.bookid} has been linked with your USN ${body.usn}.` , body.usn ) ; 
+
+               });    
+            })
+
+        })
+        .catch(err=>{res.render('login.ejs'); })
+
+    });
+
+
+
+
+    app.post("/acceptAdminRequest" , urlencodedParser , (req, res)=>{
+        if(!utils.validatePostBody(req,  res, ['uid' , 'name' , 'usn']))
+            {res.send('Invalid Post request ! Required Fields not provided .') ; }
+
+        utils.isAuthenticated(req ,res).then(uid=>{
+            utils.get_userinfo({type_of_user:'admin' , uid:uid}).then(userinfo=>{
+
+                admin.database().ref(`/Colleges/${userinfo.ccode}/adminrequests`).orderByChild('uid').equalTo(req.body.uid).limitToFirst(1).once('value' , getpushiddata=>{
+                    let pushid = Object.getOwnPropertyNames(getpushiddata.val())[0]
+
+                admin.database().ref(`/Colleges/${userinfo.ccode}/adminrequests/${pushid}`).set({}) ;
+
+                } ) ;
+
+                admin.database().ref(`/Colleges/${userinfo.ccode}/subadmins/${req.body.uid}/usn`).set(req.body.usn) ;
+            })
+        })
+    }) ;
+
+
+
+    app.post("/rejectAdminRequest" , urlencodedParser , (req, res)=>{
+        if(!utils.validatePostBody(req,  res, ['uid' , 'name' , 'usn']))
+            {res.send('Invalid Post request ! Required Fields not provided .') ; }
+            utils.isAuthenticated(req ,res).then(uid=>{
+                utils.get_userinfo({type_of_user:'admin' , uid:uid}).then(userinfo=>{
+
+                admin.database().ref(`/Colleges/${userinfo.ccode}/adminrequests`).orderByChild('uid').equalTo(req.body.uid).limitToFirst(1).once('value' , getpushiddata=>{
+                    let pushid = Object.getOwnPropertyNames(getpushiddata.val())[0]
+
+                admin.database().ref(`/Colleges/${userinfo.ccode}/adminrequests/${pushid}`).set({}) ;
+
+                } ) ;
+            }) ;
+        });
+    }) ;
+
+
 
 
     app.post('/updateprofile', urlencodedParser ,(req , res)=>{
@@ -117,7 +230,6 @@ function Handle_POST(app){
                 email : req.body.email ,
             })
             .then(user=>{
-
                 console.log('request body is ') ; console.log(req.body) ;
                 let ref = admin.database().ref('/adminusers/' + user.uid) ;
                 ref.update({
@@ -141,60 +253,76 @@ function Handle_POST(app){
 
 
 
-    app.post('/putseats' ,urlencodedParser , (req , res)=>{
-        console.log("\nGOT FILE POST REQUEST !!!\n\n") ;
-        console.log(req.files) ;
+    app.get('/library'  , urlencodedParser , (req , res)=>{
+        utils.isAuthenticated(req , res).then(uid=>{
+            res.render('library.ejs' ) ; 
+        })
 
-        let sampleFile = req.files.sampleFile ;
+    }) ; 
 
-        fileid = uniqid() ;
-        sampleFile.mv(`./data/${fileid}` , err=>{
-            if(!err){
-                console.log("Successfully got the file ! ") ;
-                admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
-                    userinfo = snap.val() ;
 
-                    var obj=xlsx.readFile(`./data/client_data/${fileid}`);
-                    var sh=obj.SheetNames;
-                    var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
 
-                    var final={};
-                    var temp=[];
-                    var subs;
-                    for(i=0;dat[i]!=undefined;i++){
-                      final[dat[i].USN]=temp;
-                      subs={};
-                      for(j=0;dat[i]['sub'+j]!=undefined;j++){
-                        subs['subname']=dat[i]['sub'+j];
-                        subs['date']=dat[i]['date'+j];
-                        subs['time']=dat[i]['time'+j];
-                        subs['room']=dat[i]['room'+j];
-                        subs['seat']=dat[i]['seatno'+j];
-                        temp[j]=subs
-                        subs={};
-                      }
-                      temp=[];
-                    }
-                    res.status(200).render('/allotseats.ejs') ;
-                    admin.database().ref(`/Colleges/${userinfo.ccode}/seats/`).update(final)  ;
-                }) ;
-                // let bucket = admin.storage().bucket() ;
 
-                bucket.upload('./../data/mytestfile.jpg' , (err, file , response)=>{
-                    console.log(err , file, response) ;
-                }) ;
-            } else {
-                console.log(err);
-                res.status(403).send(err.message);
-            }
-            });
+    app.post('/putseats' , multer({dest : os.tmpdir() } ).single('seat_file') , (req , res)=>{
+        console.log('req.body' , req.body) ;
+        console.log('req.file' , req.file) ;
+        if(!req.file){
+          res.render('allotseats.ejs',{nofile : true});
+          return;
+        }
+        if(req.file.mimetype!='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'){
+          res.render('allotseats.ejs',{error : true});
+          return;
+        }
+        var xlsx=require('xlsx');
+        file_path = req.file.path ;
+        file_name = req.file.name ;
 
-    }); 
+        //res.status(200).render('allotseats.ejs' , {success : "Successfully got the file for furthur processing "}) ;
+        utils.isAuthenticated(req,res)
+        .then(uid=>{
+          admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
+              userinfo = snap.val() ;
+
+              var obj=xlsx.readFile(file_path);
+              var sh=obj.SheetNames;
+              var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
+
+              // console.log(dat);
+
+              var final={};
+              var temp=new Array();
+
+              for(i=0;dat[i]!=undefined;i++){
+                temp = [] ;
+                for(j=0;dat[i]['sub'+j]!=undefined;j++){
+                  subs = new Object() ;
+                  subs['name']=dat[i]['Name'];
+                  subs['subject']=dat[i]['sub'+j];
+                  subs['block']=dat[i]['block'+j];
+                  subs['date']=dat[i]['date'+j];
+                  subs['time']=dat[i]['time'+j];
+                  subs['room']=dat[i]['room'+j];
+                  subs['seat']=dat[i]['seatno'+j];
+                  temp.push(subs) ;
+                }
+                final[dat[i]['USN']]=temp;
+                console.log(final);
+              }
+              admin.database().ref(`/Colleges/${userinfo.ccode}/Seat/`).update(final)  ;
+          }) ;
+          res.render('allotseats.ejs',{success : true});
+    });
+  })
+
+
 
 
     app.post('/register' , urlencodedParser ,  (req , res)=>{
         flag_valid = 0 ;
-        if(!utils.validatePostBody(req , res , ['state' , 'district' , 'college' , 'email' , 'password' , 'name'  , 'phone'])) return ;
+    try{
+        if(!utils.validatePostBody(req , res , ['state' , 'district' , 'college' , 'email' , 'password' , 'name'  , 'phone']))
+        {res.render('index.ejs' , {error : "Invalid Post request ! " }) ;}
 
         if(Object.getOwnPropertyNames(state_dist_colleges).indexOf(req.body.state)>=0){
             if(Object.getOwnPropertyNames(state_dist_colleges[req.body.state]).indexOf(req.body.district)>=0)
@@ -204,19 +332,36 @@ function Handle_POST(app){
                     flag_valid = 1 ;
                 }
                 else{
-                    res.render('index.ejs' , {error : "Invalid College Entry . Please make sure that you have selected one of the colleges in the provided list itself."}) ;
-                    return ;
+                    res.render('index.ejs' , {error : "Invalid College Entry . Please make sure that you have selected one of the colleges in the provided list itself." }) ;
                 }
-
             }
         }
 
         if(!flag_valid)
-            {
-                //CANCEL registration by sending the error !
-                res.render('index.ejs' , {error : "Invalid Location Details ! "})
-                return ;
+        {
+            //CANCEL registration by sending the error !
+            res.render('index.ejs' , {error : "Invalid Location Details ! " }) ;
+        }
+
+
+        //check if an admin user is already registered under a particular college
+        let state = req.body.state,
+        district = req.body.district,
+        college = req.body.college;
+
+        admin.database().ref(`/Colleges/${utils.get_college_code(state , district , college)}/admin/`).once('value', snap => {
+            admininfo = snap.val();
+            try{
+                if (admininfo) {
+                        throw Error('Warning ! An admin already exists for the specified college. This incident will be reported.'
+                    );
+                }
             }
+            catch(error){
+                res.render('index.ejs' ,{error : error.message } ) ;
+            }
+        }) ;
+
 
         console.log(req.body) ;
         console.log("started registration handler") ;
@@ -229,6 +374,7 @@ function Handle_POST(app){
             displayName: req.body.name,
             disabled: false
         })
+
         .then((user)=>{
                 console.log("\nUser created with ID : " + user.uid) ;
 
@@ -241,6 +387,7 @@ function Handle_POST(app){
                     district : req.body.district ,
                     college : req.body.college ,
                 };
+
                 //Set the collegeID for the user object corresponding to the selected college name
 
                 userinfo.ccode = utils.get_college_code(userinfo.state , userinfo.district , userinfo.college) ;
@@ -253,76 +400,140 @@ function Handle_POST(app){
                 res.render('index.ejs' , {success : "You have been registered successfully. Please proceed with Login :) "});
 
         })
-
-
         .catch((error)=>{
             /// TODO : Send the error alert to the client with the error
             res.status(400) ;
             res.render( "index.ejs" , {error : error.message}) ;
             console.log(error)
         }) ;
-    })
+    }
+
+    catch(error)
+    { /// TODO : Send the error alert to the client with the error
+        res.status(400) ;
+        res.render( "index.ejs" , {error : error.message}) ;
+        console.log(error)
+    }
+})
 
 
 
-    app.post('/createtopic'   , urlencodedParser , (req, res)=>{
-        console.log(req.body) ;
 
-        utils.isAuthenticated(req,res)
-        .then(uid=>{
-            if(!utils.validatePostBody(req , res ,['topic' , 'desc'])) return ;
+app.post('/putresults' , multer({dest : os.tmpdir()}).single('result_file') , (req , res)=>{
+    console.log("req.body" , req.body);
+    console.log("req.file" , req.file) ;
+    branch = req.body.branch ;
+    semester = req.body.sem ;
+    headings = req.body.headings.split(',') ;
+    result_file = req.file ;
+    result_file_path  = req.file.path ;
+    start = req.file.startrow ;
 
-            console.log("user id is " , uid) ;
-            admin.database().ref('/adminusers/'+uid).once('value',snap=>{
+    utils.isAuthenticated(req,res)
+    .then(uid=>{
+      admin.database().ref(`/adminusers/${uid}`).once('value' , snap=>{
+          userinfo = snap.val() ;
 
-                userinfo = snap.val() ;
-                let ref = admin.database().ref('/Colleges/' + userinfo.ccode + '/topics') ;
-                topicobject = {title : req.body.topic , desc : req.body.desc} ;
+          //KARAN REST OF YOUR CODE : TODO
+          var xlsx=require('xlsx');
+          console.log(headings);
+          var obj=xlsx.readFile(result_file_path);
+          var sh=obj.SheetNames;
+          var dat=xlsx.utils.sheet_to_json(obj.Sheets[sh[0]]);
+          var dt=new Date();
+          var cur_year=dt.getYear()+1900;
+          console.log(cur_year);
 
-                ref.once('value' , snap=>{
-                    topicids = snap.val()  ;
-                    arr = [] ;
-                    // fill the present topic names in arr
-                    Object.getOwnPropertyNames(topicids).forEach(id=>arr.push(topicids[id].title))
+          var final={};
+          var temp=new Array();
 
-                    if(arr.indexOf(req.body.topic)<0) //Insert only if topic doesnt already exists !
-                    {
-                        ref.push(topicobject) ;
-                        res.render('createtopic.ejs' , {success : true}) ;
-                    }
-                    else{
-                        //Topic already exists
-                        res.render('createtopic.ejs' , {topicexists : true}) ;
-                    }
-                })
+          for(i=0;dat[i]!=undefined;i++){
+              for(j=0;j<headings.length;j++){
+                  temp[j]=dat[i][headings[j]];
+              }
+              final[dat[i][headings[0]]]=temp;
+              temp=new Array();
+          }
+
+
+
+          console.log(final);
+          let ref=admin.database().ref('/Colleges/'+userinfo.ccode+'/results/'+cur_year+'/'+semester+'/'+branch+'/data');
+          ref.update(final);
+          admin.database().ref(`/Colleges/${userinfo.ccode}/results/result_years`).push(`${cur_year}-${semester}-${branch}`) ;
+          ref=admin.database().ref('/Colleges/'+userinfo.ccode+'/results/'+cur_year+'/'+semester+'/'+branch+'/headings');
+          ref.update(headings);
+
+          res.json({success: "Results successfully added to database"}) ;
+        })  ;
+      })
+})
+
+
+
+
+
+app.post('/createtopic'   , urlencodedParser , (req, res)=>{
+    console.log(req.body) ;
+
+    utils.isAuthenticated(req,res)
+    .then(uid=>{
+        if(!utils.validatePostBody(req , res ,['topic' , 'desc'])) return ;
+
+        console.log("user id is " , uid) ;
+        admin.database().ref('/adminusers/'+uid).once('value',snap=>{
+
+            userinfo = snap.val() ;
+            let ref = admin.database().ref('/Colleges/' + userinfo.ccode + '/topics') ;
+            topicobject = {title : req.body.topic , desc : req.body.desc} ;
+
+            ref.once('value' , snap=>{
+                topicids = snap.val()  ;
+                arr = [] ;
+                // fill the present topic names in arr
+                Object.getOwnPropertyNames(topicids).forEach(id=>arr.push(topicids[id].title))
+
+                if(arr.indexOf(req.body.topic)<0) //Insert only if topic doesnt already exists !
+                {
+                    ref.push(topicobject) ;
+                    res.render('createtopic.ejs' , {success : true}) ;
+                }
+                else{
+                    //Topic already exists
+                    res.render('createtopic.ejs' , {topicexists : true}) ;
+                }
             })
-
         })
-        .catch(err=>{console.log(err) ;res.render('index.ejs')}) ;
+
     })
+    .catch(err=>{console.log(err) ;res.render('index.ejs' , {error : err.message})}) ;
+})
 }
+
 
 
 
 //Handles all the GET request routes
 function Handle_GET(app){
 
-    app.get('/allotseats' , (req ,res)=>{res.render('allotseats.ejs') ; }) ; 
+    app.get('/allotseats' , (req ,res)=>{
+        utils.isAuthenticated(req , res).then(uid=>res.render('allotseats.ejs' ) ).catch(err=>res.render('login.ejs')) ;
+    }) ;
 
-    
+    app.get('/results' , (req,res)=>{
+        utils.isAuthenticated(req ,res).then(uid=>{res.render('results.ejs') ; }).catch(err=>res.render('login.ejs' ) );
+    }) ;
+
     app.get('/' , (req , res)=>{
         res.render('index.ejs') ;
     })
 
-    //this code is experimental by KPS
-    app.get('/expr',(req,res)=>{
-        res.render('expr.ejs');
-    })
-    //end of experimental code
-
-
     app.get('/createtopic' , (req , res)=>{
-        utils.isAuthenticated(req , res).then(uid=>res.render('createtopic.ejs')).catch(err=>res.render('login.ejs')) ;
+        utils.isAuthenticated(req , res).then(uid=>res.render('createtopic.ejs' ) ).catch(err=>res.render('login.ejs')) ;
+    })
+
+    app.get('/placements' , (req , res)=>{
+        utils.isAuthenticated(req , res).then(uid=>res.render('placements.ejs' ) ).catch(err=>res.render('login.ejs')) ;
     })
 
     app.get('/profile' , (req , res)=>{
@@ -330,7 +541,12 @@ function Handle_GET(app){
     })
 
     app.get('/home' , (req,res)=>{
+        //Todo add authentication
         res.redirect('/') ;
+    })
+
+    app.get('/library' , (req,res)=>{
+      res.render('library.ejs');
     })
 
     app.get('/index.html' , (req,res)=>{
@@ -351,20 +567,44 @@ function Handle_GET(app){
     })
 
     app.get("/dashboard" , (req, res)=>{
-        console.log("handling dashboard get ...") ; 
+        console.log("handling dashboard get ...") ;
         utils.isAuthenticated(req, res)
-        .then(uid=>{ console.log("authenticated : ", uid) ;   res.render('dashboard.ejs')  ; 
-            utils.get_userinfo({uid : uid}) ; 
-        } )
+        .then(uid=>{
+            console.log("authenticated : ", uid) ;   res.render('dashboard.ejs')  ;
+            utils.get_userinfo({uid : uid}).then(userinfo=>console.log(userinfo) ) ;
+        })
         .catch(error=>res.render('login.ejs'))  ;
     })
 
     app.get('/displayprofile' , (req ,res)=>{
-	res.render('displayprofile.ejs') ; 
-    }) 
-    
-     app.get('/dashboard2' , (req ,res)=>{
-    res.render('dashboard2.ejs') ; 
-    }) 
+        utils.isAuthenticated(req , res)
+        .then(uid=>{console.log("authenticated : " , uid) ; res.render('displayprofile.ejs') ; })
+        .catch(error=>{res.render('login.ejs') ; })
 
+    })
+
+
+    app.get('/notifier' , (req ,res)=>{
+        utils.isAuthenticated(req, res)
+        .then(uid=>{console.log("authenticated : " , uid) ; res.render('notifier.ejs') ; })
+        .catch(error=>{
+            if(error.uid){
+                //he is a subadmin
+                console.log("Subadmin logged in : ") ;
+            }
+            console.log("isAuthentic catch : " , error) ;  res.render('login.ejs')
+        }) ;
+    })
+
+    app.get('/assignrole' , (req ,res)=>{
+        utils.isAuthenticated(req , res)
+        .then(uid => {console.log("authenticated : " , uid) ; res.render('assignrole.ejs') ;})
+        .catch(error=>{res.render('login.ejs') ; })
+    })
+
+    app.get('/forum' , (req ,res)=>{
+        utils.isAuthenticated(req , res)
+        .then(uid => {console.log("authenticated : " , uid) ; res.render('forum.ejs') ;})
+        .catch(error=>{res.render('login.ejs') ; })
+    })
 }

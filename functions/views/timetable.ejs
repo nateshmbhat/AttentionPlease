@@ -15,7 +15,7 @@
             transition : all .4s ;
         }
         th.days:hover{
-            
+
         }
 
     </style>
@@ -23,22 +23,21 @@
 
 
 <body background="assets/images/bg1.jpg">
-<body>
-        <div class="gtco-loader"></div>
-  <% include partials/scripts_and_css.ejs %>
+
+         <div class="gtco-loader"></div>
+         <% include partials/scripts_and_css.ejs %>
+         <% include partials/navbar.ejs %>
+
+
         <script src="assets/js/footable.js"></script>
         <!-- Compiled and minified CSS -->
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+       <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
 
-        <!-- Compiled and minified JavaScript -->
+      -->   <!-- Compiled and minified JavaScript -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 
-        <% if(locals.login && login){%>
-        <% include partials/navbar.ejs %>
-        <%} else {%>
-        <% include partials/navbar_login.ejs %>
-        <%} %>
+
 
         <div class="container">
             <h1 class="animated zoomIn text-center">Time Table</h1>
@@ -54,7 +53,7 @@
 
               </div>
               <div hidden id="addNewTimeTable" class="mt-5 p-3">
-                  
+
                   <div class="input-field col s2 ">
                       <div class="row">
                           <h5 >Select Year and Branch : </h5>
@@ -73,19 +72,19 @@
                               <option value="BIOTECH">BIOTECH</option>
                               <option value="CHEMICAL">CHEMICAL</option>
                           </select>
-  
-                      </div>    
+
+                      </div>
                   </div>
-  
+
                   <div class="input-field col s2">
                           <div class="row">
                               <h5 >Section : </h5>
                               <select class="ml-5"  id="select_section" >
                               </select>
-                          </div>    
+                          </div>
                   </div>
-  
-  
+
+
                   <table class="table table-bordered table-responsive">
                       <thead class="blue-grey lighten-4">
                           <th class="days ">Time \ Day</th>
@@ -97,69 +96,96 @@
                           <th class="days ">Saturday</th>
                           <th class="days ">Sunday</th>
                       </thead>
-  
+
                       <tbody id="timetable_body">
                      </tbody>
                   </table>
-  
+
                   <div class="alert text-center animated shake alert-danger erroralert" hidden> </div>
                   <div class="alert text-center animated zoomIn alert-success successalert" hidden> </div>
-                  
+
                   <button type="button" title="Add Row" class=" hoverable btn btn-warning waves-effect waves-light rounded" id="btn_addRow">
                       <i class="fa fa-plus"></i>
                   </button>
-                  
+
                   <button title="Remove Row" class="hoverable btn btn-danger waves-effect waves-light rounded" id="btn_delRow">
                       <i class="fa fa-minus white-text"></i>
                   </button>
-  
+
                   <button class="btn btn-success hoverable waves-effect waves-light" type="submit" id="btn_saveTimeTable">Save Timetable</button>
-  
+
+
                   <div class="m-5"> </div>
-  
+
                   <!-- <button class="btn btn-info hoverable waves-effect waves-light"  id="btn_tester">TEST</button> -->
-  
+
               </div>
             </div>
-            
         </div>
 <script>
+
+let global_uid ;
+
+
+function getTimeTableStarter(){
+
+    firebase.auth().onAuthStateChanged(user=>{
+
+        console.log("running auth state changed ! ") ;
+
+        if(!user) {
+            window.location="/";
+            return ;
+        }
+
+        global_uid = user.uid ;
+        getTimeTable() ;
+    }) ;
+}
+
 
 
         function getTimeTable()
         {
-            firebase.ref(`/adminusers/${firebase.auth().getUid()}`).once('value' , adminsnap=>{
-            userinfo = adminsnap.val() ; 
+            userid = global_uid
+            console.log('userid' , userid) ;
+            firebase.database().ref(`/adminusers/${userid}`).once('value' , adminsnap=>{
+            userinfo = adminsnap.val() ;
+
+            console.log("userinfo : " , userinfo) ;
 
             ref = firebase.database().ref(`/Colleges/${userinfo.ccode}/timetables/${$('#select_year').val()}/${$('#select_branch').val()}/${$('#select_section').val()}`)
 
             ref.once('value' , snap=>
             {
-                dataArray = snap.val() ; 
-                console.log(dataArray) ; 
+                dataArray = snap.val() ;
+                console.log(dataArray) ;
 
-                $("#timetable_body").html("") ; 
+                $("#timetable_body").html("") ;
 
                 if(dataArray==null || typeof(dataArray)=='undefined')
                 {
-                    addRow(3) ; 
+                    addRow(3) ;
                     $("#btn_saveTimeTable").text("Save TimeTable")
                     return ;
                 }
-                
-                $("#btn_saveTimeTable").html(`Update`)
-                
-                //Clear table and start populating
-                
-                dataArray.forEach(Arr => {
-                    addRow(1) ;  
-                    $("#timetable_body tr:last input.startTime").val(Arr[0]) ; 
-                    $("#timetable_body tr:last input.endTime").val(Arr[1]) ; 
 
-                    input_elements = $("#timetable_body tr:last input.courseName") ; 
+                $("#btn_saveTimeTable").html(`Update`)
+
+                //Clear table and start populating
+
+                dataArray.forEach(Arr => {
+                    addRow(1) ;
+                    $("#timetable_body tr:last input.startTime").val(Arr[0]) ;
+                    $("#timetable_body tr:last input.endTime").val(Arr[1]) ;
+
+                    input_elements = $("#timetable_body tr:last input.courseName") ;
+
+
+
                     for(j =0  , len = input_elements.length ; j<len ; j++)
                     {
-                        input_elements[j].value = Arr[j+2] ; 
+                        input_elements[j].value = Arr[j+2] ;
                     }
 
                 });
@@ -178,48 +204,48 @@
             rows = $("#timetable_body tr") //row elements
 
                 for(i =0 ; i<rows.length ; i++)
-                {                    
-                    startTime = rows[i].querySelector("input.startTime").value ; 
-                    endTime = rows[i].querySelector("input.endTime").value ; 
-                    columnArray =  [ startTime , endTime ] ; 
+                {
+                    startTime = rows[i].querySelector("input.startTime").value ;
+                    endTime = rows[i].querySelector("input.endTime").value ;
+                    columnArray =  [ startTime , endTime ] ;
                     input_elements = rows[i].querySelectorAll("input.courseName") ;
                     for(j =0  , len = input_elements.length ; j<len ; j++)
                     {
-                        columnArray.push(input_elements[j].value) ;   
+                        columnArray.push(input_elements[j].value) ;
                     }
-                    rowsArray.push(columnArray) ; 
+                    rowsArray.push(columnArray) ;
                 }
 
-            console.log(rowsArray) ; 
+            console.log(rowsArray) ;
 
             let jqXHR = $.post('/createtimetable' , {
-                dataArray : rowsArray , 
+                dataArray : rowsArray ,
                 branch:$('#select_branch').val() ,
-                year : $('#select_year').val() , 
+                year : $('#select_year').val() ,
                 section : $('#select_section').val()
                 } , function success(data , textStatus , jqXHR){
-                    console.log(data) ; 
-                    console.log(jqXHR.status) ; 
-                
-                
-                $("div.successalert").html(data) ; 
-                $("div.successalert").replaceWith($("div.successalert").clone()) ; 
-                $("div.successalert").removeAttr('hidden') ; 
-                $("div.successalert").fadeIn() ; 
+                    console.log(data) ;
+                    console.log(jqXHR.status) ;
+
+
+                $("div.successalert").html(data) ;
+                $("div.successalert").replaceWith($("div.successalert").clone()) ;
+                $("div.successalert").removeAttr('hidden') ;
+                $("div.successalert").fadeIn() ;
 
                 setTimeout( ()=>{$("div.successalert").fadeOut() ;} , 3000)
-                
+
              })
 
              .fail(data=>{
-                 console.log(data.responseText) ; 
-                 $("div.erroralert").html(data.responseText) ; 
-                 $("div.erroralert").replaceWith($('div.erroralert').clone()) ; 
-                 $("div.erroralert").removeAttr('hidden') ; 
-                 $("div.erroralert").fadeIn() ; 
+                 console.log(data.responseText) ;
+                 $("div.erroralert").html(data.responseText) ;
+                 $("div.erroralert").replaceWith($('div.erroralert').clone()) ;
+                 $("div.erroralert").removeAttr('hidden') ;
+                 $("div.erroralert").fadeIn() ;
 
                  setTimeout( ()=>{$("div.erroralert").fadeOut() ;} , 5000)
-                  
+
 
              })
 
@@ -246,12 +272,11 @@
                 row+= `<td><input type="text" class="md-form form-control text-center font-weight-bold courseName"></td>`
             }
 
-            row+=`</tr>` ; 
+            row+=`</tr>` ;
 
             for(let i =0 ; i<n ; i++)
             {
-
-                $("#timetable_body tr:last").after(row) ; 
+                $("#timetable_body tr:last").after(row) ;
 
                 if(typeof($("#timetable_body tr:last").html())=='undefined')
                 {
@@ -265,51 +290,51 @@
 
             function initialize() {
                 jQuery('[data-toggle="tooltip"]').tooltip()
-                $(".days").addClass("text-center").addClass("hoverable") ; 
-                // addRow(3) ; 
-    
-                //Event handlers 
+                $(".days").addClass("text-center").addClass("hoverable") ;
+                // addRow(3) ;
+
+                //Event handlers
 
                 $("#btn_addTimeTable").on('click', event => {
                     $("#addNewTimeTable").fadeIn().removeAttr("hidden").fadeIn();
                 })
-    
-                $("#btn_saveTimeTable").on('click' , saveTimeTable) ; 
-    
+
+                $("#btn_saveTimeTable").on('click' , saveTimeTable) ;
+
                 $("#btn_addRow").on('click' , e=>{
-                    addRow() ; 
-                }) ; 
+                    addRow() ;
+                }) ;
 
                 $("#btn_delRow").on('click' , e=>{
-                    $("#timetable_body tr:last").remove() ;  
-                }) ; 
-                $("#select_section").on('change' , getTimeTable ); 
+                    $("#timetable_body tr:last").remove() ;
+                }) ;
+                $("#select_section").on('change' , getTimeTable);
                 $("#select_year").on('change' , getTimeTable );
-                $("#select_branch").on('change' , getTimeTable )
+                $("#select_branch").on('change' , getTimeTable ) ;
 
 
                 //set the SEction list
-                s = "ABCDEFGHIJ" ; 
-                $('#select_section').html(`<option value="A">A</option>`) ; 
+                s = "ABCDEFGHIJ" ;
+                $('#select_section').html(`<option value="A">A</option>`) ;
                 for(let i =1 ; i<s.length ; i++)
                 {
-                    $('#select_section option:last').after(`<option value="${s[i]}">${s[i]}</option>`) ; 
+                    $('#select_section option:last').after(`<option value="${s[i]}">${s[i]}</option>`) ;
                 }
-                
-                $('select').material_select() ; 
-                addRow(3) ; 
-            }                
+
+                $('select').material_select() ;
+                addRow(3) ;
+            }
 
             initialize();
-            getTimeTable() ; 
+            getTimeTableStarter() ;
 
-            //DEBUG 
-            // $('#btn_addTimeTable').click() ; 
-            // $('#btn_tester').on('click' , getTimeTable) ; 
+            //DEBUG
+            // $('#btn_addTimeTable').click() ;
+            // $('#btn_tester').on('click' , getTimeTable) ;
 
         </script>
   <% include partials/footer.ejs %>
-   
+
    <script>$("#div_footer").css('position' , 'fixed') ;
     </script>
 

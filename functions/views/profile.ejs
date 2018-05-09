@@ -22,7 +22,7 @@
     <% include partials/scripts_and_css.ejs %>
     <% include partials/navbar.ejs %>
     <div class="container">
-    
+
 <br><br>
 
 <!--Card-->
@@ -43,14 +43,14 @@
         <!--Card content-->
         <div class="card-body">
             <!--Title-->
-            <h1 class="card-title" align="center">My Profile</h1>
+            <h1 class="card-title" align="center">Profile</h1>
             <!--Text-->
            <form>
         <div class="row">
             <div class="col">
                 <div class="md-form">
                     <input class="form-control" required  id="name" name="name" type="text" />
-                    <label for="form1">Ente Name</label>
+                    <label for="form1">Enter Name</label>
                 </div>
             </div>
 
@@ -62,8 +62,8 @@
             </div>
         </div>
 <vr>
-        <dl>
-            <dt>Existing topics</dt>
+        <dl><br>
+            <h4>Existing Topics : </h4>
             <dd>
                 <div class="row">
                     <div class="list-group col-3 rounded mt-2" id="topics_subscribed"> </div>
@@ -73,10 +73,10 @@
 
         <hr>
 
-    
+
 
     <dl class="form-group mt-5">
-        <h4 style="font-family: raleway , lora ;"><label for="user_profile_location">Location Info : </label></h4>
+        <label for="user_profile_location"><h4>Location Info : </h4></label>
         <dd>
             <div class="form-group">
                 <label  for="inputState">State : </label>
@@ -109,28 +109,28 @@
                     <input type="text" id="inputMDEx" class="form-control">
                     <label for="inputMDEx"><i class="fa fa-facebook"></i> link</label>
                 </div>
-            </div> 
+            </div>
 
         <div class="col">
             <div class="md-form">
                 <input type="text" id="inputMDEx" class="form-control">
                 <label for="inputMDEx"><i class="fa fa-twitter pr-1"></i>  link</label>
             </div>
-        </div>      
+        </div>
 
         <div class="col">
             <div class="md-form">
                 <input type="text" id="inputMDEx" class="form-control">
                 <label for="inputMDEx"><i class="fa fa-linkedin pr-1"></i> link</label>
             </div>
-        </div> 
+        </div>
 
         <div class="col">
             <div class="md-form">
                 <input type="text" id="inputMDEx" class="form-control">
                 <label for="inputMDEx"><i class="fa fa-github pr-1"></i> link</label>
             </div>
-        </div>      
+        </div>
     </div>
 
 <br>
@@ -178,7 +178,7 @@ function getformdata(){
 
 function init_user(){
     return new Promise((resolve , reject)=>{
-        user_global = firebase.auth().currentUser ;
+        user_global = firebase.auth().getUid();
         if(!user_global){
             firebase.auth().onAuthStateChanged(user=>{
                 if(user)
@@ -201,16 +201,16 @@ init_user()
     {
         userinfo = snap.val() ;
         firebase.database().ref(`/Colleges/${userinfo.ccode}/topics/`).once('value' , shot=>{
-            topics = shot.val() ; 
+            topics = shot.val() ;
             console.log(userinfo , topics) ;
             userinfo.name = user_global.displayName  ;
             userinfo.email = user_global.email ;
-            
+
             Object.getOwnPropertyNames(topics).forEach(ele=>{
-                $("#topics_subscribed").append(`<button class="list-group-item waves-effect font-small">${topics[ele].title}</button>`) ; 
+                $("#topics_subscribed").append(`<button class="list-group-item waves-effect font-small">${topics[ele].title}</button>`) ;
             })
-            $("#email").val(userinfo.email) ; 
-            $("#name").val(userinfo.name) ;  
+            $("#email").val(userinfo.email) ;
+            $("#name").val(userinfo.name) ;
             $('#biodata').html(userinfo.biodata) ;
             $('#select_college').val(userinfo.college);
             $('#select_state').val(userinfo.state);
@@ -256,6 +256,7 @@ $('form').on('submit' , (event)=>{
 
 </script>
 </div>
-<% include partials/footer.ejs %>
+  <% include partials/footer.ejs %>
+   <script>$("#div_footer").css('position' , 'fixed') ;</script>
 </body>
 </html>

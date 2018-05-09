@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placements</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body background="assets/images/bg1.jpg" >
+    <div class="gtco-loader"></div>
+    <% include partials/scripts_and_css.ejs %>
+    <% include partials/navbar.ejs %>
+<div >
+    <h1 class="text-decoration animated zoomIn text-center">Placement Portal</h1>
+    <div class="animated shake rounded alert alert-danger"   role="alert" id="erroralert" hidden><h2 style="color:black;">All input fields must be specified!</h2></div>
+      <div class="animated zoomIn rounded alert alert-success" role="alert" id="successalert" hidden><h2 style="color:black">Placement specifications uploaded!</h2></div>
+
+
+
+    <!-- Card -->
+<div class="card card-image" style="background-image: url(assets/images/placementbg.jpg);">
+
+    <!-- Content -->
+    <div class="text-white text-center align-items-center rgba-black-strong py-5 px-4">
+            <h2 class="card-title pt-2"><strong>Set a placement specification </strong></h2>
+            <br>
+            <div class="md-form form-lg">
+
+
+                <input type="text" id="comp" class="form-control form-control-lg" style="font-color : white">
+                <label for="comp" >Name Of Company</label>
+            </div>
+            <div class="md-form form-lg">
+                <input type="text" id="cgpa" class="form-control form-control-lg">
+                <label for="cgpa" >Minimum required CGPA</label>
+            </div>
+            <br>
+            <h3 class="text-decoration">Preferred Branch</h3>
+            <br>
+            <div class="row">
+              <div class="form-check col">
+                  <input type="checkbox" class="filled-in form-check-input" id="cse" checked="checked">
+                  <label class="form-check-label" for="cse">CSE</label>
+                </div>
+                <div class="form-check col">
+                  <input type="checkbox" class="filled-in form-check-input" id="ise" checked="checked">
+                  <label class="form-check-label" for="ise">ISE</label>
+                </div>
+                <div class="form-check col">
+                  <input type="checkbox" class="filled-in form-check-input" id="ec" checked="checked">
+                  <label class="form-check-label" for="ec">EC</label>
+                </div>
+                <div class="form-check col">
+                  <input type="checkbox" class="filled-in form-check-input" id="mech" checked="checkhttps://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20%2814%29ed">
+                  <label class="form-check-label" for="mech">MECH</label>
+                </div>
+              </div>
+              <br>
+            <a class="btn btn-deep-purple" id="btn-submit"><i class="fa fa-clone left"></i> Submit</a>
+    </div>
+    <!-- Content -->
+</div>
+<!-- Card -->
+</div>
+   <% include partials/footer.ejs %>
+   <script>$("#div_footer").css('position' , 'fixed') ;</script>
+   <script>
+
+      let branch
+      $('#btn-submit').click(function(){
+
+        branch = new Array() ;
+        ['cse','ise','ec','mech'].forEach(ele=>{
+          if($(`#${ele}`).val()=='on'){
+            branch.push(ele);
+          }
+        })
+        console.log(branch);
+        var obj=new Object();
+        var comp=$('#comp').val();
+        var cgpa=$('#cgpa').val();
+        if(comp == undefined || cgpa == undefined){
+          $('#erroralert').attr('hidden', false);
+          return;
+        }
+        var ref=firebase.database().ref(`/Colleges/${firebase.auth().getUid().ccode}/Companies/${comp}`);
+        obj['cgpa']=cgpa;
+        obj['branch']=branch;
+        console.log(obj);
+        ref.update(obj);
+        $('#successalert').attr('hidden', false);
+        return;
+      })
+
+
+   </script>
+
+</body>
+</html>

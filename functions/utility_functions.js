@@ -24,23 +24,42 @@ function isAuthenticated(req , res)
     {
         admin.auth().verifyIdToken(req.cookies['__session']).then(decodedtoken=>{
             if(decodedtoken.uid){
-                admin.database().ref('/adminusers/'+decodedtoken.uid).once('value' , snap=>{
-                    if(snap.exists())
+
+                admin.database().ref('/adminusers/' + decodedtoken.uid).once('value' , snap=>{
+                    console.log('snap.val()' , snap.val()) ; 
+                    if(snap.val())
                     {
                         resolve(decodedtoken.uid) ;
                     }
-
                     else{
-                        reject("Only College administrators can sign in : ") ;
+                        //check if he is a subadmin
+                        admin.database().ref(`/users/${decodedtoken.uid}`).once('value' , userinfo=>{
+
+                            admin.database().ref(`/Colleges/${userinfo.val().ccode}/subadmins/${decodedtoken.uid}`).once('value', userinfo_checking=>{
+                               
+                                if(userinfo_checking.val())
+                                { 
+                                    //User is a subadmin
+                                    console.log("subadmin logging in  ") ; 
+                                    reject({uid : decodedtoken.uid , type_of_user : 'subadmin'}) ; 
+                                }
+                                else{
+                                    console.log("Only College administrators can sign in : ")
+                                    reject("Only College administrators can sign in : ") ;
+                                }
+                            })
+                     })
                     }
                 }) ;
+
+
+
                 console.log("User is signed in : " , decodedtoken.uid)  ;
-                resolve(decodedtoken.uid) ;
+                // resolve(decodedtoken.uid) ;
             }
             // TODO ROUTE User with the required user details on the page
         })
         .catch(error=>{
-            console.log("User not signed in yet ! ")
             reject(error) ;
             // res.render('login.ejs')
         })
@@ -52,7 +71,7 @@ function isAuthenticated(req , res)
 
 
 //Returns the User info object which is 
-function get_userinfo({type_of_user = "admin" , uid} )
+function get_userinfo({type_of_user = "admin" , uid , college_code} )
 {
     console.log(type_of_user , uid ) ; 
     return new Promise((resolve , reject)=>{
@@ -65,6 +84,15 @@ function get_userinfo({type_of_user = "admin" , uid} )
         else if (type_of_user =="student")
         {
              admin.database().ref('/users/' + uid).once('value' , snap=>{
+                resolve(snap.val()) ; 
+            }).catch(err=>reject(err)) ; 
+        }
+        else if(type_of_user =='subadmin')
+        {
+            if(!college_code){
+                console.log("Needs college code to check subadmin info !" ) ; 
+            }
+            admin.database().ref(`/Colleges/${college_code}/subadmins/${uid}`).once('value' , snap=>{
                 resolve(snap.val()) ; 
             }).catch(err=>reject(err)) ; 
         }

@@ -14,12 +14,13 @@ var admin=require('firebase-admin');
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   END OF IMPORTS
 
+
+
 app.use(cookieparser()) ;
 app.use(express.static('../public' )  ) ;
 
 
 handle_requests(app) ;
-
 
 //HANDLE Static Request for any non Existing resource.
 app.use(function(req, res, next){

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body background="assets/images/bg1.jpg">
+
+    <div class="gtco-loader"></div>
+
+    <% include partials/scripts_and_css.ejs %>
+    <% include partials/navbar.ejs %>
+
+
+
+
+
+   <!-- Card -->
+ <div class="card card-image" style="background-image: url(assets/images/librarybg.jpg);">
+   <!-- Content -->
+   <div class="text-white text-center align-items-center rgba-black-strong py-5 px-4">
+     <h1 class="text-decoration animated zoomIn text-center">Library</h1>
+     <div class="container">
+        <form class="m-3" method="post" action="/submitbook">
+             <div class="md-form">
+                   <input type="text" name="bookid" id="bookid" class="form-control" style="color:white">
+                   <label for="bookid" style="color:white">Book ID</label>
+             </div>
+             <div class="md-form">
+                   <input type="text" id="usn" name="usn"  class="form-control" style="color:white">
+                   <label for="usn"  style="color:white">USN</label>
+             </div>
+             <div class="md-form">
+                   <input type="text" name="email" id="email" class="form-control" style="color:white">
+                   <label for="email"  style="color:white">Email</label>
+             </div>
+             <div class="md-form">
+                   <input id="timeleft" type="number" name="timeleft" class="form-control" style="color:white">
+                   <label for="timeleft"  style="color:white">No.Of Days</label>
+             <br>
+             <div class="form-group text-center"><button type="submit" class="btn btn-deep-purple btn-lg">Submit</button></div>
+       </form>
+       </div>
+    </div>
+   </div>
+   <!-- Content -->
+ </div>
+ <!-- Card -->
+
+   <% include partials/footer.ejs %>
+   <script>$("#div_footer").css('position' , 'fixed') ;</script>
+
+</body>
+</html>

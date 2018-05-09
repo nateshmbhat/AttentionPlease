@@ -1,0 +1,254 @@
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Dashboard</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="assets/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+    <!-- Plugin CSS -->
+    <link href="assets/vendor/magnific-popup/magnific-popup.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="assets/css/creative.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="public/assets/css/mdb.min.css">
+
+    <style type="text/css">
+        
+.accordion.accordion-5 .card {
+  border: 0;
+  background-color: transparent; }
+  .accordion.accordion-5 .card .card-header {
+    border: 0;
+    background-color: #f44336;
+    -webkit-transition: .3s;
+    transition: .3s; }
+    .accordion.accordion-5 .card .card-header:hover {
+      -webkit-transition: .3s;
+      transition: .3s;
+      background-color: #455a64; }
+    .accordion.accordion-5 .card .card-header .fa {
+      background-color: #fff;
+      border-top-left-radius: 3px; }
+  .accordion.accordion-5 .card .card-body {
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px; }
+                    
+    </style>
+    </head>
+<body>
+
+    <% include partials/scripts_and_css.ejs %>
+    <% include partials/navbar.ejs %>
+
+
+<!-- Card -->
+<div class="card card-image" style="background-image: url(https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20%2814%29.jpg);bgproperty:fixed;">
+
+    <!-- Content -->
+    <div class="rgba-black-strong py-5 px-4">
+        <div class="row d-flex justify-content-center ">
+            <div class="col-md-10 col-xl-8">
+                
+                <!--Accordion wrapper-->
+                <div class="accordion accordion-5 accordian_wrapper" id="accordionEx5" role="tablist" aria-multiselectable="true">
+               </div>
+                <!--/.Accordion wrapper-->
+
+            </div>
+        </div>
+    </div>
+    <!-- Content -->
+
+</div>
+<!-- Card -->
+
+
+    <script>
+
+    function getDataObject(cardid)
+    {
+        dataobject = {  
+            usn : $(`[data-usnid=${cardid}]`)[0].textContent.trim() , 
+            name : $(`[data-nameid=${cardid}]`)[0].textContent.trim() , 
+            uid : $(`[data-uid=${cardid}]`)[0].textContent.trim() , 
+            desc : $(`[data-descid=${cardid}]`)[0].textContent.trim() ,
+        }
+        return dataobject ; 
+    }
+
+
+function initializeStarter(){
+    firebase.auth().onAuthStateChanged(user=>{
+        console.log("running auth state changed ! ") ;
+    
+        if(!user) {
+            window.location="/"; 
+            return ;
+        }
+        console.log(user.uid) ; 
+        initialize(user.uid) ; 
+    }) ; 
+}
+
+
+
+function initialize(adminuid= undefined){
+    
+    if(!adminuid){
+        window.location = '/' ; 
+    }
+
+    console.log("adminuid : " ,adminuid) ; 
+    let userinfo , name, usn, uid , desc ; 
+
+    firebase.database().ref(`/adminusers/${adminuid}`).once('value' , snap=>{
+
+        userinfo = snap.val() ; 
+        console.log(userinfo) ; 
+
+        firebase.database().ref(`/Colleges/${userinfo.ccode}/adminrequests`).once('value' , snap=>{
+            console.log('snap' , snap) ; 
+            pushids = snap.val() ; 
+
+            if(!pushids){
+                console.log("No requests for now ! ") ;             
+                return ; 
+            }
+
+
+
+            console.log("admin requests : "  , pushids ); 
+
+            let i = 0 ;  //used as a counter and identifier
+
+            Object.getOwnPropertyNames(pushids).forEach(pushid=>{
+
+                name = pushids[pushid].name ;
+                usn = pushids[pushid].usn ; 
+                uid = pushids[pushid].uid ; 
+                desc = pushids[pushid].desc ; 
+
+
+                let userrequest_panel = ` 
+                    <!-- Accordion card -->
+                    <div class="card mb-4 userrequest_panel" data-cardid=${i}>
+                        <!-- Card header -->
+                        <div class="card-header p-0 z-depth-1" role="tab" id="heading30">
+                            <a data-toggle="collapse" data-parent="#accordionEx5" href="#collapse30" aria-expanded="true" aria-controls="collapse30">
+                                <i class="fa fa-cloud fa-2x p-3 mr-4 float-left black-text" aria-hidden="true"></i>
+                                <h4 data-nameid=${i} class="text-uppercase white-text mb-0 py-3 ml-2 mt-1 justify-content-left" style="display:inline ; align-left ; float:left" >
+                                    ${name}
+                                </h4>
+                                <h4 data-usnid=${i} class="text-uppercase white-text mb-0 py-3 mt-1 mr-4 justify-content-right" style="display:inline;align:right;float:right;">
+                                        ${usn}
+                                </h4>
+                            </a>
+                        </div>
+
+                        <!-- Card body -->
+                        <div id="collapse30" class="collapse show" role="tabpanel" aria-labelledby="heading30" data-parent="#accordionEx5">
+                            <div class="card-body rgba-black-light white-text z-depth-1">
+                                <h5>User ID : </h5><h5 data-uid=${i}> ${uid}</h5>
+                                <p data-descid=${i} class="p-md-4 mb-0">${desc}</p>
+
+                                <button data-btnid=${i} class="btn btn-success btn_accept" >Accept</button>
+                                <button data-btnid=${i} class="btn btn-danger btn_reject" >Reject</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Accordion card -->
+                    ` ; 
+
+
+                    if($('.accordian_wrapper .userrequest_panel:last').html())
+                    {
+                        $('.accordian_wrapper .userrequest_panel:last').after(userrequest_panel) ; 
+                    }
+                    else 
+                    { 
+                         $('.accordian_wrapper').html(userrequest_panel) ; 
+                    }
+
+                //INCREMENT THE COUNTER ; 
+                    i++  ;
+                // caution !
+            }) ; 
+            
+            EventBinders() ; 
+        })
+    })
+}
+
+
+
+function EventBinders(){
+    //bind all the events  : 
+    $('button.btn_accept').on('click' , event=>{
+        console.log('this' , event.target) ; 
+        let cardid  = $(event.target).attr('data-btnid') ; 
+        
+        console.log(  getDataObject(cardid)) ; 
+
+        $.ajax({
+                type : "post" , 
+                method:"post", 
+                url : "/acceptAdminRequest" , 
+                data : getDataObject(cardid) , 
+                success:resp=>{
+                    console.log("response : " , resp) ; 
+               } , 
+                error: err=>{
+                    console.log(err) ;
+                }
+            }) ;
+        
+        $(`[data-usnid=${cardid}]`).html('ACCEPTED') ; 
+        setTimeout(()=> $(`[data-cardid=${cardid}]`).fadeOut() , 300) ; 
+         
+    })
+
+
+    $('button.btn_reject').on('click' , event=>{
+        console.log('this' , event.target) ; 
+        console.log($(event.target).attr('data-btnid')) ; 
+
+        let cardid  = $(event.target).attr('data-btnid') ; 
+        
+        console.log(  getDataObject(cardid)) ; 
+
+        $.ajax({
+                type : "post" , 
+                method:"post", 
+                url : "/rejectAdminRequest" , 
+                data : getDataObject(cardid) , 
+                success:resp=>{
+                    console.log("response : " , resp) ; 
+               } , 
+                error: err=>{
+                    console.log(err) ;
+                }
+            }) ;
+        
+        $(`[data-usnid=${cardid}]`).html('REJECTED ! ') ; 
+        setTimeout(()=> $(`[data-cardid=${cardid}]`).fadeOut() , 300) ; 
+
+    })
+}    
+
+
+    initializeStarter() ; 
+
+    </script>
+</body>

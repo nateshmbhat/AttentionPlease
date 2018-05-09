@@ -9,8 +9,7 @@ var config = {
 firebase.initializeApp(config);
 
   
-
-const setcookie=(callback )=>firebase.auth().currentUser && firebase.auth().currentUser.getIdToken().then(token=>{
+setcookie=(callback )=>firebase.auth().currentUser && firebase.auth().currentUser.getIdToken().then(token=>{
   console.log(token) ; 
   
   Cookies.set('__session' , token , {
@@ -25,10 +24,15 @@ const setcookie=(callback )=>firebase.auth().currentUser && firebase.auth().curr
 
 
 
-const unsetcookie = ()=>Cookies.remove('__session' , {
+unsetcookie = ()=>{
+  Cookies.remove('__session' , {
   domain : window.location.hostname , 
   path : '/'
-})
+});
+
+window.location="/login" ; 
+
+}
 
 
 window.onload= function()
